@@ -5,6 +5,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python: 3.9+](https://img.shields.io/badge/python-3.9+-brightgreen.svg)](https://python.org)
 [![Status: Experimental RFC](https://img.shields.io/badge/status-RFC--0001-purple.svg)](SPEC.md)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-cyan.svg)](https://gauravraikar19.github.io/gravitational-prompt-routing/)
+
+👉 **[Try the Live Interactive Cosmic Visualizer](https://gauravraikar19.github.io/gravitational-prompt-routing/)** — Watch prompts calculate orbits and fall into model gravitational wells in 60 FPS real time.
 
 ---
 
