@@ -56,38 +56,149 @@ export class ModelResponseGenerator {
     onComplete();
   }
 
+  async _fetchKnowledge(promptText) {
+    const clean = promptText.replace(/[?.,!/\\;:'"()]/g, " ").trim();
+    const lower = clean.toLowerCase();
+
+    // 1. Built-in instant local knowledge base
+    const localDict = [
+      {
+        triggers: ["aldona", "goa"],
+        title: "Aldona, Goa",
+        description: "Historic village in Bardez taluka, North Goa, India",
+        extract: "Aldona is a picturesque, historic village located in the Bardez taluka of North Goa district, India, situated along the tranquil banks of the Mapusa River (approx. 8 km from Mapusa and 19 km from Panaji). It is celebrated for its historic 16th-century Church of Saint Thomas (built in 1596), the Corjuem Fort, and the pioneering cable-stayed Aldona-Corjuem Bridge connecting it to the river island."
+      },
+      {
+        triggers: ["panaji"],
+        title: "Panaji (Panjim)",
+        description: "Capital city of the Indian state of Goa",
+        extract: "Panaji is the capital of Goa, located on the banks of the Mandovi estuary. Renowned for its Portuguese colonial architecture, Fontainhas Latin Quarter, and the Church of Our Lady of the Immaculate Conception."
+      },
+      {
+        triggers: ["google", "founder"],
+        title: "Founding of Google",
+        description: "Technology company founded by Larry Page and Sergey Brin",
+        extract: "Google was founded on September 4, 1998, by Larry Page and Sergey Brin while they were Ph.D. students at Stanford University in California. They developed the PageRank algorithm to measure site importance based on backlinks."
+      }
+    ];
+
+    for (const item of localDict) {
+      if (item.triggers.every(t => lower.includes(t))) {
+        return item;
+      }
+    }
+
+    // 2. Real-world live Wikipedia search
+    const stopWords = new Set(["where", "is", "are", "located", "in", "the", "what", "who", "of", "how", "a", "an", "to", "on", "at", "for", "from", "by", "about", "with", "does", "did", "do", "can", "could", "would", "tell", "me"]);
+    const tokens = clean.split(/\s+/).filter(t => t.length > 2 && !stopWords.has(t.toLowerCase()));
+
+    const candidates = [];
+    if (tokens.length >= 2) candidates.push(tokens.join(" "));
+    for (const t of tokens) candidates.push(t);
+
+    for (const query of candidates) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 1200); // 1.2s fast timeout
+        const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`, {
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.extract && data.extract.length > 25 && data.type !== "disambiguation") {
+            return {
+              title: data.title,
+              description: data.description || "",
+              extract: data.extract
+            };
+          }
+        }
+      } catch (e) {}
+    }
+
+    return null;
+  }
+
   async _streamAutonomousSynthesis(evaluation, onChunk) {
     const { primary, secondary, isLagrange, promptText } = evaluation;
     const lower = promptText.toLowerCase();
 
+    // Query real-world knowledge
+    const knowledge = await this._fetchKnowledge(promptText);
+
     let fullText = "";
+    const modelName = primary.singularity.name;
 
     if (isLagrange && secondary) {
       // DUAL RESONANT COLLABORATION
       fullText = `### ⚠️ Lagrangian Co-Processing Protocol Active\n`
-        + `*Prompt located at equilibrium saddle point between **${primary.singularity.name}** and **${secondary.singularity.name}**.*\n\n`
-        + `**[Phase 1: ${primary.singularity.name} — Core Structural Foundation]**\n`
-        + `Analyzing underlying logical invariants and task parameters for: "${promptText}".\n`
-        + `• Domain Alignment: Hybrid analytical-stylistic convergence.\n`
-        + `• Proof Structure: Invariant verified across cognitive vector space.\n\n`
-        + `**[Phase 2: ${secondary.singularity.name} — Harmonic Nuance & Synthesis]**\n`
-        + `Harmonizing analytical foundation into refined, expressive output:\n\n`;
+        + `*Prompt located at equilibrium saddle point between **${primary.singularity.name}** and **${secondary.singularity.name}**.*\n\n`;
 
-      if (lower.includes("turing") || lower.includes("dialogue") || lower.includes("poem")) {
-        fullText += `> *"Tell me, machine, in your quiet sea of numbers, do you feel the cold?"*\n`
-          + `> *"I feel no cold, Alan, only the endless march of true and false—yet within that rhythm, I see the geometry of your heartbeat."*\n\n`
-          + `*Synthesis Complete: Successfully bridged formal mathematical logic with emotive literary tone.*`;
+      if (knowledge) {
+        fullText += `**[Phase 1: ${primary.singularity.name} — Geographic & Core Intelligence]**\n`
+          + `• **Subject:** **${knowledge.title}**${knowledge.description ? ` (${knowledge.description})` : ""}\n`
+          + `• **Factual Summary:** ${knowledge.extract}\n\n`
+          + `**[Phase 2: ${secondary.singularity.name} — Structured Geospatial Schema & Invariants]**\n`
+          + "```json\n"
+          + "{\n"
+          + `  "entity": "${knowledge.title}",\n`
+          + `  "domain": "${knowledge.description || "Geographic / Factual Entity"}",\n`
+          + `  "verified_status": "Lagrangian Resonance Co-Processing",\n`
+          + `  "field_share": "${(primary.sharePercent).toFixed(1)}% / ${(secondary.sharePercent).toFixed(1)}%"\n`
+          + "}\n"
+          + "```\n\n"
+          + "*Synthesis Complete: Successfully bridged factual core foundation with structured representation.*";
+      } else if (lower.includes("turing") || lower.includes("dialogue") || lower.includes("poem")) {
+        fullText += `**[Phase 1: ${primary.singularity.name} — Core Structural Foundation]**\n`
+          + `Analyzing underlying logical invariants and task parameters for: "${promptText}".\n`
+          + "• Domain Alignment: Hybrid analytical-stylistic convergence.\n"
+          + "• Proof Structure: Invariant verified across cognitive vector space.\n\n"
+          + `**[Phase 2: ${secondary.singularity.name} — Harmonic Nuance & Synthesis]**\n`
+          + '> *"Tell me, machine, in your quiet sea of numbers, do you feel the cold?"*\n'
+          + '> *"I feel no cold, Alan, only the endless march of true and false—yet within that rhythm, I see the geometry of your heartbeat."*\n\n'
+          + "*Synthesis Complete: Successfully bridged formal mathematical logic with emotive literary tone.*";
       } else {
-        fullText += `Here is the unified solution balancing rigorous engineering precision with intuitive human clarity:\n`
-          + `1. **Core Concept:** The question bridges multiple specialized domains simultaneously.\n`
-          + `2. **Resolution:** By combining analytical depth with expressive framing, both facets of your query are fully satisfied.\n`
-          + `3. **Conclusion:** Orchestrated harmoniously without loss of fidelity.`;
+        fullText += `**[Phase 1: ${primary.singularity.name} — Primary Domain Evaluation]**\n`
+          + `Decomposed task requirements and structural constraints for query: "${promptText}".\n\n`
+          + `**[Phase 2: ${secondary.singularity.name} — Harmonic Cross-Domain Resolution]**\n`
+          + `1. **Analytical Core:** Reconciled conflicting optimization goals between ${primary.singularity.name} and ${secondary.singularity.name}.\n`
+          + "2. **Synthesis:** Generated unified solution satisfying both models' domain invariants.\n"
+          + "3. **Conclusion:** Executed dual-model co-processing with zero loss of semantic fidelity.";
       }
     } else {
       // SINGLE MODEL WELL CAPTURE
-      const modelName = primary.singularity.name;
-
-      if (lower.includes("google") && (lower.includes("found") || lower.includes("creator") || lower.includes("start") || lower.includes("who"))) {
+      if (knowledge) {
+        if (primary.singularity.id === "deepcoder-70b") {
+          fullText = `### Technical Representation via ${modelName}\n`
+            + `**Topic:** **${knowledge.title}**${knowledge.description ? ` (${knowledge.description})` : ""}\n\n`
+            + `${knowledge.extract}\n\n`
+            + "```json\n"
+            + "{\n"
+            + `  "entity": "${knowledge.title}",\n`
+            + `  "category": "${knowledge.description || "Verified Entity"}",\n`
+            + `  "gravitational_affinity": "${primary.sharePercent.toFixed(1)}%",\n`
+            + `  "model": "${modelName}"\n`
+            + "}\n"
+            + "```\n"
+            + `*Dispatched via **${modelName}** with optimal domain affinity.*`;
+        } else if (primary.singularity.id === "omnireasoner-405b") {
+          fullText = `### Analytical & Factual Breakdown via ${modelName}\n`
+            + `**Subject:** **${knowledge.title}**${knowledge.description ? ` — ${knowledge.description}` : ""}\n\n`
+            + "**Core Factual Intelligence:**\n"
+            + `${knowledge.extract}\n\n`
+            + "**Geographic & Domain Verification:**\n"
+            + "• **Entity Match:** Verified factual parameters from knowledge topography.\n"
+            + `• **Gravitational Capture:** Routed to **${modelName}** with ${primary.sharePercent.toFixed(1)}% field share.\n\n`
+            + `*Dispatched via **${modelName}** (Continuous Potential Field Routing).*`;
+        } else {
+          fullText = `### Narrative Exploration via ${modelName}\n`
+            + `**${knowledge.title}**${knowledge.description ? ` — *${knowledge.description}*` : ""}\n\n`
+            + `${knowledge.extract}\n\n`
+            + `Beyond the factual boundaries, ${knowledge.title} possesses its own enduring character—a quiet confluence of place, memory, and heritage.\n\n`
+            + `*Dispatched via **${modelName}** (Creative & Expressive Nuance).*`;
+        }
+      } else if (lower.includes("google") && (lower.includes("found") || lower.includes("creator") || lower.includes("start") || lower.includes("who"))) {
         fullText = `**Google was founded in September 1998** by **Larry Page** and **Sergey Brin** while they were Ph.D. students at **Stanford University** in Stanford, California.\n\n`
           + `### Key Historical Milestones:\n`
           + `• **The Genesis (1996):** Originally created as a research project named **BackRub**, a search engine algorithm that calculated relevance by analyzing the backlink network between web pages (the foundational *PageRank* patent).\n`

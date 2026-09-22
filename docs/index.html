@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=3.0">
+  <link rel="stylesheet" href="style.css?v=4.0">
 </head>
 <body>
 
@@ -44,102 +44,50 @@
       </nav>
     </header>
 
-    <!-- Main Grid -->
+    <!-- Main 2-Column Zero-Scroll Dashboard -->
     <main class="main-grid">
 
-      <!-- Left Column: Canvas Viewport -->
-      <section class="canvas-panel">
-        <div class="canvas-header">
-          <div class="panel-title">
-            <span>Cosmic Topography Vector Field</span>
-          </div>
-          <div class="live-indicator">
-            <span class="live-pulse"></span>
-            <span>60 FPS Gravity Field</span>
-          </div>
-        </div>
-
-        <div class="canvas-container">
-          <canvas id="spaceCanvas"></canvas>
-        </div>
-
-        <div class="canvas-footer">
-          <div class="legend-item">
-            <span class="legend-dot" style="background: var(--color-cyan);"></span>
-            <span>DeepCoder-70B (Code Well)</span>
-          </div>
-          <div class="legend-item">
-            <span class="legend-dot" style="background: var(--color-violet);"></span>
-            <span>OmniReasoner-405B (Math Well)</span>
-          </div>
-          <div class="legend-item">
-            <span class="legend-dot" style="background: var(--color-amber);"></span>
-            <span>Hermes-Prose-8B (Creative Well)</span>
-          </div>
-          <div class="legend-item">
-            <span class="legend-dot" style="background: #ffffff; box-shadow: 0 0 6px #fff;"></span>
-            <span>Prompt Point Mass (Trajectory Trail)</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- Right Column: Interactive Controls & Telemetry -->
-      <section class="controls-panel">
-
-        <!-- Prompt Card -->
-        <div class="card">
-          <div class="card-title">1. Test Domain Presets or Enter Custom Prompt</div>
-
-          <div id="presetContainer" class="preset-grid">
-            <!-- Preset buttons populated dynamically by app.js -->
-          </div>
-
-          <div class="input-wrapper">
-            <textarea id="promptInput" placeholder="Type an arbitrary prompt to calculate its gravitational trajectory in semantic space..."></textarea>
-            <button id="routeBtn" class="route-submit-btn">
-              <span>Calculate Gravitational Pull</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Relativistic Tuning Sliders -->
-        <div class="card">
-          <div class="card-title">2. Relativistic Dampening & Spatial Curvature</div>
-          <div class="sliders-grid">
-
-            <div class="slider-group">
-              <div class="slider-label-row">
-                <span>Cost Penalty (λ_Cost)</span>
-                <strong><span id="costVal">0.0</span></strong>
-              </div>
-              <input type="range" id="costSlider" min="0.0" max="3.0" step="0.1" value="0.0">
+      <!-- Left Column: Canvas Viewport & Live Telemetry -->
+      <div class="dashboard-col left-col">
+        <!-- Canvas Viewport -->
+        <section class="canvas-panel card">
+          <div class="canvas-header">
+            <div class="panel-title">
+              <span>Cosmic Topography Vector Field</span>
             </div>
-
-            <div class="slider-group">
-              <div class="slider-label-row">
-                <span>Latency Penalty (λ_Lat)</span>
-                <strong><span id="latencyVal">0.0</span></strong>
-              </div>
-              <input type="range" id="latencySlider" min="0.0" max="3.0" step="0.1" value="0.0">
+            <div class="live-indicator">
+              <span class="live-pulse"></span>
+              <span>60 FPS Gravity Field</span>
             </div>
-
-            <div class="slider-group">
-              <div class="slider-label-row">
-                <span>Decay Exponent (δ)</span>
-                <strong><span id="deltaVal">3.0</span></strong>
-              </div>
-              <input type="range" id="deltaSlider" min="1.5" max="4.0" step="0.1" value="3.0">
-            </div>
-
           </div>
-        </div>
 
-        <!-- Telemetry & Decision Card -->
+          <div class="canvas-container">
+            <canvas id="spaceCanvas"></canvas>
+          </div>
+
+          <div class="canvas-footer">
+            <div class="legend-item">
+              <span class="legend-dot" style="background: var(--color-cyan);"></span>
+              <span>DeepCoder-70B</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot" style="background: var(--color-violet);"></span>
+              <span>OmniReasoner-405B</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot" style="background: var(--color-amber);"></span>
+              <span>Hermes-Prose-8B</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot" style="background: #ffffff; box-shadow: 0 0 6px #fff;"></span>
+              <span>Prompt Mass</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Gravitational Field Telemetry -->
         <div class="card telemetry-card">
-          <div class="card-title">3. Gravitational Field Telemetry</div>
+          <div class="card-title-compact">Gravitational Field Telemetry</div>
 
           <div id="statusBadge" class="status-badge status-stable">
             Evaluating...
@@ -157,32 +105,84 @@
             <div id="dispatchContent"></div>
           </div>
         </div>
-      </section>
-    </main>
+      </div>
 
-    <!-- Live Model Execution Terminal -->
-    <section class="execution-terminal-section card">
-      <div class="terminal-header">
-        <div class="terminal-title-group">
-          <span class="terminal-glow-dot" id="terminalGlow"></span>
-          <h2 class="terminal-heading">Routed AI Output Stream</h2>
-          <span id="activeModelPill" class="active-model-pill">Awaiting Prompt...</span>
-          <span id="pipelinePill" class="pipeline-pill hidden">Dual Co-Processing</span>
+      <!-- Right Column: Interactive Prompt, Sliders & Live Output Stream -->
+      <div class="dashboard-col right-col">
+
+        <!-- Controls Card: Presets, Input & Sliders -->
+        <div class="card prompt-controls-card">
+          <div class="prompt-header-row">
+            <div class="card-title-compact">1. Domain Presets & Custom Prompt</div>
+            <div id="presetContainer" class="preset-grid-compact">
+              <!-- Preset buttons populated dynamically by app.js -->
+            </div>
+          </div>
+
+          <div class="input-wrapper-compact">
+            <textarea id="promptInput" rows="2" placeholder="Ask any question or test prompt routing in semantic space..."></textarea>
+            <button id="routeBtn" class="route-submit-btn">
+              <span>Calculate Gravitational Pull</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Compact 3-Column Sliders Row -->
+          <div class="sliders-row-compact">
+            <div class="slider-group-compact">
+              <div class="slider-label-row">
+                <span>Cost (λ_Cost)</span>
+                <strong><span id="costVal">0.0</span></strong>
+              </div>
+              <input type="range" id="costSlider" min="0.0" max="3.0" step="0.1" value="0.0">
+            </div>
+
+            <div class="slider-group-compact">
+              <div class="slider-label-row">
+                <span>Latency (λ_Lat)</span>
+                <strong><span id="latencyVal">0.0</span></strong>
+              </div>
+              <input type="range" id="latencySlider" min="0.0" max="3.0" step="0.1" value="0.0">
+            </div>
+
+            <div class="slider-group-compact">
+              <div class="slider-label-row">
+                <span>Decay (δ)</span>
+                <strong><span id="deltaVal">3.0</span></strong>
+              </div>
+              <input type="range" id="deltaSlider" min="1.5" max="4.0" step="0.1" value="3.0">
+            </div>
+          </div>
         </div>
-        <div class="terminal-actions">
-          <span id="generationStatus" class="gen-status">Idle</span>
-          <button id="openConfigBtn" class="terminal-btn config-btn">⚙️ AI Settings</button>
-        </div>
+
+        <!-- Live Model Execution Terminal (Docked on Right Screen) -->
+        <section class="execution-terminal-section card">
+          <div class="terminal-header">
+            <div class="terminal-title-group">
+              <span class="terminal-glow-dot" id="terminalGlow"></span>
+              <h2 class="terminal-heading">Routed AI Output Stream</h2>
+              <span id="activeModelPill" class="active-model-pill">Awaiting Prompt...</span>
+              <span id="pipelinePill" class="pipeline-pill hidden">Dual Co-Processing</span>
+            </div>
+            <div class="terminal-actions">
+              <span id="generationStatus" class="gen-status">Idle</span>
+              <button id="openConfigBtn" class="terminal-btn config-btn">⚙️ AI Settings</button>
+            </div>
+          </div>
+          <div class="terminal-body">
+            <div id="terminalPlaceholder" class="terminal-placeholder">
+              <p>🌌 Enter any question above and click <strong>"Calculate Gravitational Pull"</strong>. Watch your prompt fly into the winning AI model and stream its response here in real time!</p>
+            </div>
+            <div id="liveStreamContainer" class="live-stream-container hidden">
+              <pre id="liveStreamText"></pre>
+            </div>
+          </div>
+        </section>
+
       </div>
-      <div class="terminal-body">
-        <div id="terminalPlaceholder" class="terminal-placeholder">
-          <p>🌌 Enter any question above and click <strong>"Calculate Gravitational Pull"</strong>. You will watch your prompt fly through the gravity field and immediately see the winning AI model write its full, detailed response here in real time!</p>
-        </div>
-        <div id="liveStreamContainer" class="live-stream-container hidden">
-          <pre id="liveStreamText"></pre>
-        </div>
-      </div>
-    </section>
+    </main>
 
     <!-- Provider Configuration Modal -->
     <div id="configModal" class="modal-overlay">
@@ -250,7 +250,7 @@
 
   </div>
 
-  <!-- Application Module Script with cache-busting v=3.0 -->
-  <script type="module" src="js/app.js?v=3.0"></script>
+  <!-- Application Module Script with cache-busting v=4.0 -->
+  <script type="module" src="js/app.js?v=4.0"></script>
 </body>
 </html>

@@ -474,8 +474,10 @@ function initPresets() {
   presetContainer.innerHTML = "";
   for (const p of PRESET_PROMPTS) {
     const btn = document.createElement("button");
-    btn.className = "preset-btn";
-    btn.innerHTML = `<span class="preset-title">${p.title}</span><span class="preset-tag">${p.category}</span>`;
+    btn.type = "button";
+    btn.className = "preset-btn-compact";
+    btn.textContent = p.title;
+    btn.title = `${p.title} (${p.category})`;
     btn.addEventListener("click", () => {
       promptInput.value = p.prompt;
       executeRouting();
