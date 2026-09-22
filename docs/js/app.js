@@ -1,10 +1,7 @@
-/**
- * Main Application Orchestrator & 60fps Canvas Simulation
- */
-
 import { INITIAL_SINGULARITIES, PRESET_PROMPTS, DEFAULT_G, DEFAULT_EPSILON, DEFAULT_DELTA, DEFAULT_LAGRANGE_THRESHOLD } from "./constants.js";
 import { ClientEmbedder } from "./embedder.js";
 import { GravitationalEngine } from "./physics.js";
+import { ModelResponseGenerator } from "./generator.js";
 
 // DOM Elements
 const canvas = document.getElementById("spaceCanvas");
@@ -28,8 +25,30 @@ const barsContainer = document.getElementById("barsContainer");
 const dispatchCard = document.getElementById("dispatchCard");
 const dispatchContent = document.getElementById("dispatchContent");
 
-// Initialize Engine
+// Live Execution Terminal DOM
+const activeModelPill = document.getElementById("activeModelPill");
+const pipelinePill = document.getElementById("pipelinePill");
+const generationStatus = document.getElementById("generationStatus");
+const terminalPlaceholder = document.getElementById("terminalPlaceholder");
+const liveStreamContainer = document.getElementById("liveStreamContainer");
+const liveStreamText = document.getElementById("liveStreamText");
+const terminalGlow = document.getElementById("terminalGlow");
+
+// Modal DOM
+const configModal = document.getElementById("configModal");
+const openConfigBtn = document.getElementById("openConfigBtn");
+const closeModalBtn = document.getElementById("closeModalBtn");
+const saveConfigBtn = document.getElementById("saveConfigBtn");
+const ollamaSettings = document.getElementById("ollamaSettings");
+const cloudSettings = document.getElementById("cloudSettings");
+const ollamaUrlInput = document.getElementById("ollamaUrlInput");
+const cloudKeyInput = document.getElementById("cloudKeyInput");
+const cloudEndpointInput = document.getElementById("cloudEndpointInput");
+const cloudModelInput = document.getElementById("cloudModelInput");
+
+// Initialize Engine & Generator
 const embedder = new ClientEmbedder(128, 42);
+const generator = new ModelResponseGenerator();
 const engine = new GravitationalEngine(embedder, {
   G: DEFAULT_G,
   epsilon: DEFAULT_EPSILON,
@@ -310,6 +329,46 @@ function executeRouting() {
   };
 
   updateTelemetryUI(result);
+  triggerGeneration(result);
+}
+
+// Trigger Live Stream Response
+let currentGenToken = 0;
+
+function triggerGeneration(result) {
+  const { primary, secondary, isLagrange } = result;
+  const genToken = ++currentGenToken;
+
+  activeModelPill.textContent = primary.singularity.name;
+  activeModelPill.style.color = primary.singularity.color;
+  activeModelPill.style.borderColor = primary.singularity.color;
+  terminalGlow.style.background = primary.singularity.color;
+  terminalGlow.style.boxShadow = `0 0 10px ${primary.singularity.color}`;
+
+  if (isLagrange && secondary) {
+    pipelinePill.classList.remove("hidden");
+  } else {
+    pipelinePill.classList.add("hidden");
+  }
+
+  terminalPlaceholder.classList.add("hidden");
+  liveStreamContainer.classList.remove("hidden");
+  liveStreamText.textContent = "";
+  generationStatus.textContent = "Streaming response...";
+
+  generator.generateResponse(
+    result,
+    (chunk) => {
+      if (genToken === currentGenToken) {
+        liveStreamText.textContent = chunk;
+      }
+    },
+    () => {
+      if (genToken === currentGenToken) {
+        generationStatus.textContent = "Generation Complete ✓";
+      }
+    }
+  );
 }
 
 // Update Telemetry Panel
@@ -431,8 +490,60 @@ promptInput.addEventListener("keydown", (e) => {
   }
 });
 
+// Modal Dialog Listeners
+openConfigBtn.addEventListener("click", () => {
+  configModal.classList.remove("hidden");
+  // Sync current config
+  const radios = document.querySelectorAll('input[name="providerMode"]');
+  radios.forEach(r => {
+    r.checked = (r.value === generator.mode);
+  });
+  ollamaUrlInput.value = generator.ollamaUrl;
+  cloudKeyInput.value = generator.cloudApiKey;
+  cloudEndpointInput.value = generator.cloudEndpoint;
+  cloudModelInput.value = generator.cloudModel;
+  toggleModalSubsections(generator.mode);
+});
+
+closeModalBtn.addEventListener("click", () => {
+  configModal.classList.add("hidden");
+});
+
+document.querySelectorAll('input[name="providerMode"]').forEach(r => {
+  r.addEventListener("change", (e) => {
+    toggleModalSubsections(e.target.value);
+  });
+});
+
+function toggleModalSubsections(mode) {
+  if (mode === "ollama") {
+    ollamaSettings.classList.remove("hidden");
+    cloudSettings.classList.add("hidden");
+  } else if (mode === "cloud") {
+    cloudSettings.classList.remove("hidden");
+    ollamaSettings.classList.add("hidden");
+  } else {
+    ollamaSettings.classList.add("hidden");
+    cloudSettings.classList.add("hidden");
+  }
+}
+
+saveConfigBtn.addEventListener("click", () => {
+  const selectedMode = document.querySelector('input[name="providerMode"]:checked').value;
+  generator.saveConfig(
+    selectedMode,
+    ollamaUrlInput.value.trim(),
+    cloudKeyInput.value.trim(),
+    cloudEndpointInput.value.trim(),
+    cloudModelInput.value.trim()
+  );
+  configModal.classList.add("hidden");
+  executeRouting();
+});
+
 // Initialize on Load
 initPresets();
 // Trigger initial demo prompt
 promptInput.value = PRESET_PROMPTS[0].prompt;
 executeRouting();
+

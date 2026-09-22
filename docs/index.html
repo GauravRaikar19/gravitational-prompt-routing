@@ -157,10 +157,87 @@
             <div id="dispatchContent"></div>
           </div>
         </div>
-
       </section>
-
     </main>
+
+    <!-- Live Model Execution Terminal -->
+    <section class="execution-terminal-section card">
+      <div class="terminal-header">
+        <div class="terminal-title-group">
+          <span class="terminal-glow-dot" id="terminalGlow"></span>
+          <h2 class="terminal-heading">Routed AI Output Stream</h2>
+          <span id="activeModelPill" class="active-model-pill">Awaiting Prompt...</span>
+          <span id="pipelinePill" class="pipeline-pill hidden">Dual Co-Processing</span>
+        </div>
+        <div class="terminal-actions">
+          <span id="generationStatus" class="gen-status">Idle</span>
+          <button id="openConfigBtn" class="terminal-btn config-btn">⚙️ AI Settings</button>
+        </div>
+      </div>
+      <div class="terminal-body">
+        <div id="terminalPlaceholder" class="terminal-placeholder">
+          <p>🌌 Enter any question above and click <strong>"Calculate Gravitational Pull"</strong>. You will watch your prompt fly through the gravity field and immediately see the winning AI model write its full, detailed response here in real time!</p>
+        </div>
+        <div id="liveStreamContainer" class="live-stream-container hidden">
+          <pre id="liveStreamText"></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Provider Configuration Modal -->
+    <div id="configModal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>⚙️ AI Generation Backend Settings</h3>
+          <button id="closeModalBtn" class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-desc">Choose how the routed AI models generate responses:</p>
+
+          <div class="provider-radio-group">
+            <label class="provider-option">
+              <input type="radio" name="providerMode" value="autonomous" checked>
+              <div class="option-content">
+                <strong>Autonomous Knowledge Synthesizer (Recommended)</strong>
+                <span>Instant, zero API keys required. Runs directly in your browser on GitHub Pages.</span>
+              </div>
+            </label>
+
+            <label class="provider-option">
+              <input type="radio" name="providerMode" value="ollama">
+              <div class="option-content">
+                <strong>Local Ollama (100% Free Offline)</strong>
+                <span>Connects to your local Ollama instance (e.g. <code>localhost:11434</code> with <code>llama3</code> or <code>mistral</code>).</span>
+              </div>
+            </label>
+
+            <label class="provider-option">
+              <input type="radio" name="providerMode" value="cloud">
+              <div class="option-content">
+                <strong>Cloud LLM API (Groq / OpenAI)</strong>
+                <span>Stream ultra-fast inference from Groq or OpenAI using your personal API key (stored locally only).</span>
+              </div>
+            </label>
+          </div>
+
+          <div id="ollamaSettings" class="settings-subgroup hidden">
+            <label>Ollama Server URL:</label>
+            <input type="text" id="ollamaUrlInput" value="http://localhost:11434">
+          </div>
+
+          <div id="cloudSettings" class="settings-subgroup hidden">
+            <label>API Key (Bearer Token):</label>
+            <input type="password" id="cloudKeyInput" placeholder="gsk_... or sk-...">
+            <label>Endpoint URL:</label>
+            <input type="text" id="cloudEndpointInput" value="https://api.groq.com/openai/v1">
+            <label>Model Name:</label>
+            <input type="text" id="cloudModelInput" value="llama-3.1-70b-versatile">
+          </div>
+
+          <button id="saveConfigBtn" class="save-config-btn">Save Preferences</button>
+        </div>
+      </div>
+    </div>
 
     <!-- Footer -->
     <footer class="site-footer">
