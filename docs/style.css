@@ -553,6 +553,10 @@ input[type="range"]::-webkit-slider-thumb:hover {
   color: var(--text-dim);
 }
 
+.hidden {
+  display: none !important;
+}
+
 /* ==========================================================================
    Execution Terminal & Live Output
    ========================================================================== */
@@ -630,36 +634,43 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .terminal-btn {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid var(--border-subtle);
-  color: var(--text-main);
+  color: #ffffff;
   border-radius: 8px;
-  padding: 0.35rem 0.75rem;
-  font-size: 0.78rem;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.8rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   transition: all 0.2s ease;
 }
 
 .terminal-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(0, 242, 254, 0.15);
+  border-color: rgba(0, 242, 254, 0.4);
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.2);
+  color: var(--color-cyan);
 }
 
 .terminal-body {
-  min-height: 160px;
-  max-height: 480px;
+  min-height: 180px;
+  max-height: 520px;
   overflow-y: auto;
-  background: rgba(6, 8, 14, 0.85);
+  background: rgba(6, 8, 14, 0.9);
   border: 1px solid var(--border-subtle);
   border-radius: 12px;
-  padding: 1.25rem;
-  font-family: 'Inter', monospace;
-  font-size: 0.9rem;
-  line-height: 1.6;
+  padding: 1.5rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.92rem;
+  line-height: 1.7;
 }
 
 .terminal-placeholder {
   color: var(--text-dim);
   text-align: center;
-  padding: 2.5rem 1rem;
+  padding: 3rem 1.5rem;
   font-style: italic;
 }
 
@@ -667,7 +678,43 @@ input[type="range"]::-webkit-slider-thumb:hover {
   white-space: pre-wrap;
   word-break: break-word;
   color: #e2e8f0;
-  font-family: 'Inter', monospace;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  line-height: 1.75;
+}
+
+.live-stream-container strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.live-stream-container h3, 
+.live-stream-container h4 {
+  color: var(--color-cyan);
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-family: var(--font-display);
+}
+
+.live-stream-container blockquote {
+  border-left: 3px solid var(--color-pink);
+  padding-left: 1rem;
+  margin: 0.75rem 0;
+  color: #cbd5e1;
+  font-style: italic;
+  background: rgba(236, 72, 153, 0.05);
+  border-radius: 0 8px 8px 0;
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+}
+
+.live-stream-container code {
+  background: rgba(255, 255, 255, 0.1);
+  color: #38bdf8;
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.88em;
 }
 
 /* ==========================================================================

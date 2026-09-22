@@ -87,26 +87,28 @@ export class ModelResponseGenerator {
       // SINGLE MODEL WELL CAPTURE
       const modelName = primary.singularity.name;
 
-      if (lower.includes("google") && lower.includes("founder")) {
-        fullText = `**Google was founded in September 1998** by **Larry Page** and **Sergey Brin** while they were Ph.D. students at **Stanford University** in California.\n\n`
+      if (lower.includes("google") && (lower.includes("found") || lower.includes("creator") || lower.includes("start") || lower.includes("who"))) {
+        fullText = `**Google was founded in September 1998** by **Larry Page** and **Sergey Brin** while they were Ph.D. students at **Stanford University** in Stanford, California.\n\n`
           + `### Key Historical Milestones:\n`
-          + `• **Initial Invention (1996):** Originally created as a search engine called **BackRub**, which analyzed web backlinks to measure site importance (PageRank algorithm).\n`
-          + `• **Official Incorporation:** Incorporated on **September 4, 1998**, running out of a garage in Menlo Park, California owned by Susan Wojcicki.\n`
-          + `• **First Angel Check:** Sun Microsystems co-founder Andy Bechtolsheim wrote an initial $100,000 investment check before Google was even legally formed.\n\n`
+          + `• **The Genesis (1996):** Originally created as a research project named **BackRub**, a search engine algorithm that calculated relevance by analyzing the backlink network between web pages (the foundational *PageRank* patent).\n`
+          + `• **Official Incorporation:** Incorporated on **September 4, 1998**, based out of Susan Wojcicki's garage in Menlo Park, California.\n`
+          + `• **Initial Financing:** Sun Microsystems co-founder Andy Bechtolsheim wrote an early check for $100,000 before the company was even formally registered.\n`
+          + `• **Alphabet Era:** In 2015, Google restructured under the parent holding conglomerate **Alphabet Inc.**, with Sundar Pichai assuming leadership as CEO.\n\n`
           + `*Dispatched via **${modelName}** (${primary.sharePercent.toFixed(1)}% gravitational capture).*`;
       } else if (primary.singularity.id === "deepcoder-70b") {
         // Code Singularity Response
-        fullText = `### Implementation via ${modelName}\n`
-          + `Here is the high-performance, production-grade implementation for your prompt:\n\n`
+        fullText = `### Engineering Architecture via ${modelName}\n`
+          + `Addressing query: *"${promptText}"*\n\n`
+          + `Here is the production-grade architecture and implementation:\n\n`
           + "```rust\n"
-          + "// High-Performance Zero-Allocation Implementation\n"
+          + "// High-Performance Zero-Allocation Routine\n"
           + "use std::sync::atomic::{AtomicUsize, Ordering};\n\n"
-          + "pub struct ConcurrentRingBuffer<T, const CAP: usize> {\n"
+          + "pub struct AtomicPipeline<T, const CAP: usize> {\n"
           + "    head: AtomicUsize,\n"
           + "    tail: AtomicUsize,\n"
           + "    storage: [Option<T>; CAP],\n"
           + "}\n\n"
-          + "impl<T, const CAP: usize> ConcurrentRingBuffer<T, CAP> {\n"
+          + "impl<T, const CAP: usize> AtomicPipeline<T, CAP> {\n"
           + "    pub const fn new() -> Self {\n"
           + "        Self {\n"
           + "            head: AtomicUsize::new(0),\n"
@@ -116,33 +118,35 @@ export class ModelResponseGenerator {
           + "    }\n"
           + "}\n"
           + "```\n\n"
-          + `**Architecture Notes:**\n`
-          + `• Employs atomic compare-and-swap (CAS) loops with \`Ordering::AcqRel\` for hardware cacheline coherency.\n`
-          + `• Zero dynamic heap allocations; memory is pre-allocated contiguous array storage.\n\n`
-          + `*Dispatched via **${modelName}** with optimal code domain affinity.*`;
+          + `**Systems Insights:**\n`
+          + `• **Cache Locality:** Contiguous memory layout eliminates pointer indirection and CPU branch mispredictions.\n`
+          + `• **Concurrency Guarantees:** Lock-free atomic ordering (\`Ordering::AcqRel\`) avoids kernel context switches.\n\n`
+          + `*Dispatched via **${modelName}** with optimal code domain affinity (${primary.sharePercent.toFixed(1)}% field pull).*`;
       } else if (primary.singularity.id === "omnireasoner-405b") {
         // Math / Reasoning Singularity Response
-        fullText = `### Formal Mathematical Derivation via ${modelName}\n\n`
-          + `**1. Metric Formulation:**\n`
-          + `Starting from the metric tensor $g_{\\mu\\nu}$ in static spherical coordinates $(t, r, \\theta, \\phi)$:\n`
-          + `$$ds^2 = -\\left(1 - \\frac{2GM}{c^2 r}\\right) c^2 dt^2 + \\left(1 - \\frac{2GM}{c^2 r}\\right)^{-1} dr^2 + r^2 d\\Omega^2$$\n\n`
-          + `**2. Christoffel Symbols:**\n`
-          + `Using the metric connection $\\Gamma^\\sigma_{\\mu\\nu} = \\frac{1}{2} g^{\\sigma\\rho} (\\partial_\\mu g_{\\nu\\rho} + \\partial_\\nu g_{\\mu\\rho} - \\partial_\\rho g_{\\mu\\nu})$:\n`
-          + `• $\\Gamma^r_{tt} = \\frac{GM}{r^2} \\left(1 - \\frac{2GM}{r}\\right)$\n`
-          + `• $\\Gamma^r_{rr} = -\\frac{GM}{r^2} \\left(1 - \\frac{2GM}{r}\\right)^{-1}$\n\n`
-          + `**3. Invariant Conclusion:**\n`
-          + `The Kretschmann scalar $K = R^{\\alpha\\beta\\gamma\\delta} R_{\\alpha\\beta\\gamma\\delta} = \\frac{48 G^2 M^2}{c^4 r^6}$ confirms that $r = 0$ is a physical curvature singularity.\n\n`
-          + `*Dispatched via **${modelName}** (405B reasoning mass).*`;
+        fullText = `### Analytical & Logical Breakdown via ${modelName}\n`
+          + `Synthesizing solution for: *"${promptText}"*\n\n`
+          + `**1. Foundational Invariant & Axioms:**\n`
+          + `Decomposing the problem space into first principles. Every state $S_t$ satisfies the continuity condition across the evaluation manifold:\n`
+          + `$$\\nabla \\cdot \\vec{J} + \\frac{\\partial \\rho}{\\partial t} = 0$$\n\n`
+          + `**2. Step-by-Step Derivation:**\n`
+          + `• **Step A:** Establish boundary conditions and verify parameter bounds.\n`
+          + `• **Step B:** Apply tensor transformations to align coordinate systems without introducing fictitious forces.\n`
+          + `• **Step C:** Optimize the objective function under relativistic penalty constraints.\n\n`
+          + `**3. Formal Resolution:**\n`
+          + `The deductive trajectory converges monotonically with zero asymptotic divergence.\n\n`
+          + `*Dispatched via **${modelName}** (405B reasoning mass, ${primary.sharePercent.toFixed(1)}% gravitational capture).*`;
       } else {
         // Hermes Prose / Creative Response
-        fullText = `### Narrative Synthesis via ${modelName}\n\n`
+        fullText = `### Narrative Synthesis via ${modelName}\n`
+          + `Reflecting upon: *"${promptText}"*\n\n`
           + `The workshop smells of aged mahogany, cold brass, and the dry dust of hours long expended. `
           + `Above the workbench, pendulums that once kept strict rhythm with the world now sway with a hesitant, `
           + `reluctant friction, as though the air itself has grown heavy with dreaming.\n\n`
-          + `*"Time isn't running out,"* the artisan whispers, peering through the magnifying loupe at a balance wheel that refuses to oscillate. `
-          + `*"It is merely tired. We wound the universe so tightly with our schedules and our clocks, that it has finally chosen to rest."*\n\n`
+          + `*"Every question carries its own weight,"* the artisan whispers, peering through the magnifying loupe at a balance wheel that refuses to oscillate. `
+          + `*"Some seek numbers; others seek memory. But the true craft lies in knowing which universe is asking."*\n\n`
           + `Outside the fogged window, the midnight bells chime not on the hour, but whenever the silence allows.\n\n`
-          + `*Dispatched via **${modelName}** (Creative & Expressive Nuance).*`;
+          + `*Dispatched via **${modelName}** (Creative & Expressive Nuance, ${primary.sharePercent.toFixed(1)}% field share).*`;
       }
     }
 

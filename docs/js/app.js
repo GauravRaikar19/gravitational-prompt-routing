@@ -332,6 +332,26 @@ function executeRouting() {
   triggerGeneration(result);
 }
 
+// Simple Markdown-to-HTML Formatter
+function formatMarkdown(raw) {
+  if (!raw) return "";
+  let out = raw
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+  // Bold **text**
+  out = out.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  // Headings: ### Title
+  out = out.replace(/^### (.*$)/gim, "<h4>$1</h4>");
+  // Inline code: `code`
+  out = out.replace(/`([^`]+)`/g, "<code>$1</code>");
+  // Blockquotes: &gt; quote
+  out = out.replace(/^&gt; (.*$)/gim, "<blockquote>$1</blockquote>");
+
+  return out;
+}
+
 // Trigger Live Stream Response
 let currentGenToken = 0;
 
@@ -347,20 +367,24 @@ function triggerGeneration(result) {
 
   if (isLagrange && secondary) {
     pipelinePill.classList.remove("hidden");
+    pipelinePill.style.display = "inline-block";
   } else {
     pipelinePill.classList.add("hidden");
+    pipelinePill.style.display = "none";
   }
 
   terminalPlaceholder.classList.add("hidden");
+  terminalPlaceholder.style.display = "none";
   liveStreamContainer.classList.remove("hidden");
-  liveStreamText.textContent = "";
+  liveStreamContainer.style.display = "block";
+  liveStreamText.innerHTML = "";
   generationStatus.textContent = "Streaming response...";
 
   generator.generateResponse(
     result,
     (chunk) => {
       if (genToken === currentGenToken) {
-        liveStreamText.textContent = chunk;
+        liveStreamText.innerHTML = formatMarkdown(chunk);
       }
     },
     () => {
@@ -493,6 +517,7 @@ promptInput.addEventListener("keydown", (e) => {
 // Modal Dialog Listeners
 openConfigBtn.addEventListener("click", () => {
   configModal.classList.remove("hidden");
+  configModal.style.display = "flex";
   // Sync current config
   const radios = document.querySelectorAll('input[name="providerMode"]');
   radios.forEach(r => {
@@ -507,6 +532,15 @@ openConfigBtn.addEventListener("click", () => {
 
 closeModalBtn.addEventListener("click", () => {
   configModal.classList.add("hidden");
+  configModal.style.display = "none";
+});
+
+// Close modal when clicking outside modal-card
+configModal.addEventListener("click", (e) => {
+  if (e.target === configModal) {
+    configModal.classList.add("hidden");
+    configModal.style.display = "none";
+  }
 });
 
 document.querySelectorAll('input[name="providerMode"]').forEach(r => {
@@ -518,13 +552,19 @@ document.querySelectorAll('input[name="providerMode"]').forEach(r => {
 function toggleModalSubsections(mode) {
   if (mode === "ollama") {
     ollamaSettings.classList.remove("hidden");
+    ollamaSettings.style.display = "flex";
     cloudSettings.classList.add("hidden");
+    cloudSettings.style.display = "none";
   } else if (mode === "cloud") {
     cloudSettings.classList.remove("hidden");
+    cloudSettings.style.display = "flex";
     ollamaSettings.classList.add("hidden");
+    ollamaSettings.style.display = "none";
   } else {
     ollamaSettings.classList.add("hidden");
+    ollamaSettings.style.display = "none";
     cloudSettings.classList.add("hidden");
+    cloudSettings.style.display = "none";
   }
 }
 
@@ -538,6 +578,7 @@ saveConfigBtn.addEventListener("click", () => {
     cloudModelInput.value.trim()
   );
   configModal.classList.add("hidden");
+  configModal.style.display = "none";
   executeRouting();
 });
 
