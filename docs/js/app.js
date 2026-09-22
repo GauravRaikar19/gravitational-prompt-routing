@@ -514,9 +514,9 @@ promptInput.addEventListener("keydown", (e) => {
   }
 });
 
-// Modal Dialog Listeners
-openConfigBtn.addEventListener("click", () => {
-  configModal.classList.remove("hidden");
+// Modal Dialog Controller
+function openModal() {
+  configModal.classList.add("active");
   configModal.style.display = "flex";
   // Sync current config
   const radios = document.querySelectorAll('input[name="providerMode"]');
@@ -528,18 +528,34 @@ openConfigBtn.addEventListener("click", () => {
   cloudEndpointInput.value = generator.cloudEndpoint;
   cloudModelInput.value = generator.cloudModel;
   toggleModalSubsections(generator.mode);
-});
+}
 
-closeModalBtn.addEventListener("click", () => {
-  configModal.classList.add("hidden");
+function closeModal() {
+  configModal.classList.remove("active");
   configModal.style.display = "none";
+}
+
+openConfigBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  openModal();
 });
 
-// Close modal when clicking outside modal-card
+closeModalBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  closeModal();
+});
+
+// Close modal when clicking backdrop outside modal-card
 configModal.addEventListener("click", (e) => {
   if (e.target === configModal) {
-    configModal.classList.add("hidden");
-    configModal.style.display = "none";
+    closeModal();
+  }
+});
+
+// Close modal when pressing Escape key
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && (configModal.classList.contains("active") || configModal.style.display === "flex")) {
+    closeModal();
   }
 });
 
@@ -551,25 +567,27 @@ document.querySelectorAll('input[name="providerMode"]').forEach(r => {
 
 function toggleModalSubsections(mode) {
   if (mode === "ollama") {
-    ollamaSettings.classList.remove("hidden");
+    ollamaSettings.classList.add("active");
     ollamaSettings.style.display = "flex";
-    cloudSettings.classList.add("hidden");
+    cloudSettings.classList.remove("active");
     cloudSettings.style.display = "none";
   } else if (mode === "cloud") {
-    cloudSettings.classList.remove("hidden");
+    cloudSettings.classList.add("active");
     cloudSettings.style.display = "flex";
-    ollamaSettings.classList.add("hidden");
+    ollamaSettings.classList.remove("active");
     ollamaSettings.style.display = "none";
   } else {
-    ollamaSettings.classList.add("hidden");
+    ollamaSettings.classList.remove("active");
     ollamaSettings.style.display = "none";
-    cloudSettings.classList.add("hidden");
+    cloudSettings.classList.remove("active");
     cloudSettings.style.display = "none";
   }
 }
 
-saveConfigBtn.addEventListener("click", () => {
-  const selectedMode = document.querySelector('input[name="providerMode"]:checked').value;
+saveConfigBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  const selectedRadio = document.querySelector('input[name="providerMode"]:checked');
+  const selectedMode = selectedRadio ? selectedRadio.value : "autonomous";
   generator.saveConfig(
     selectedMode,
     ollamaUrlInput.value.trim(),
@@ -577,12 +595,13 @@ saveConfigBtn.addEventListener("click", () => {
     cloudEndpointInput.value.trim(),
     cloudModelInput.value.trim()
   );
-  configModal.classList.add("hidden");
-  configModal.style.display = "none";
+  closeModal();
   executeRouting();
 });
 
 // Initialize on Load
+closeModal();
+toggleModalSubsections(generator.mode);
 initPresets();
 // Trigger initial demo prompt
 promptInput.value = PRESET_PROMPTS[0].prompt;

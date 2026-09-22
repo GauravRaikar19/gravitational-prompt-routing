@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=2.0">
+  <link rel="stylesheet" href="style.css?v=3.0">
 </head>
 <body>
 
@@ -185,11 +185,11 @@
     </section>
 
     <!-- Provider Configuration Modal -->
-    <div id="configModal" class="modal-overlay hidden">
+    <div id="configModal" class="modal-overlay">
       <div class="modal-card">
         <div class="modal-header">
           <h3>⚙️ AI Generation Backend Settings</h3>
-          <button id="closeModalBtn" class="modal-close">&times;</button>
+          <button id="closeModalBtn" type="button" class="modal-close" aria-label="Close settings">&times;</button>
         </div>
         <div class="modal-body">
           <p class="modal-desc">Choose how the routed AI models generate responses:</p>
@@ -220,12 +220,12 @@
             </label>
           </div>
 
-          <div id="ollamaSettings" class="settings-subgroup hidden">
+          <div id="ollamaSettings" class="settings-subgroup">
             <label>Ollama Server URL:</label>
             <input type="text" id="ollamaUrlInput" value="http://localhost:11434">
           </div>
 
-          <div id="cloudSettings" class="settings-subgroup hidden">
+          <div id="cloudSettings" class="settings-subgroup">
             <label>API Key (Bearer Token):</label>
             <input type="password" id="cloudKeyInput" placeholder="gsk_... or sk-...">
             <label>Endpoint URL:</label>
@@ -234,7 +234,7 @@
             <input type="text" id="cloudModelInput" value="llama-3.1-70b-versatile">
           </div>
 
-          <button id="saveConfigBtn" class="save-config-btn">Save Preferences</button>
+          <button id="saveConfigBtn" type="button" class="save-config-btn">Save Preferences</button>
         </div>
       </div>
     </div>
@@ -250,7 +250,7 @@
 
   </div>
 
-  <!-- Application Module Script with cache-busting v=2.0 -->
-  <script type="module" src="js/app.js?v=2.0"></script>
+  <!-- Application Module Script with cache-busting v=3.0 -->
+  <script type="module" src="js/app.js?v=3.0"></script>
 </body>
 </html>
