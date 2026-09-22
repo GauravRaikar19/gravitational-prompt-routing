@@ -60,10 +60,22 @@ export class ModelResponseGenerator {
     const clean = promptText.replace(/[?.,!/\\;:'"()]/g, " ").trim();
     const lower = clean.toLowerCase();
 
-    // 1. Built-in instant local knowledge base
+    // 1. Built-in instant high-priority answers for common queries
     const localDict = [
       {
-        triggers: ["aldona", "goa"],
+        triggers: ["prime minister", "india"],
+        title: "Prime Minister of India (Narendra Modi)",
+        description: "Head of Government of the Republic of India",
+        extract: "The Prime Minister of India is Narendra Modi, who has served as the 14th prime minister since May 26, 2014. Executive authority is vested in the Prime Minister and the Union Council of Ministers. He represents the Varanasi constituency in the Lok Sabha."
+      },
+      {
+        triggers: ["pm of india"],
+        title: "Prime Minister of India (Narendra Modi)",
+        description: "Head of Government of the Republic of India",
+        extract: "The current Prime Minister of India is Narendra Modi (in office since May 2014), leading the Government of India from the Prime Minister's Office in New Delhi."
+      },
+      {
+        triggers: ["aldona"],
         title: "Aldona, Goa",
         description: "Historic village in Bardez taluka, North Goa, India",
         extract: "Aldona is a picturesque, historic village located in the Bardez taluka of North Goa district, India, situated along the tranquil banks of the Mapusa River (approx. 8 km from Mapusa and 19 km from Panaji). It is celebrated for its historic 16th-century Church of Saint Thomas (built in 1596), the Corjuem Fort, and the pioneering cable-stayed Aldona-Corjuem Bridge connecting it to the river island."
@@ -79,6 +91,18 @@ export class ModelResponseGenerator {
         title: "Founding of Google",
         description: "Technology company founded by Larry Page and Sergey Brin",
         extract: "Google was founded on September 4, 1998, by Larry Page and Sergey Brin while they were Ph.D. students at Stanford University in California. They developed the PageRank algorithm to measure site importance based on backlinks."
+      },
+      {
+        triggers: ["capital", "india"],
+        title: "New Delhi",
+        description: "Capital of India",
+        extract: "New Delhi is the capital of India and the seat of all three branches of the Government of India."
+      },
+      {
+        triggers: ["capital", "goa"],
+        title: "Panaji",
+        description: "Capital of Goa",
+        extract: "Panaji is the state capital of Goa, India, situated on the southern banks of the Mandovi River."
       }
     ];
 
@@ -88,33 +112,34 @@ export class ModelResponseGenerator {
       }
     }
 
-    // 2. Real-world live Wikipedia search
-    const stopWords = new Set(["where", "is", "are", "located", "in", "the", "what", "who", "of", "how", "a", "an", "to", "on", "at", "for", "from", "by", "about", "with", "does", "did", "do", "can", "could", "would", "tell", "me"]);
-    const tokens = clean.split(/\s+/).filter(t => t.length > 2 && !stopWords.has(t.toLowerCase()));
+    // 2. Real-world Wikipedia Full-Text Search API (Zero API Keys Required)
+    try {
+      const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(clean)}&utf8=&format=json&origin=*`;
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 1800); // 1.8s timeout
+      const searchRes = await fetch(searchUrl, { signal: controller.signal });
+      clearTimeout(timeoutId);
 
-    const candidates = [];
-    if (tokens.length >= 2) candidates.push(tokens.join(" "));
-    for (const t of tokens) candidates.push(t);
-
-    for (const query of candidates) {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 1200); // 1.2s fast timeout
-        const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`, {
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.extract && data.extract.length > 25 && data.type !== "disambiguation") {
-            return {
-              title: data.title,
-              description: data.description || "",
-              extract: data.extract
-            };
+      if (searchRes.ok) {
+        const searchData = await searchRes.json();
+        const hits = searchData?.query?.search;
+        if (hits && hits.length > 0) {
+          const topTitle = hits[0].title;
+          const sumRes = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(topTitle)}`);
+          if (sumRes.ok) {
+            const sumData = await sumRes.json();
+            if (sumData.extract && sumData.extract.length > 25 && sumData.type !== "disambiguation") {
+              return {
+                title: sumData.title,
+                description: sumData.description || "",
+                extract: sumData.extract
+              };
+            }
           }
         }
-      } catch (e) {}
+      }
+    } catch (e) {
+      // Continue to persona fallback
     }
 
     return null;
@@ -235,18 +260,15 @@ export class ModelResponseGenerator {
           + `*Dispatched via **${modelName}** with optimal code domain affinity (${primary.sharePercent.toFixed(1)}% field pull).*`;
       } else if (primary.singularity.id === "omnireasoner-405b") {
         // Math / Reasoning Singularity Response
-        fullText = `### Analytical & Logical Breakdown via ${modelName}\n`
-          + `Synthesizing solution for: *"${promptText}"*\n\n`
-          + `**1. Foundational Invariant & Axioms:**\n`
-          + `Decomposing the problem space into first principles. Every state $S_t$ satisfies the continuity condition across the evaluation manifold:\n`
-          + `$$\\nabla \\cdot \\vec{J} + \\frac{\\partial \\rho}{\\partial t} = 0$$\n\n`
-          + `**2. Step-by-Step Derivation:**\n`
-          + `• **Step A:** Establish boundary conditions and verify parameter bounds.\n`
-          + `• **Step B:** Apply tensor transformations to align coordinate systems without introducing fictitious forces.\n`
-          + `• **Step C:** Optimize the objective function under relativistic penalty constraints.\n\n`
-          + `**3. Formal Resolution:**\n`
-          + `The deductive trajectory converges monotonically with zero asymptotic divergence.\n\n`
-          + `*Dispatched via **${modelName}** (405B reasoning mass, ${primary.sharePercent.toFixed(1)}% gravitational capture).*`;
+        fullText = `### Analytical Reasoning Breakdown via ${modelName}\n`
+          + `**Inquiry:** *"${promptText}"*\n\n`
+          + `**1. Domain Decomposition:**\n`
+          + `Deconstructed the core entities, logical parameters, and task constraints of your query.\n\n`
+          + `**2. Step-by-Step Analytical Synthesis:**\n`
+          + `• **Constraint Verification:** Evaluated task boundaries across continuous cognitive vector fields.\n`
+          + `• **Deductive Resolution:** Solved the primary problem statement with rigorous factual precision.\n`
+          + `• **Verification:** Validated that no semantic ambiguities or invariant violations remain.\n\n`
+          + `*Dispatched via **${modelName}** (${primary.sharePercent.toFixed(1)}% gravitational capture).*`;
       } else {
         // Hermes Prose / Creative Response
         fullText = `### Narrative Synthesis via ${modelName}\n`
