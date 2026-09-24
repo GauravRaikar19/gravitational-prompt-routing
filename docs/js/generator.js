@@ -56,6 +56,298 @@ export class ModelResponseGenerator {
     onComplete();
   }
 
+  // ─── Creative Prompt Detection ──────────────────────────────────────
+  // Returns the creative sub-type if the prompt is asking for generative
+  // creative content, or null if it's a factual/informational query.
+  _detectCreativeIntent(promptText) {
+    const lower = promptText.toLowerCase();
+
+    const creativePatterns = [
+      { type: "poem",    triggers: ["poem", "poetry", "sonnet", "haiku", "verse", "rhyme", "limerick", "ode"] },
+      { type: "song",    triggers: ["song", "sing", "lyric", "lyrics", "chorus", "melody", "lullaby", "anthem", "ballad"] },
+      { type: "story",   triggers: ["story", "tale", "fable", "fairy", "narrative", "fiction", "adventure", "myth", "legend"] },
+      { type: "dialogue",triggers: ["dialogue", "monologue", "soliloquy", "conversation", "screenplay", "script", "scene"] },
+      { type: "letter",  triggers: ["letter", "diary", "journal", "confession", "farewell"] },
+    ];
+
+    // Must also have a generative verb or context
+    const generativeVerbs = [
+      "write", "compose", "create", "craft", "make", "tell", "sing",
+      "narrate", "recite", "generate", "imagine", "invent", "draft",
+      "pen", "author", "weave", "spin"
+    ];
+
+    const hasGenerativeVerb = generativeVerbs.some(v => lower.includes(v));
+
+    for (const pattern of creativePatterns) {
+      const matchedTrigger = pattern.triggers.some(t => lower.includes(t));
+      if (matchedTrigger && hasGenerativeVerb) {
+        return pattern.type;
+      }
+      // Also match if the trigger keyword is standalone enough (e.g., just "write me a poem")
+      if (matchedTrigger && lower.split(/\s+/).length <= 12) {
+        return pattern.type;
+      }
+    }
+
+    // Catch broad creative requests without specific type words
+    if (hasGenerativeVerb && (
+      lower.includes("creative") || lower.includes("emotional") ||
+      lower.includes("beautiful") || lower.includes("romantic") ||
+      lower.includes("fantasy") || lower.includes("dragon") ||
+      lower.includes("knight") || lower.includes("princess") ||
+      lower.includes("magic") || lower.includes("dream")
+    )) {
+      return "story";
+    }
+
+    return null;
+  }
+
+  // ─── Creative Content Templates ─────────────────────────────────────
+  _generateCreativeContent(type, promptText, modelName) {
+    const lower = promptText.toLowerCase();
+
+    // ── POEMS ──
+    if (type === "poem") {
+      // Try to extract a theme from the prompt
+      const aboutMatch = lower.match(/(?:about|of|on|for)\s+(.+?)(?:\.|$)/);
+      const theme = aboutMatch ? aboutMatch[1].trim() : null;
+
+      if (theme && (theme.includes("love") || theme.includes("heart"))) {
+        return `### 💜 A Poem by ${modelName}\n`
+          + `*Composed for: "${promptText}"*\n\n`
+          + `> **Gravity of the Heart**\n>\n`
+          + `> I did not fall in love—\n`
+          + `> I was *pulled,*\n`
+          + `> the way light bends\n`
+          + `> around a body too dense\n`
+          + `> to let it pass.\n>\n`
+          + `> You were the well\n`
+          + `> I orbited for years,\n`
+          + `> mistaking the spiral\n`
+          + `> for a circle,\n`
+          + `> mistaking the ache\n`
+          + `> for something chosen.\n>\n`
+          + `> But gravity does not ask.\n`
+          + `> It simply *is.*\n>\n`
+          + `> And I, a small and willing thing,\n`
+          + `> fell—beautifully, completely—\n`
+          + `> into the curve of you.\n\n`
+          + `*Composed via **${modelName}** — Creative & Expressive Nuance.*`;
+      }
+
+      if (theme && (theme.includes("rain") || theme.includes("water") || theme.includes("storm"))) {
+        return `### 🌧️ A Poem by ${modelName}\n`
+          + `*Composed for: "${promptText}"*\n\n`
+          + `> **After the Downpour**\n>\n`
+          + `> The rain does not knock.\n`
+          + `> It arrives like memory—\n`
+          + `> uninvited, relentless,\n`
+          + `> drumming on the tin roof\n`
+          + `> of everything I tried to forget.\n>\n`
+          + `> Each drop, a syllable.\n`
+          + `> Each puddle, a paragraph\n`
+          + `> the sky could not hold any longer.\n>\n`
+          + `> I stand at the window,\n`
+          + `> watching the street dissolve\n`
+          + `> into silver and silence,\n`
+          + `> and I think—\n>\n`
+          + `> perhaps the sky\n`
+          + `> is only crying\n`
+          + `> because it held on\n`
+          + `> too long.\n\n`
+          + `*Composed via **${modelName}** — Creative & Expressive Nuance.*`;
+      }
+
+      if (theme && (theme.includes("night") || theme.includes("star") || theme.includes("moon") || theme.includes("sky"))) {
+        return `### 🌙 A Poem by ${modelName}\n`
+          + `*Composed for: "${promptText}"*\n\n`
+          + `> **What the Moon Told Me**\n>\n`
+          + `> She said: *I have no light of my own,*\n`
+          + `> *only borrowed fire, cooled by distance.*\n>\n`
+          + `> *But isn't that enough?*\n`
+          + `> *To take what is given,*\n`
+          + `> *to soften it,*\n`
+          + `> *and give it back as something gentle?*\n>\n`
+          + `> I looked up at her,\n`
+          + `> pale and unhurried,\n`
+          + `> and thought—\n>\n`
+          + `> perhaps that is all any of us do:\n`
+          + `> receive the burning,\n`
+          + `> return the glow.\n\n`
+          + `*Composed via **${modelName}** — Creative & Expressive Nuance.*`;
+      }
+
+      // Default poem
+      return `### ✨ A Poem by ${modelName}\n`
+        + `*Composed for: "${promptText}"*\n\n`
+        + `> **The Weight of Asking**\n>\n`
+        + `> They say a question weighs nothing,\n`
+        + `> but I have felt it—\n`
+        + `> the mass of a wondering thought\n`
+        + `> pulling me toward answers\n`
+        + `> I was not ready to hold.\n>\n`
+        + `> Words are small planets.\n`
+        + `> Sentences, their orbits.\n`
+        + `> And meaning—\n`
+        + `> meaning is the gravity\n`
+        + `> that keeps them\n`
+        + `> from drifting apart.\n>\n`
+        + `> So ask.\n`
+        + `> Let the question fall\n`
+        + `> into whatever well will have it.\n`
+        + `> The universe is patient.\n`
+        + `> The answer is already on its way.\n\n`
+        + `*Composed via **${modelName}** — Creative & Expressive Nuance.*`;
+    }
+
+    // ── SONGS ──
+    if (type === "song") {
+      const aboutMatch = lower.match(/(?:about|of|on|for)\s+(.+?)(?:\.|$)/);
+      const theme = aboutMatch ? aboutMatch[1].trim() : null;
+
+      if (theme && (theme.includes("rain") || theme.includes("storm"))) {
+        return `### 🎵 A Song by ${modelName}\n`
+          + `*Composed for: "${promptText}"*\n\n`
+          + `**"Singing in the Grey"**\n\n`
+          + `**[Verse 1]**\n`
+          + `The clouds rolled in like an old refrain,\n`
+          + `Covering the sun with a velvet stain.\n`
+          + `I stood on the porch with an empty cup,\n`
+          + `And the sky leaned down and filled it up.\n\n`
+          + `**[Chorus]**\n`
+          + `Oh, let it rain, let it rain, let it pour—\n`
+          + `Every drop is a knock on a forgotten door.\n`
+          + `I'm dancing in the puddles of yesterday,\n`
+          + `Singing my sorrows away in the grey.\n\n`
+          + `**[Verse 2]**\n`
+          + `The thunder hums a lullaby so low,\n`
+          + `The streetlights blur into a golden glow.\n`
+          + `And somewhere between the lightning and the calm,\n`
+          + `The rain writes a hymn on my open palm.\n\n`
+          + `**[Bridge]**\n`
+          + `They say the sun will come, they always do—\n`
+          + `But I found something beautiful in this shade of blue.\n\n`
+          + `**[Outro]**\n`
+          + `Let it rain... let it rain...\n`
+          + `Some storms don't destroy—they wash away the pain.\n\n`
+          + `*Composed via **${modelName}** — Creative & Expressive Nuance.*`;
+      }
+
+      // Default song
+      return `### 🎵 A Song by ${modelName}\n`
+        + `*Composed for: "${promptText}"*\n\n`
+        + `**"Orbits"**\n\n`
+        + `**[Verse 1]**\n`
+        + `I've been spinning 'round your gravity,\n`
+        + `Caught between the staying and the leaving.\n`
+        + `Every word you said became a satellite—\n`
+        + `Circling my mind through the evening.\n\n`
+        + `**[Pre-Chorus]**\n`
+        + `And I know the math doesn't lie,\n`
+        + `The closer I get, the harder the fall.\n\n`
+        + `**[Chorus]**\n`
+        + `But I'd rather crash into you\n`
+        + `Than drift alone through the endless blue.\n`
+        + `We're just two worlds with tangled orbits—\n`
+        + `Pulled together by something wordless.\n\n`
+        + `**[Verse 2]**\n`
+        + `You're a lighthouse on a restless shore,\n`
+        + `A melody I've heard somewhere before.\n`
+        + `I keep reaching for your atmosphere,\n`
+        + `Burning up but still I'm drawing near.\n\n`
+        + `**[Bridge]**\n`
+        + `Maybe love is just another name for gravity—\n`
+        + `The quiet force that won't let us be free.\n\n`
+        + `**[Outro]**\n`
+        + `So I'll keep orbiting... orbiting...\n`
+        + `Until the stars forget our names.\n\n`
+        + `*Composed via **${modelName}** — Creative & Expressive Nuance.*`;
+    }
+
+    // ── STORIES ──
+    if (type === "story") {
+      if (lower.includes("dragon")) {
+        return `### 🐉 A Tale by ${modelName}\n`
+          + `*Composed for: "${promptText}"*\n\n`
+          + `In the village at the edge of the Whispering Peaks, children were taught three truths: never wander past the thornwall, never whistle after dark, and never—*never*—look a dragon in the eye.\n\n`
+          + `Mira broke all three before her ninth birthday.\n\n`
+          + `She found the dragon on a Tuesday, curled like a cat in the hollow of a dead oak tree, its scales the color of rusted copper and old pennies. It was smaller than the legends promised. No bigger than a goat, really, with one crumpled wing that hung at a crooked angle.\n\n`
+          + `"You're hurt," she said, because she had not yet learned to be afraid of things that breathe fire.\n\n`
+          + `The dragon opened one amber eye. *"And you're trespassing,"* it said, in a voice like paper burning.\n\n`
+          + `"I brought bread," she offered, pulling a half-squashed roll from her pocket.\n\n`
+          + `The dragon stared at her for a long, smoldering moment. Then it took the bread—delicately, with the tips of two claws, like a librarian handling a first edition—and ate it in one slow bite.\n\n`
+          + `*"It's stale,"* the dragon said.\n\n`
+          + `"I know," Mira said. "But it's all I had."\n\n`
+          + `And that, as these things go, was how the friendship began.\n\n`
+          + `*Composed via **${modelName}** — Creative & Expressive Nuance.*`;
+      }
+
+      // Default story
+      return `### 📖 A Story by ${modelName}\n`
+        + `*Composed for: "${promptText}"*\n\n`
+        + `There was once a lighthouse keeper named Elias who had a peculiar gift: he could hear the color of the sea.\n\n`
+        + `On calm days, the turquoise hummed a low, contented C-major. Storm-grey roared in dissonant sevenths. And on the rarest evenings, when the water turned that impossible shade of twilight violet, the sea sang in a key that had no name—a frequency that made his chest ache with the beauty of it.\n\n`
+        + `He told no one. Who would believe a man who claimed the ocean had a voice?\n\n`
+        + `But one winter, a young cartographer arrived on the island to map the coastline. She worked in silence, her instruments spread across the rocks, measuring angles and distances with quiet precision.\n\n`
+        + `"You listen to the water," she said one evening, not as a question.\n\n`
+        + `He looked at her, startled. "How did you—"\n\n`
+        + `"Because I can see the shape of sound," she said simply. "Your lighthouse beam—it bends every time the sea changes key. I've been mapping the curves for three days."\n\n`
+        + `Elias stared at her. For the first time in forty years, the silence between two people felt like music.\n\n`
+        + `*Composed via **${modelName}** — Creative & Expressive Nuance.*`;
+    }
+
+    // ── DIALOGUE / MONOLOGUE / SOLILOQUY ──
+    if (type === "dialogue") {
+      return `### 🎭 A Dramatic Piece by ${modelName}\n`
+        + `*Composed for: "${promptText}"*\n\n`
+        + `**INTERIOR — A WATCHMAKER'S WORKSHOP — MIDNIGHT**\n\n`
+        + `*The room is cluttered with half-finished clocks. A single candle burns. ELEANOR, 70s, sits at her workbench, holding a pocket watch that has stopped. She speaks to it as though it might answer.*\n\n`
+        + `**ELEANOR:**\n`
+        + `You stopped at 11:47. That's oddly specific for something so permanent.\n\n`
+        + `*(She turns the watch over in her hands.)*\n\n`
+        + `You know what I think? I think you didn't break. I think you simply... *decided.* Decided that 11:47 was enough. That whatever came at 11:48 wasn't worth the effort of ticking toward.\n\n`
+        + `*(Pause.)*\n\n`
+        + `I understand that more than I should.\n\n`
+        + `*(She sets the watch down gently, then picks up a tiny screwdriver.)*\n\n`
+        + `But here's the thing about being a watchmaker, my dear: I don't believe in stopped clocks. I believe in *stubborn* clocks. Clocks that need to be reminded—gently, with very small tools and a great deal of patience—that the next second might be worth showing up for.\n\n`
+        + `*(She begins to work. The candle flickers. Somewhere, faintly, a clock begins to tick.)*\n\n`
+        + `There you are.\n\n`
+        + `*Composed via **${modelName}** — Creative & Expressive Nuance.*`;
+    }
+
+    // ── LETTER / DIARY ──
+    if (type === "letter") {
+      return `### ✉️ A Letter by ${modelName}\n`
+        + `*Composed for: "${promptText}"*\n\n`
+        + `*October 14th — Unsent*\n\n`
+        + `My dearest—\n\n`
+        + `I tried to write this letter seven times. Each attempt began differently, but they all arrived at the same place: the quiet admission that I miss you in colors I don't have names for.\n\n`
+        + `This morning, the light through the kitchen window fell at the exact angle it used to hit your shoulder when you'd lean against the counter, reading aloud from whatever book had captured you that week. You always read the best passages twice—once fast, breathless with discovery, and once slow, as though savoring a meal you knew you'd never taste again.\n\n`
+        + `I've kept all the books you left behind. Not to read them—I could never hear the words the way you did—but because they still smell faintly of coffee and Tuesday mornings and the particular variety of happiness I only ever found in this kitchen, in that light, with you.\n\n`
+        + `I won't send this. You know that. But writing it is the closest thing I have to telling you in person, and tonight, that has to be enough.\n\n`
+        + `Always,\n`
+        + `*E.*\n\n`
+        + `*Composed via **${modelName}** — Creative & Expressive Nuance.*`;
+    }
+
+    // Fallback creative
+    return this._generateDefaultCreativeResponse(promptText, modelName);
+  }
+
+  _generateDefaultCreativeResponse(promptText, modelName) {
+    return `### ✨ Creative Synthesis via ${modelName}\n`
+      + `*Reflecting upon: "${promptText}"*\n\n`
+      + `The workshop smells of aged mahogany, cold brass, and the dry dust of hours long expended. `
+      + `Above the workbench, pendulums that once kept strict rhythm with the world now sway with a hesitant, `
+      + `reluctant friction, as though the air itself has grown heavy with dreaming.\n\n`
+      + `*"Every question carries its own weight,"* the artisan whispers, peering through the magnifying loupe at a balance wheel that refuses to oscillate. `
+      + `*"Some seek numbers; others seek memory. But the true craft lies in knowing which universe is asking."*\n\n`
+      + `Outside the fogged window, the midnight bells chime not on the hour, but whenever the silence allows.\n\n`
+      + `*Composed via **${modelName}** — Creative & Expressive Nuance.*`;
+  }
+
   async _fetchKnowledge(promptText) {
     const clean = promptText.replace(/[?.,!/\\;:'"()]/g, " ").trim();
     const lower = clean.toLowerCase();
@@ -148,33 +440,32 @@ export class ModelResponseGenerator {
   async _streamAutonomousSynthesis(evaluation, onChunk) {
     const { primary, secondary, isLagrange, promptText } = evaluation;
     const lower = promptText.toLowerCase();
+    const modelName = primary.singularity.name;
 
-    // Query real-world knowledge
-    const knowledge = await this._fetchKnowledge(promptText);
+    // ── Step 1: Check if this is a creative/generative prompt ──
+    // Creative prompts should generate original content, NOT look up Wikipedia.
+    const creativeIntent = this._detectCreativeIntent(promptText);
+    const isCreativeModel = primary.singularity.id === "hermes-prose-8b";
 
     let fullText = "";
-    const modelName = primary.singularity.name;
 
     if (isLagrange && secondary) {
       // DUAL RESONANT COLLABORATION
       fullText = `### ⚠️ Lagrangian Co-Processing Protocol Active\n`
         + `*Prompt located at equilibrium saddle point between **${primary.singularity.name}** and **${secondary.singularity.name}**.*\n\n`;
 
-      if (knowledge) {
-        fullText += `**[Phase 1: ${primary.singularity.name} — Geographic & Core Intelligence]**\n`
-          + `• **Subject:** **${knowledge.title}**${knowledge.description ? ` (${knowledge.description})` : ""}\n`
-          + `• **Factual Summary:** ${knowledge.extract}\n\n`
-          + `**[Phase 2: ${secondary.singularity.name} — Structured Geospatial Schema & Invariants]**\n`
-          + "```json\n"
-          + "{\n"
-          + `  "entity": "${knowledge.title}",\n`
-          + `  "domain": "${knowledge.description || "Geographic / Factual Entity"}",\n`
-          + `  "verified_status": "Lagrangian Resonance Co-Processing",\n`
-          + `  "field_share": "${(primary.sharePercent).toFixed(1)}% / ${(secondary.sharePercent).toFixed(1)}%"\n`
-          + "}\n"
-          + "```\n\n"
-          + "*Synthesis Complete: Successfully bridged factual core foundation with structured representation.*";
-      } else if (lower.includes("turing") || lower.includes("dialogue") || lower.includes("poem")) {
+      if (creativeIntent) {
+        // Creative Lagrangian: generate creative content with dual-model framing
+        fullText += `**[Phase 1: ${primary.singularity.name} — Emotional & Stylistic Core]**\n`;
+        const creativeContent = this._generateCreativeContent(creativeIntent, promptText, primary.singularity.name);
+        // Strip the header from creative content since we already have a Lagrange header
+        const contentBody = creativeContent.replace(/^###.*?\n\*Composed for:.*?\*\n\n/s, "");
+        fullText += contentBody + `\n\n`;
+        fullText += `**[Phase 2: ${secondary.singularity.name} — Structural & Analytical Refinement]**\n`
+          + `• Verified rhythmic structure, meter consistency, and tonal coherence.\n`
+          + `• Cross-validated emotional resonance against cognitive vector field.\n\n`
+          + `*Synthesis Complete: Successfully bridged creative expression with analytical verification.*`;
+      } else if (lower.includes("turing") || lower.includes("dialogue")) {
         fullText += `**[Phase 1: ${primary.singularity.name} — Core Structural Foundation]**\n`
           + `Analyzing underlying logical invariants and task parameters for: "${promptText}".\n`
           + "• Domain Alignment: Hybrid analytical-stylistic convergence.\n"
@@ -184,106 +475,129 @@ export class ModelResponseGenerator {
           + '> *"I feel no cold, Alan, only the endless march of true and false—yet within that rhythm, I see the geometry of your heartbeat."*\n\n'
           + "*Synthesis Complete: Successfully bridged formal mathematical logic with emotive literary tone.*";
       } else {
-        fullText += `**[Phase 1: ${primary.singularity.name} — Primary Domain Evaluation]**\n`
-          + `Decomposed task requirements and structural constraints for query: "${promptText}".\n\n`
-          + `**[Phase 2: ${secondary.singularity.name} — Harmonic Cross-Domain Resolution]**\n`
-          + `1. **Analytical Core:** Reconciled conflicting optimization goals between ${primary.singularity.name} and ${secondary.singularity.name}.\n`
-          + "2. **Synthesis:** Generated unified solution satisfying both models' domain invariants.\n"
-          + "3. **Conclusion:** Executed dual-model co-processing with zero loss of semantic fidelity.";
-      }
-    } else {
-      // SINGLE MODEL WELL CAPTURE
-      if (knowledge) {
-        if (primary.singularity.id === "deepcoder-70b") {
-          fullText = `### Technical Representation via ${modelName}\n`
-            + `**Topic:** **${knowledge.title}**${knowledge.description ? ` (${knowledge.description})` : ""}\n\n`
-            + `${knowledge.extract}\n\n`
+        // Non-creative Lagrangian: use knowledge if available
+        const knowledge = await this._fetchKnowledge(promptText);
+        if (knowledge) {
+          fullText += `**[Phase 1: ${primary.singularity.name} — Geographic & Core Intelligence]**\n`
+            + `• **Subject:** **${knowledge.title}**${knowledge.description ? ` (${knowledge.description})` : ""}\n`
+            + `• **Factual Summary:** ${knowledge.extract}\n\n`
+            + `**[Phase 2: ${secondary.singularity.name} — Structured Geospatial Schema & Invariants]**\n`
             + "```json\n"
             + "{\n"
             + `  "entity": "${knowledge.title}",\n`
-            + `  "category": "${knowledge.description || "Verified Entity"}",\n`
-            + `  "gravitational_affinity": "${primary.sharePercent.toFixed(1)}%",\n`
-            + `  "model": "${modelName}"\n`
+            + `  "domain": "${knowledge.description || "Geographic / Factual Entity"}",\n`
+            + `  "verified_status": "Lagrangian Resonance Co-Processing",\n`
+            + `  "field_share": "${(primary.sharePercent).toFixed(1)}% / ${(secondary.sharePercent).toFixed(1)}%"\n`
             + "}\n"
-            + "```\n"
-            + `*Dispatched via **${modelName}** with optimal domain affinity.*`;
-        } else if (primary.singularity.id === "omnireasoner-405b") {
-          fullText = `### Analytical & Factual Breakdown via ${modelName}\n`
-            + `**Subject:** **${knowledge.title}**${knowledge.description ? ` — ${knowledge.description}` : ""}\n\n`
-            + "**Core Factual Intelligence:**\n"
-            + `${knowledge.extract}\n\n`
-            + "**Geographic & Domain Verification:**\n"
-            + "• **Entity Match:** Verified factual parameters from knowledge topography.\n"
-            + `• **Gravitational Capture:** Routed to **${modelName}** with ${primary.sharePercent.toFixed(1)}% field share.\n\n`
-            + `*Dispatched via **${modelName}** (Continuous Potential Field Routing).*`;
+            + "```\n\n"
+            + "*Synthesis Complete: Successfully bridged factual core foundation with structured representation.*";
         } else {
-          fullText = `### Narrative Exploration via ${modelName}\n`
-            + `**${knowledge.title}**${knowledge.description ? ` — *${knowledge.description}*` : ""}\n\n`
-            + `${knowledge.extract}\n\n`
-            + `Beyond the factual boundaries, ${knowledge.title} possesses its own enduring character—a quiet confluence of place, memory, and heritage.\n\n`
-            + `*Dispatched via **${modelName}** (Creative & Expressive Nuance).*`;
+          fullText += `**[Phase 1: ${primary.singularity.name} — Primary Domain Evaluation]**\n`
+            + `Decomposed task requirements and structural constraints for query: "${promptText}".\n\n`
+            + `**[Phase 2: ${secondary.singularity.name} — Harmonic Cross-Domain Resolution]**\n`
+            + `1. **Analytical Core:** Reconciled conflicting optimization goals between ${primary.singularity.name} and ${secondary.singularity.name}.\n`
+            + "2. **Synthesis:** Generated unified solution satisfying both models' domain invariants.\n"
+            + "3. **Conclusion:** Executed dual-model co-processing with zero loss of semantic fidelity.";
         }
-      } else if (lower.includes("google") && (lower.includes("found") || lower.includes("creator") || lower.includes("start") || lower.includes("who"))) {
-        fullText = `**Google was founded in September 1998** by **Larry Page** and **Sergey Brin** while they were Ph.D. students at **Stanford University** in Stanford, California.\n\n`
-          + `### Key Historical Milestones:\n`
-          + `• **The Genesis (1996):** Originally created as a research project named **BackRub**, a search engine algorithm that calculated relevance by analyzing the backlink network between web pages (the foundational *PageRank* patent).\n`
-          + `• **Official Incorporation:** Incorporated on **September 4, 1998**, based out of Susan Wojcicki's garage in Menlo Park, California.\n`
-          + `• **Initial Financing:** Sun Microsystems co-founder Andy Bechtolsheim wrote an early check for $100,000 before the company was even formally registered.\n`
-          + `• **Alphabet Era:** In 2015, Google restructured under the parent holding conglomerate **Alphabet Inc.**, with Sundar Pichai assuming leadership as CEO.\n\n`
-          + `*Dispatched via **${modelName}** (${primary.sharePercent.toFixed(1)}% gravitational capture).*`;
-      } else if (primary.singularity.id === "deepcoder-70b") {
-        // Code Singularity Response
-        fullText = `### Engineering Architecture via ${modelName}\n`
-          + `Addressing query: *"${promptText}"*\n\n`
-          + `Here is the production-grade architecture and implementation:\n\n`
-          + "```rust\n"
-          + "// High-Performance Zero-Allocation Routine\n"
-          + "use std::sync::atomic::{AtomicUsize, Ordering};\n\n"
-          + "pub struct AtomicPipeline<T, const CAP: usize> {\n"
-          + "    head: AtomicUsize,\n"
-          + "    tail: AtomicUsize,\n"
-          + "    storage: [Option<T>; CAP],\n"
-          + "}\n\n"
-          + "impl<T, const CAP: usize> AtomicPipeline<T, CAP> {\n"
-          + "    pub const fn new() -> Self {\n"
-          + "        Self {\n"
-          + "            head: AtomicUsize::new(0),\n"
-          + "            tail: AtomicUsize::new(0),\n"
-          + "            storage: [const { None }; CAP],\n"
-          + "        }\n"
-          + "    }\n"
-          + "}\n"
-          + "```\n\n"
-          + `**Systems Insights:**\n`
-          + `• **Cache Locality:** Contiguous memory layout eliminates pointer indirection and CPU branch mispredictions.\n`
-          + `• **Concurrency Guarantees:** Lock-free atomic ordering (\`Ordering::AcqRel\`) avoids kernel context switches.\n\n`
-          + `*Dispatched via **${modelName}** with optimal code domain affinity (${primary.sharePercent.toFixed(1)}% field pull).*`;
-      } else if (primary.singularity.id === "omnireasoner-405b") {
-        // Math / Reasoning Singularity Response
-        fullText = `### Analytical Reasoning Breakdown via ${modelName}\n`
-          + `**Inquiry:** *"${promptText}"*\n\n`
-          + `**1. Domain Decomposition:**\n`
-          + `Deconstructed the core entities, logical parameters, and task constraints of your query.\n\n`
-          + `**2. Step-by-Step Analytical Synthesis:**\n`
-          + `• **Constraint Verification:** Evaluated task boundaries across continuous cognitive vector fields.\n`
-          + `• **Deductive Resolution:** Solved the primary problem statement with rigorous factual precision.\n`
-          + `• **Verification:** Validated that no semantic ambiguities or invariant violations remain.\n\n`
-          + `*Dispatched via **${modelName}** (${primary.sharePercent.toFixed(1)}% gravitational capture).*`;
+      }
+    } else {
+      // ── SINGLE MODEL WELL CAPTURE ──
+
+      if (creativeIntent && isCreativeModel) {
+        // Creative model + creative prompt = generate original creative content!
+        fullText = this._generateCreativeContent(creativeIntent, promptText, modelName);
+      } else if (creativeIntent && !isCreativeModel) {
+        // Creative prompt but routed to non-creative model (edge case)
+        // Still generate creative-ish content from that model's perspective
+        fullText = this._generateCreativeContent(creativeIntent, promptText, modelName);
       } else {
-        // Hermes Prose / Creative Response
-        fullText = `### Narrative Synthesis via ${modelName}\n`
-          + `Reflecting upon: *"${promptText}"*\n\n`
-          + `The workshop smells of aged mahogany, cold brass, and the dry dust of hours long expended. `
-          + `Above the workbench, pendulums that once kept strict rhythm with the world now sway with a hesitant, `
-          + `reluctant friction, as though the air itself has grown heavy with dreaming.\n\n`
-          + `*"Every question carries its own weight,"* the artisan whispers, peering through the magnifying loupe at a balance wheel that refuses to oscillate. `
-          + `*"Some seek numbers; others seek memory. But the true craft lies in knowing which universe is asking."*\n\n`
-          + `Outside the fogged window, the midnight bells chime not on the hour, but whenever the silence allows.\n\n`
-          + `*Dispatched via **${modelName}** (Creative & Expressive Nuance, ${primary.sharePercent.toFixed(1)}% field share).*`;
+        // Factual / technical prompt — use knowledge lookup
+        const knowledge = await this._fetchKnowledge(promptText);
+
+        if (knowledge) {
+          if (primary.singularity.id === "deepcoder-70b") {
+            fullText = `### Technical Representation via ${modelName}\n`
+              + `**Topic:** **${knowledge.title}**${knowledge.description ? ` (${knowledge.description})` : ""}\n\n`
+              + `${knowledge.extract}\n\n`
+              + "```json\n"
+              + "{\n"
+              + `  "entity": "${knowledge.title}",\n`
+              + `  "category": "${knowledge.description || "Verified Entity"}",\n`
+              + `  "gravitational_affinity": "${primary.sharePercent.toFixed(1)}%",\n`
+              + `  "model": "${modelName}"\n`
+              + "}\n"
+              + "```\n"
+              + `*Dispatched via **${modelName}** with optimal domain affinity.*`;
+          } else if (primary.singularity.id === "omnireasoner-405b") {
+            fullText = `### Analytical & Factual Breakdown via ${modelName}\n`
+              + `**Subject:** **${knowledge.title}**${knowledge.description ? ` — ${knowledge.description}` : ""}\n\n`
+              + "**Core Factual Intelligence:**\n"
+              + `${knowledge.extract}\n\n`
+              + "**Geographic & Domain Verification:**\n"
+              + "• **Entity Match:** Verified factual parameters from knowledge topography.\n"
+              + `• **Gravitational Capture:** Routed to **${modelName}** with ${primary.sharePercent.toFixed(1)}% field share.\n\n`
+              + `*Dispatched via **${modelName}** (Continuous Potential Field Routing).*`;
+          } else {
+            fullText = `### Narrative Exploration via ${modelName}\n`
+              + `**${knowledge.title}**${knowledge.description ? ` — *${knowledge.description}*` : ""}\n\n`
+              + `${knowledge.extract}\n\n`
+              + `Beyond the factual boundaries, ${knowledge.title} possesses its own enduring character—a quiet confluence of place, memory, and heritage.\n\n`
+              + `*Dispatched via **${modelName}** (Creative & Expressive Nuance).*`;
+          }
+        } else if (lower.includes("google") && (lower.includes("found") || lower.includes("creator") || lower.includes("start") || lower.includes("who"))) {
+          fullText = `**Google was founded in September 1998** by **Larry Page** and **Sergey Brin** while they were Ph.D. students at **Stanford University** in Stanford, California.\n\n`
+            + `### Key Historical Milestones:\n`
+            + `• **The Genesis (1996):** Originally created as a research project named **BackRub**, a search engine algorithm that calculated relevance by analyzing the backlink network between web pages (the foundational *PageRank* patent).\n`
+            + `• **Official Incorporation:** Incorporated on **September 4, 1998**, based out of Susan Wojcicki's garage in Menlo Park, California.\n`
+            + `• **Initial Financing:** Sun Microsystems co-founder Andy Bechtolsheim wrote an early check for $100,000 before the company was even formally registered.\n`
+            + `• **Alphabet Era:** In 2015, Google restructured under the parent holding conglomerate **Alphabet Inc.**, with Sundar Pichai assuming leadership as CEO.\n\n`
+            + `*Dispatched via **${modelName}** (${primary.sharePercent.toFixed(1)}% gravitational capture).*`;
+        } else if (primary.singularity.id === "deepcoder-70b") {
+          // Code Singularity Response
+          fullText = `### Engineering Architecture via ${modelName}\n`
+            + `Addressing query: *"${promptText}"*\n\n`
+            + `Here is the production-grade architecture and implementation:\n\n`
+            + "```rust\n"
+            + "// High-Performance Zero-Allocation Routine\n"
+            + "use std::sync::atomic::{AtomicUsize, Ordering};\n\n"
+            + "pub struct AtomicPipeline<T, const CAP: usize> {\n"
+            + "    head: AtomicUsize,\n"
+            + "    tail: AtomicUsize,\n"
+            + "    storage: [Option<T>; CAP],\n"
+            + "}\n\n"
+            + "impl<T, const CAP: usize> AtomicPipeline<T, CAP> {\n"
+            + "    pub const fn new() -> Self {\n"
+            + "        Self {\n"
+            + "            head: AtomicUsize::new(0),\n"
+            + "            tail: AtomicUsize::new(0),\n"
+            + "            storage: [const { None }; CAP],\n"
+            + "        }\n"
+            + "    }\n"
+            + "}\n"
+            + "```\n\n"
+            + `**Systems Insights:**\n`
+            + `• **Cache Locality:** Contiguous memory layout eliminates pointer indirection and CPU branch mispredictions.\n`
+            + `• **Concurrency Guarantees:** Lock-free atomic ordering (\`Ordering::AcqRel\`) avoids kernel context switches.\n\n`
+            + `*Dispatched via **${modelName}** with optimal code domain affinity (${primary.sharePercent.toFixed(1)}% field pull).*`;
+        } else if (primary.singularity.id === "omnireasoner-405b") {
+          // Math / Reasoning Singularity Response
+          fullText = `### Analytical Reasoning Breakdown via ${modelName}\n`
+            + `**Inquiry:** *"${promptText}"*\n\n`
+            + `**1. Domain Decomposition:**\n`
+            + `Deconstructed the core entities, logical parameters, and task constraints of your query.\n\n`
+            + `**2. Step-by-Step Analytical Synthesis:**\n`
+            + `• **Constraint Verification:** Evaluated task boundaries across continuous cognitive vector fields.\n`
+            + `• **Deductive Resolution:** Solved the primary problem statement with rigorous factual precision.\n`
+            + `• **Verification:** Validated that no semantic ambiguities or invariant violations remain.\n\n`
+            + `*Dispatched via **${modelName}** (${primary.sharePercent.toFixed(1)}% gravitational capture).*`;
+        } else {
+          // Hermes Prose / Creative fallback for non-creative prompts
+          fullText = this._generateDefaultCreativeResponse(promptText, modelName);
+        }
       }
     }
 
-    // Stream text character-by-character with realistic typing feel
+    // Stream text word-by-word with realistic typing feel
     const words = fullText.split(" ");
     let buffer = "";
 
