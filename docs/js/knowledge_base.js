@@ -1,6 +1,6 @@
 /**
  * Comprehensive Verified Knowledge Base for Continuous Gravitational Prompt Routing
- * Contains over 916 verified factual entries across:
+ * Contains over 922 verified factual entries across:
  * - 195 Sovereign Countries (Capitals, Currencies, Languages, Continents)
  * - National Animals, Birds, Flowers, Anthems of Major Nations
  * - 28 Indian States & 8 Union Territories (Capitals, Chief Ministers)
@@ -13498,6 +13498,98 @@ export const VERIFIED_KNOWLEDGE = [
       "Breakdown: 28 Gold, 38 Silver, 41 Bronze",
       "Milestone: First time India crossed 100 medals at the Asian Games",
       "Overall Finish: 4th place on the medal tally"
+    ]
+  },
+  {
+    "triggers": [
+      "best",
+      "chess"
+    ],
+    "title": "Greatest Chess Players in History & World Champions",
+    "directAnswer": "**Magnus Carlsen** (Norway) is widely regarded as the best active chess player in the world, holding the highest peak FIDE rating in history (**2882**), while **Garry Kasparov** (Russia) is celebrated as the greatest historical player, remaining World #1 for 255 consecutive months.",
+    "description": "Peak Elo ratings, World Chess Championships, and grandmaster records",
+    "keyFacts": [
+      "Highest Peak Rating: Magnus Carlsen (2882 Elo, May 2014)",
+      "Longest Reign at World #1: Garry Kasparov (20 consecutive years, 1985–2005)",
+      "Current Classical World Champion: Ding Liren (China)",
+      "Youngest Candidates Winner: D. Gukesh (India, age 17, 2024)",
+      "5-Time World Champion: Viswanathan Anand (India — 2000, 2007, 2008, 2010, 2012)",
+      "Legendary American Champion: Bobby Fischer (1972 World Champion)"
+    ]
+  },
+  {
+    "triggers": [
+      "chess",
+      "player"
+    ],
+    "title": "Top Chess Grandmasters & World Champions",
+    "directAnswer": "**Magnus Carlsen** (peak rating 2882) is the highest-rated player in history, and **Garry Kasparov** is regarded as the greatest player of all time.",
+    "description": "All-time and active chess grandmasters and world titles",
+    "keyFacts": [
+      "Peak Elo: Magnus Carlsen (2882)",
+      "Historical Dominance: Garry Kasparov (15-year World Champion)",
+      "Indian Chess Pioneers: Viswanathan Anand (5x World Champion), D. Gukesh, R. Praggnanandhaa",
+      "Reigning World Champion: Ding Liren"
+    ]
+  },
+  {
+    "triggers": [
+      "chess",
+      "champion"
+    ],
+    "title": "World Chess Champions",
+    "directAnswer": "The reigning FIDE World Chess Champion is **Ding Liren** (China), with **D. Gukesh** (India) as the official challenger. **Magnus Carlsen** was 5-time Classical World Champion from 2013 to 2023.",
+    "description": "FIDE World Chess Championship title holders",
+    "keyFacts": [
+      "Reigning World Champion: Ding Liren (2023–present)",
+      "Official Challenger: D. Gukesh (youngest Candidates winner in history, 2024)",
+      "Most Recent Dominant Champion: Magnus Carlsen (5 titles: 2013, 2014, 2016, 2018, 2021)",
+      "Historical Legend: Garry Kasparov (1985–2000)"
+    ]
+  },
+  {
+    "triggers": [
+      "best",
+      "football"
+    ],
+    "title": "Greatest Football (Soccer) Players of All Time",
+    "directAnswer": "**Lionel Messi** is widely regarded as the greatest football player of all time (GOAT), having won a record **8 Ballon d'Or awards** and the **2022 FIFA World Cup** with Argentina, alongside Portuguese legend **Cristiano Ronaldo** (5 Ballon d'Ors, all-time leading international goalscorer).",
+    "description": "All-time football legends, Ballon d'Or records, and World Cup champions",
+    "keyFacts": [
+      "Lionel Messi: 8 Ballon d'Or titles, 2022 FIFA World Cup, 4 UEFA Champions League titles",
+      "Cristiano Ronaldo: 5 Ballon d'Or titles, 5 UEFA Champions League titles, 900+ career goals",
+      "Historical Icons: Pelé (only 3-time World Cup winner), Diego Maradona (1986 World Cup)",
+      "2022 World Cup Champions: Argentina (defeated France in final)"
+    ]
+  },
+  {
+    "triggers": [
+      "football",
+      "goat"
+    ],
+    "title": "Football GOAT Debate (Messi vs Ronaldo vs Pelé)",
+    "directAnswer": "**Lionel Messi** holds the strongest consensus as football's GOAT following his 2022 World Cup triumph and 8 Ballon d'Or titles, with **Cristiano Ronaldo** and **Pelé** rounding out the pantheon.",
+    "description": "Greatest of all time debate in association football",
+    "keyFacts": [
+      "Most Ballon d'Or: Lionel Messi (8)",
+      "Most World Cups: Pelé (3 — 1958, 1962, 1970)",
+      "Most Official Career Goals: Cristiano Ronaldo (900+)",
+      "Most Influential Tournament: Diego Maradona (1986 Mexico World Cup)"
+    ]
+  },
+  {
+    "triggers": [
+      "best",
+      "cricketer"
+    ],
+    "title": "Greatest Cricketers in History",
+    "directAnswer": "**Sir Donald Bradman** is statistically the greatest batsman in cricket history with a Test average of **99.94**, while **Sachin Tendulkar** is revered as the 'God of Cricket' with **100 international centuries** and 34,357 international runs.",
+    "description": "Cricket legends, records, and greatest players across formats",
+    "keyFacts": [
+      "Statistical Peak: Sir Donald Bradman (99.94 Test batting average)",
+      "All-Time Leading Run Scorer: Sachin Tendulkar (100 international centuries, 34,357 runs)",
+      "Most ODI Centuries: Virat Kohli (50 ODI centuries)",
+      "Most International Wickets: Muttiah Muralitharan (1,347 wickets across formats)"
     ]
   }
 ];

@@ -27,6 +27,7 @@ async function main() {
   await test('who was lord rams wife?');
   await test('how many talukas are there in the state of GOA');
   await test('indias national animal');
+  await test('who is the best chess player in the world?');
   await test('write me a code to find prime number');
   await test('how to center a div in css');
   await test('write a poem about thunderstorms');

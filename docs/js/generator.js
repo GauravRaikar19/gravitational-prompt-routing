@@ -45,7 +45,7 @@ export class ModelResponseGenerator {
       }
     } else if (this.mode === "cloud" && this.cloudApiKey) {
       try {
-        await this._streamCloudAPI(promptText, onChunk);
+        await this._streamCloudAPI(primary.singularity.id, promptText, onChunk);
         onComplete();
         return;
       } catch (err) {
@@ -1035,12 +1035,12 @@ export class ModelResponseGenerator {
           if (sumRes.ok) {
             const sumData = await sumRes.json();
             if (sumData.extract && sumData.extract.length > 20 && sumData.type !== "disambiguation") {
-              const sentences = sumData.extract.split(/(?<=[.?!])\s+/);
               return {
                 title: sumData.title,
                 description: sumData.description || "",
                 extract: sumData.extract,
-                directAnswer: sentences.length > 0 ? sentences[0] : sumData.extract
+                directAnswer: null, // Wikipedia overviews are general context, not verified direct resolutions
+                isWiki: true
               };
             }
           }
@@ -1367,7 +1367,21 @@ export class ModelResponseGenerator {
     }
   }
 
-  async _streamCloudAPI(prompt, onChunk) {
+  async _streamCloudAPI(modelId = "", prompt = "", onChunk) {
+    let resolvedModel = this.cloudModel;
+    if (this.cloudEndpoint.includes("groq.com")) {
+      // Dynamic routing to matched open-source frontier models on Groq
+      if (modelId.includes("deepseek") || modelId.includes("r1")) {
+        resolvedModel = "deepseek-r1-distill-llama-70b";
+      } else if (modelId.includes("coder") || modelId.includes("qwen")) {
+        resolvedModel = "qwen-2.5-coder-32b";
+      } else if (modelId.includes("llama")) {
+        resolvedModel = "llama-3.3-70b-versatile";
+      } else {
+        resolvedModel = "llama-3.3-70b-versatile";
+      }
+    }
+
     const res = await fetch(`${this.cloudEndpoint}/chat/completions`, {
       method: "POST",
       headers: {
@@ -1375,7 +1389,7 @@ export class ModelResponseGenerator {
         "Authorization": `Bearer ${this.cloudApiKey}`
       },
       body: JSON.stringify({
-        model: this.cloudModel,
+        model: resolvedModel,
         messages: [{ role: "user", content: prompt }],
         stream: true
       })
