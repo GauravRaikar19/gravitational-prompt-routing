@@ -20,9 +20,9 @@ export class ModelResponseGenerator {
     }
     this.cloudEndpoint = savedEndpoint;
     let savedModel = localStorage.getItem("gpr_cloud_model");
-    if (!savedModel || savedModel === "llama-3.1-70b-versatile") {
-      savedModel = "llama-3.3-70b-versatile";
-      try { localStorage.setItem("gpr_cloud_model", "llama-3.3-70b-versatile"); } catch (e) {}
+    if (!savedModel || savedModel.includes("llama-3.1") || savedModel.includes("llama-3.3")) {
+      savedModel = "openai/gpt-oss-120b";
+      try { localStorage.setItem("gpr_cloud_model", "openai/gpt-oss-120b"); } catch (e) {}
     }
     this.cloudModel = savedModel;
   }
@@ -1391,17 +1391,12 @@ export class ModelResponseGenerator {
     let endpoint = (this.cloudEndpoint || "https://api.groq.com/openai/v1").trim();
     if (!endpoint) endpoint = "https://api.groq.com/openai/v1";
 
-    let resolvedModel = this.cloudModel;
-    if (!resolvedModel || resolvedModel === "llama-3.1-70b-versatile") {
-      resolvedModel = "llama-3.3-70b-versatile";
-    }
-
     if (endpoint.includes("groq.com")) {
-      // Dynamic routing to matched open-source frontier models on Groq
-      if (modelId.includes("deepseek") || modelId.includes("r1")) {
-        resolvedModel = "deepseek-r1-distill-llama-70b";
+      // Dynamic routing to active models on Groq
+      if (modelId.includes("coder") || modelId.includes("qwen")) {
+        resolvedModel = "qwen/qwen3.8-27b";
       } else {
-        resolvedModel = "llama-3.3-70b-versatile";
+        resolvedModel = "openai/gpt-oss-120b";
       }
     }
 

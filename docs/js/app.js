@@ -1,7 +1,7 @@
-import { INITIAL_SINGULARITIES, PRESET_PROMPTS, DEFAULT_G, DEFAULT_EPSILON, DEFAULT_DELTA, DEFAULT_LAGRANGE_THRESHOLD } from "./constants.js?v=7.5";
-import { ClientEmbedder } from "./embedder.js?v=7.5";
-import { GravitationalEngine } from "./physics.js?v=7.5";
-import { ModelResponseGenerator } from "./generator.js?v=7.5";
+import { INITIAL_SINGULARITIES, PRESET_PROMPTS, DEFAULT_G, DEFAULT_EPSILON, DEFAULT_DELTA, DEFAULT_LAGRANGE_THRESHOLD } from "./constants.js?v=7.6";
+import { ClientEmbedder } from "./embedder.js?v=7.6";
+import { GravitationalEngine } from "./physics.js?v=7.6";
+import { ModelResponseGenerator } from "./generator.js?v=7.6";
 
 // DOM Elements
 const canvas = document.getElementById("spaceCanvas");
@@ -543,8 +543,8 @@ function openModal() {
   cloudEndpointInput.value = (!generator.cloudEndpoint || generator.cloudEndpoint === "undefined") 
     ? "https://api.groq.com/openai/v1" 
     : generator.cloudEndpoint;
-  cloudModelInput.value = (!generator.cloudModel || generator.cloudModel === "llama-3.1-70b-versatile")
-    ? "llama-3.3-70b-versatile"
+  cloudModelInput.value = (!generator.cloudModel || generator.cloudModel.includes("llama-3.1") || generator.cloudModel.includes("llama-3.3"))
+    ? "openai/gpt-oss-120b"
     : generator.cloudModel;
   toggleModalSubsections(generator.mode);
 }
@@ -611,8 +611,8 @@ saveConfigBtn.addEventListener("click", (e) => {
     endpointVal = "https://api.groq.com/openai/v1";
   }
   let modelVal = cloudModelInput.value.trim();
-  if (!modelVal || modelVal === "llama-3.1-70b-versatile") {
-    modelVal = "llama-3.3-70b-versatile";
+  if (!modelVal || modelVal.includes("llama-3.1") || modelVal.includes("llama-3.3")) {
+    modelVal = "openai/gpt-oss-120b";
   }
   generator.saveConfig(
     selectedMode,
