@@ -782,6 +782,32 @@ const GENERAL_KNOWLEDGE = [
       "Most ODI Centuries: Virat Kohli (50 ODI centuries)",
       "Most International Wickets: Muttiah Muralitharan (1,347 wickets across formats)"
     ]
+  },
+  {
+    triggers: ["fastest", "car"],
+    title: "The Fastest Cars in the World (Top Speed & Acceleration)",
+    directAnswer: "The fastest production car by verified top speed is the **Bugatti Chiron Super Sport 300+** at **304.77 mph (490.48 km/h)** (with the **Koenigsegg Jesko Absolut** theoretically capable of 330+ mph), while the fastest accelerating production car is the all-electric **Rimac Nevera** (0–60 mph in **1.74 seconds**).",
+    description: "World record production car top speeds and 0-60 mph acceleration",
+    keyFacts: [
+      "Verified Top Speed: Bugatti Chiron Super Sport 300+ (304.77 mph / 490.48 km/h, 2019)",
+      "Claimed Top Speed: Koenigsegg Jesko Absolut (designed for 330+ mph / 531 km/h)",
+      "Fastest 0-60 mph Production: Rimac Nevera (1.74 seconds, 1,914 horsepower quad-motor EV)",
+      "Fastest Non-Street Legal Track: Bugatti Bolide (0.67 kg/hp power-to-weight ratio)",
+      "Historical Speed Landmark: McLaren F1 (240.1 mph / 386.4 km/h naturally aspirated record)"
+    ]
+  },
+  {
+    triggers: ["fastest", "man"],
+    title: "Usain Bolt — The Fastest Man in History",
+    directAnswer: "The fastest man alive is **Usain Bolt** of Jamaica, holding the world record in the 100 meters at **9.58 seconds** and 200 meters at **19.19 seconds**, with a recorded peak sprint speed of **44.72 km/h (27.78 mph)**.",
+    description: "Olympic sprint records and human speed world records",
+    keyFacts: [
+      "100m World Record: 9.58 seconds (Berlin World Athletics Championships, August 16, 2009)",
+      "200m World Record: 19.19 seconds (Berlin, August 20, 2009)",
+      "Peak Recorded Speed: 44.72 km/h (27.78 mph) between 60m and 80m",
+      "Olympic Medals: 8 Olympic Gold Medals (100m, 200m, 4x100m across 2008, 2012, 2016)",
+      "World Titles: 11 World Championship Gold Medals"
+    ]
   }
 ];
 

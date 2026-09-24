@@ -197,9 +197,17 @@
 
           <div class="provider-radio-group">
             <label class="provider-option">
-              <input type="radio" name="providerMode" value="autonomous" checked>
+              <input type="radio" name="providerMode" value="cloud" checked>
               <div class="option-content">
-                <strong>Autonomous Knowledge Synthesizer (Recommended)</strong>
+                <strong>Cloud LLM API (Groq / OpenAI)</strong>
+                <span>Stream ultra-fast inference from Groq using your API key (stored securely in local browser storage).</span>
+              </div>
+            </label>
+
+            <label class="provider-option">
+              <input type="radio" name="providerMode" value="autonomous">
+              <div class="option-content">
+                <strong>Autonomous Knowledge Synthesizer</strong>
                 <span>Instant, zero API keys required. Runs directly in your browser on GitHub Pages.</span>
               </div>
             </label>
@@ -211,14 +219,6 @@
                 <span>Connects to your local Ollama instance (e.g. <code>localhost:11434</code> with <code>llama3</code> or <code>mistral</code>).</span>
               </div>
             </label>
-
-            <label class="provider-option">
-              <input type="radio" name="providerMode" value="cloud">
-              <div class="option-content">
-                <strong>Cloud LLM API (Groq / OpenAI)</strong>
-                <span>Stream ultra-fast inference from Groq or OpenAI using your personal API key (stored locally only).</span>
-              </div>
-            </label>
           </div>
 
           <div id="ollamaSettings" class="settings-subgroup">
@@ -226,9 +226,16 @@
             <input type="text" id="ollamaUrlInput" value="http://localhost:11434">
           </div>
 
-          <div id="cloudSettings" class="settings-subgroup">
+          <div id="cloudSettings" class="settings-subgroup active">
             <label>API Key (Bearer Token):</label>
-            <input type="password" id="cloudKeyInput" placeholder="gsk_... or sk-...">
+            <div class="input-with-action">
+              <input type="password" id="cloudKeyInput" placeholder="gsk_... or sk-...">
+              <button type="button" id="toggleKeyVisibilityBtn" class="sub-action-btn" title="Toggle visibility">👁️</button>
+            </div>
+            <div class="test-key-row">
+              <button type="button" id="testKeyBtn" class="test-key-btn">⚡ Test Key Connection</button>
+              <span id="testKeyFeedback" class="test-key-feedback"></span>
+            </div>
             <label>Endpoint URL:</label>
             <input type="text" id="cloudEndpointInput" value="https://api.groq.com/openai/v1">
             <label>Model Name:</label>
@@ -251,7 +258,7 @@
 
   </div>
 
-  <!-- Application Module Script with cache-busting v=7.7 -->
-  <script type="module" src="js/app.js?v=7.7"></script>
+  <!-- Application Module Script with cache-busting v=7.8 -->
+  <script type="module" src="js/app.js?v=7.8"></script>
 </body>
 </html>

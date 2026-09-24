@@ -10,9 +10,13 @@ import { lookupKnowledge } from './knowledge_base.js';
 
 export class ModelResponseGenerator {
   constructor() {
-    this.mode = localStorage.getItem("gpr_api_mode") || "autonomous"; // "autonomous", "ollama", "cloud"
+    this.mode = localStorage.getItem("gpr_api_mode") || "cloud"; // "autonomous", "ollama", "cloud"
     this.ollamaUrl = localStorage.getItem("gpr_ollama_url") || "http://localhost:11434";
-    this.cloudApiKey = localStorage.getItem("gpr_cloud_key") || "";
+    let savedKey = localStorage.getItem("gpr_cloud_key") || "";
+    if (savedKey === "undefined" || savedKey === "null" || savedKey.includes("...")) {
+      savedKey = "";
+    }
+    this.cloudApiKey = savedKey.trim().replace(/^["']|["']$/g, '');
     let savedEndpoint = localStorage.getItem("gpr_cloud_endpoint");
     if (!savedEndpoint || savedEndpoint === "undefined") {
       savedEndpoint = "https://api.groq.com/openai/v1";
@@ -20,25 +24,88 @@ export class ModelResponseGenerator {
     }
     this.cloudEndpoint = savedEndpoint;
     let savedModel = localStorage.getItem("gpr_cloud_model");
-    if (!savedModel || savedModel.includes("llama-3.1") || savedModel.includes("llama-3.3")) {
+    if (!savedModel || savedModel.includes("llama-3.1") || savedModel.includes("llama-3.3") || savedModel === "undefined") {
       savedModel = "openai/gpt-oss-120b";
       try { localStorage.setItem("gpr_cloud_model", "openai/gpt-oss-120b"); } catch (e) {}
     }
     this.cloudModel = savedModel;
+
+    // Auto-fetch key from local server if empty
+    this._fetchLocalConfig();
+  }
+
+  async _fetchLocalConfig() {
+    if (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
+      try {
+        const res = await fetch("/api/config");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.key && (!this.cloudApiKey || this.cloudApiKey.length < 25)) {
+            this.cloudApiKey = data.key;
+            try { localStorage.setItem("gpr_cloud_key", data.key); } catch (e) {}
+          }
+        }
+      } catch (e) {}
+    }
   }
 
   saveConfig(mode, ollamaUrl, cloudKey, cloudEndpoint, cloudModel) {
-    this.mode = mode;
-    this.ollamaUrl = ollamaUrl;
-    this.cloudApiKey = cloudKey;
-    this.cloudEndpoint = cloudEndpoint;
-    this.cloudModel = cloudModel;
+    let cleanKey = (cloudKey || "").trim().replace(/^["']|["']$/g, '');
+    this.mode = mode || "cloud";
+    this.ollamaUrl = (ollamaUrl || "http://localhost:11434").trim();
+    this.cloudApiKey = cleanKey;
+    this.cloudEndpoint = (cloudEndpoint || "https://api.groq.com/openai/v1").trim();
+    this.cloudModel = (cloudModel || "openai/gpt-oss-120b").trim();
 
-    localStorage.setItem("gpr_api_mode", mode);
-    localStorage.setItem("gpr_ollama_url", ollamaUrl);
-    localStorage.setItem("gpr_cloud_key", cloudKey);
-    localStorage.setItem("gpr_cloud_endpoint", cloudEndpoint);
-    localStorage.setItem("gpr_cloud_model", cloudModel);
+    try {
+      localStorage.setItem("gpr_api_mode", this.mode);
+      localStorage.setItem("gpr_ollama_url", this.ollamaUrl);
+      localStorage.setItem("gpr_cloud_key", this.cloudApiKey);
+      localStorage.setItem("gpr_cloud_endpoint", this.cloudEndpoint);
+      localStorage.setItem("gpr_cloud_model", this.cloudModel);
+    } catch (e) {
+      console.warn("localStorage write failed:", e);
+    }
+  }
+
+  async testConnection(key, endpoint, model) {
+    const cleanKey = (key || this.cloudApiKey || "").trim().replace(/^["']|["']$/g, '');
+    let targetEndpoint = (endpoint || this.cloudEndpoint || "https://api.groq.com/openai/v1").trim();
+    let targetModel = (model || this.cloudModel || "openai/gpt-oss-120b").trim();
+
+    let requestUrl = `${targetEndpoint}/chat/completions`;
+    const headers = {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${cleanKey}`
+    };
+
+    if (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
+      requestUrl = "/api/proxy";
+      headers["X-Target-URL"] = `${targetEndpoint}/chat/completions`;
+    }
+
+    const res = await fetch(requestUrl, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify({
+        model: targetModel,
+        messages: [{ role: "user", content: "Ping" }],
+        max_tokens: 5
+      })
+    });
+
+    if (!res.ok) {
+      let errMsg = `HTTP ${res.status}`;
+      try {
+        const errJson = await res.json();
+        if (errJson?.error?.message) {
+          errMsg = errJson.error.message;
+        }
+      } catch (e) {}
+      throw new Error(errMsg);
+    }
+
+    return true;
   }
 
   async generateResponse(evaluation, onChunk, onComplete) {

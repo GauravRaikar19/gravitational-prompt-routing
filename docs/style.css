@@ -920,6 +920,77 @@ input[type="range"]::-webkit-slider-thumb:hover {
   outline: none;
 }
 
+.input-with-action {
+  display: flex;
+  position: relative;
+  align-items: center;
+}
+
+.input-with-action input {
+  flex: 1;
+  padding-right: 2.5rem;
+}
+
+.sub-action-btn {
+  position: absolute;
+  right: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 4px;
+  border-radius: 4px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.sub-action-btn:hover {
+  opacity: 1;
+}
+
+.test-key-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.2rem;
+  margin-bottom: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.test-key-btn {
+  background: rgba(0, 242, 254, 0.12);
+  border: 1px solid rgba(0, 242, 254, 0.35);
+  color: var(--color-cyan);
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.test-key-btn:hover {
+  background: rgba(0, 242, 254, 0.25);
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+}
+
+.test-key-feedback {
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.test-key-feedback.success {
+  color: #10b981;
+}
+
+.test-key-feedback.error {
+  color: #ef4444;
+}
+
+.test-key-feedback.testing {
+  color: #38bdf8;
+}
+
 .save-config-btn {
   width: 100%;
   background: linear-gradient(135deg, var(--color-cyan), #00b4d8);

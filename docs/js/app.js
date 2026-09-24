@@ -1,7 +1,7 @@
-import { INITIAL_SINGULARITIES, PRESET_PROMPTS, DEFAULT_G, DEFAULT_EPSILON, DEFAULT_DELTA, DEFAULT_LAGRANGE_THRESHOLD } from "./constants.js?v=7.7";
-import { ClientEmbedder } from "./embedder.js?v=7.7";
-import { GravitationalEngine } from "./physics.js?v=7.7";
-import { ModelResponseGenerator } from "./generator.js?v=7.7";
+import { INITIAL_SINGULARITIES, PRESET_PROMPTS, DEFAULT_G, DEFAULT_EPSILON, DEFAULT_DELTA, DEFAULT_LAGRANGE_THRESHOLD } from "./constants.js?v=7.8";
+import { ClientEmbedder } from "./embedder.js?v=7.8";
+import { GravitationalEngine } from "./physics.js?v=7.8";
+import { ModelResponseGenerator } from "./generator.js?v=7.8";
 
 // DOM Elements
 const canvas = document.getElementById("spaceCanvas");
@@ -45,6 +45,9 @@ const ollamaUrlInput = document.getElementById("ollamaUrlInput");
 const cloudKeyInput = document.getElementById("cloudKeyInput");
 const cloudEndpointInput = document.getElementById("cloudEndpointInput");
 const cloudModelInput = document.getElementById("cloudModelInput");
+const toggleKeyVisibilityBtn = document.getElementById("toggleKeyVisibilityBtn");
+const testKeyBtn = document.getElementById("testKeyBtn");
+const testKeyFeedback = document.getElementById("testKeyFeedback");
 
 // Initialize Engine & Generator
 const embedder = new ClientEmbedder(128, 42);
@@ -540,10 +543,17 @@ function openModal() {
     r.checked = (r.value === generator.mode);
   });
   ollamaUrlInput.value = generator.ollamaUrl;
+  cloudKeyInput.value = generator.cloudApiKey || "";
+  cloudKeyInput.type = "password";
+  if (toggleKeyVisibilityBtn) toggleKeyVisibilityBtn.textContent = "👁️";
+  if (testKeyFeedback) {
+    testKeyFeedback.textContent = "";
+    testKeyFeedback.className = "test-key-feedback";
+  }
   cloudEndpointInput.value = (!generator.cloudEndpoint || generator.cloudEndpoint === "undefined") 
     ? "https://api.groq.com/openai/v1" 
     : generator.cloudEndpoint;
-  cloudModelInput.value = (!generator.cloudModel || generator.cloudModel.includes("llama-3.1") || generator.cloudModel.includes("llama-3.3"))
+  cloudModelInput.value = (!generator.cloudModel || generator.cloudModel.includes("llama-3.1") || generator.cloudModel.includes("llama-3.3") || generator.cloudModel === "undefined")
     ? "openai/gpt-oss-120b"
     : generator.cloudModel;
   toggleModalSubsections(generator.mode);
@@ -603,33 +613,101 @@ function toggleModalSubsections(mode) {
   }
 }
 
+if (toggleKeyVisibilityBtn) {
+  toggleKeyVisibilityBtn.addEventListener("click", () => {
+    if (cloudKeyInput.type === "password") {
+      cloudKeyInput.type = "text";
+      toggleKeyVisibilityBtn.textContent = "🙈";
+    } else {
+      cloudKeyInput.type = "password";
+      toggleKeyVisibilityBtn.textContent = "👁️";
+    }
+  });
+}
+
+if (testKeyBtn) {
+  testKeyBtn.addEventListener("click", async () => {
+    const rawKey = cloudKeyInput.value.trim();
+    if (!rawKey) {
+      testKeyFeedback.textContent = "⚠️ Please enter an API key first";
+      testKeyFeedback.className = "test-key-feedback error";
+      return;
+    }
+    testKeyFeedback.textContent = "⏳ Testing key connection...";
+    testKeyFeedback.className = "test-key-feedback testing";
+    testKeyBtn.disabled = true;
+
+    try {
+      await generator.testConnection(
+        rawKey,
+        cloudEndpointInput.value.trim(),
+        cloudModelInput.value.trim()
+      );
+      testKeyFeedback.textContent = "✓ Key Valid & Connected to Groq!";
+      testKeyFeedback.className = "test-key-feedback success";
+    } catch (err) {
+      testKeyFeedback.textContent = `❌ ${err.message}`;
+      testKeyFeedback.className = "test-key-feedback error";
+    } finally {
+      testKeyBtn.disabled = false;
+    }
+  });
+}
+
 saveConfigBtn.addEventListener("click", (e) => {
   e.preventDefault();
   const selectedRadio = document.querySelector('input[name="providerMode"]:checked');
+  const selectedMode = selectedRadio ? selectedRadio.value : "cloud";
   let endpointVal = cloudEndpointInput.value.trim();
   if (!endpointVal || endpointVal === "undefined") {
     endpointVal = "https://api.groq.com/openai/v1";
   }
   let modelVal = cloudModelInput.value.trim();
-  if (!modelVal || modelVal.includes("llama-3.1") || modelVal.includes("llama-3.3")) {
+  if (!modelVal || modelVal.includes("llama-3.1") || modelVal.includes("llama-3.3") || modelVal === "undefined") {
     modelVal = "openai/gpt-oss-120b";
+  }
+  let keyVal = cloudKeyInput.value.trim();
+  if (keyVal.includes("...")) {
+    keyVal = generator.cloudApiKey || "";
   }
   generator.saveConfig(
     selectedMode,
     ollamaUrlInput.value.trim(),
-    cloudKeyInput.value.trim(),
+    keyVal,
     endpointVal,
     modelVal
   );
-  closeModal();
-  executeRouting();
+  saveConfigBtn.textContent = "Saved & Activated! ✓";
+  setTimeout(() => {
+    saveConfigBtn.textContent = "Save Preferences";
+    closeModal();
+    executeRouting();
+  }, 300);
 });
 
 // Initialize on Load
-closeModal();
-toggleModalSubsections(generator.mode);
-initPresets();
-// Trigger initial prompt
-promptInput.value = "Who was Lord Rama's wife?";
-executeRouting();
+(async () => {
+  if (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
+    try {
+      const res = await fetch("/api/config");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.key && (!generator.cloudApiKey || generator.cloudApiKey.length < 25)) {
+          generator.cloudApiKey = data.key;
+          try { localStorage.setItem("gpr_cloud_key", data.key); } catch (e) {}
+        }
+      }
+    } catch (e) {}
+  }
+  const radios = document.querySelectorAll('input[name="providerMode"]');
+  radios.forEach(r => {
+    r.checked = (r.value === generator.mode);
+  });
+  closeModal();
+  toggleModalSubsections(generator.mode);
+  initPresets();
+  // Trigger initial prompt
+  promptInput.value = "Who was Lord Rama's wife?";
+  executeRouting();
+})();
 

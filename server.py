@@ -9,6 +9,18 @@ import os
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
 DOCS_DIR = os.path.abspath("docs")
 
+def load_env():
+    env_path = os.path.join(os.path.dirname(__file__), ".env")
+    if os.path.exists(env_path):
+        with open(env_path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    os.environ[k.strip()] = v.strip()
+
+load_env()
+
 class ProxyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=DOCS_DIR, **kwargs)
@@ -20,6 +32,20 @@ class ProxyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Headers", "*")
         self.end_headers()
 
+    def do_GET(self):
+        if self.path.startswith("/api/config"):
+            self.send_response(200)
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            payload = {
+                "key": os.environ.get("GROQ_API_KEY", ""),
+                "model": "openai/gpt-oss-120b"
+            }
+            self.wfile.write(json.dumps(payload).encode("utf-8"))
+        else:
+            super().do_GET()
+
     def do_POST(self):
         if self.path.startswith("/api/proxy"):
             # Proxy request to Groq / target API to bypass browser CORS
@@ -27,9 +53,12 @@ class ProxyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             body = self.rfile.read(content_length)
 
             auth_header = self.headers.get("Authorization", "")
+            if not auth_header or len(auth_header.strip()) < 15 or "undefined" in auth_header:
+                default_key = os.environ.get("GROQ_API_KEY", "")
+                if default_key:
+                    auth_header = f"Bearer {default_key}"
+
             target_url = self.headers.get("X-Target-URL", "https://api.groq.com/openai/v1/chat/completions")
-            if not target_url or "undefined" in target_url or not target_url.startswith("http"):
-                target_url = "https://api.groq.com/openai/v1/chat/completions"
 
             req = urllib.request.Request(
                 target_url,
