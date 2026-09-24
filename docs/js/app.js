@@ -1,7 +1,7 @@
-import { INITIAL_SINGULARITIES, PRESET_PROMPTS, DEFAULT_G, DEFAULT_EPSILON, DEFAULT_DELTA, DEFAULT_LAGRANGE_THRESHOLD } from "./constants.js?v=7.3";
-import { ClientEmbedder } from "./embedder.js?v=7.3";
-import { GravitationalEngine } from "./physics.js?v=7.3";
-import { ModelResponseGenerator } from "./generator.js?v=7.3";
+import { INITIAL_SINGULARITIES, PRESET_PROMPTS, DEFAULT_G, DEFAULT_EPSILON, DEFAULT_DELTA, DEFAULT_LAGRANGE_THRESHOLD } from "./constants.js?v=7.4";
+import { ClientEmbedder } from "./embedder.js?v=7.4";
+import { GravitationalEngine } from "./physics.js?v=7.4";
+import { ModelResponseGenerator } from "./generator.js?v=7.4";
 
 // DOM Elements
 const canvas = document.getElementById("spaceCanvas");
@@ -540,9 +540,12 @@ function openModal() {
     r.checked = (r.value === generator.mode);
   });
   ollamaUrlInput.value = generator.ollamaUrl;
-  cloudKeyInput.value = generator.cloudApiKey;
-  cloudEndpointInput.value = generator.cloudEndpoint;
-  cloudModelInput.value = generator.cloudModel;
+  cloudEndpointInput.value = (!generator.cloudEndpoint || generator.cloudEndpoint === "undefined") 
+    ? "https://api.groq.com/openai/v1" 
+    : generator.cloudEndpoint;
+  cloudModelInput.value = (!generator.cloudModel || generator.cloudModel === "llama-3.1-70b-versatile")
+    ? "llama-3.3-70b-versatile"
+    : generator.cloudModel;
   toggleModalSubsections(generator.mode);
 }
 
@@ -603,13 +606,20 @@ function toggleModalSubsections(mode) {
 saveConfigBtn.addEventListener("click", (e) => {
   e.preventDefault();
   const selectedRadio = document.querySelector('input[name="providerMode"]:checked');
-  const selectedMode = selectedRadio ? selectedRadio.value : "autonomous";
+  let endpointVal = cloudEndpointInput.value.trim();
+  if (!endpointVal || endpointVal === "undefined") {
+    endpointVal = "https://api.groq.com/openai/v1";
+  }
+  let modelVal = cloudModelInput.value.trim();
+  if (!modelVal || modelVal === "llama-3.1-70b-versatile") {
+    modelVal = "llama-3.3-70b-versatile";
+  }
   generator.saveConfig(
     selectedMode,
     ollamaUrlInput.value.trim(),
     cloudKeyInput.value.trim(),
-    cloudEndpointInput.value.trim(),
-    cloudModelInput.value.trim()
+    endpointVal,
+    modelVal
   );
   closeModal();
   executeRouting();

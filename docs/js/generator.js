@@ -13,7 +13,12 @@ export class ModelResponseGenerator {
     this.mode = localStorage.getItem("gpr_api_mode") || "autonomous"; // "autonomous", "ollama", "cloud"
     this.ollamaUrl = localStorage.getItem("gpr_ollama_url") || "http://localhost:11434";
     this.cloudApiKey = localStorage.getItem("gpr_cloud_key") || "";
-    this.cloudEndpoint = localStorage.getItem("gpr_cloud_endpoint") || "https://api.groq.com/openai/v1";
+    let savedEndpoint = localStorage.getItem("gpr_cloud_endpoint");
+    if (!savedEndpoint || savedEndpoint === "undefined") {
+      savedEndpoint = "https://api.groq.com/openai/v1";
+      try { localStorage.setItem("gpr_cloud_endpoint", savedEndpoint); } catch (e) {}
+    }
+    this.cloudEndpoint = savedEndpoint;
     let savedModel = localStorage.getItem("gpr_cloud_model");
     if (!savedModel || savedModel === "llama-3.1-70b-versatile") {
       savedModel = "llama-3.3-70b-versatile";
