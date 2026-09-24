@@ -579,6 +579,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   flex-direction: column;
   gap: 0.45rem;
   flex: 1;
+  min-height: 480px;
   border-color: rgba(0, 242, 254, 0.2);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
@@ -670,17 +671,17 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 .terminal-body {
-  height: 250px;
-  min-height: 200px;
-  max-height: 275px;
+  flex: 1;
+  min-height: 440px;
+  max-height: 750px;
   overflow-y: auto;
-  background: rgba(6, 8, 14, 0.9);
+  background: rgba(6, 8, 14, 0.92);
   border: 1px solid var(--border-subtle);
   border-radius: 10px;
-  padding: 1rem 1.15rem;
+  padding: 1.15rem 1.35rem;
   font-family: 'Inter', sans-serif;
-  font-size: 0.88rem;
-  line-height: 1.6;
+  font-size: 0.92rem;
+  line-height: 1.68;
 }
 
 .terminal-placeholder {

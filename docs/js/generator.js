@@ -582,6 +582,85 @@ export class ModelResponseGenerator {
         keyFacts: ["Incumbent: Siddaramaiah (INC)", "Capital: Bengaluru"]
       },
       {
+        triggers: ["taluka", "goa"],
+        title: "Administrative Talukas of Goa",
+        directAnswer: "The state of Goa is divided into **12 talukas** (administrative subdistricts) across its two revenue districts.",
+        description: "Administrative subdistricts of Goa, India",
+        extract: "Goa is organized into two administrative districts: North Goa and South Goa, encompassing a total of 12 talukas. Each taluka is headed by a Mamlatdar responsible for revenue administration and local governance.",
+        keyFacts: [
+          "Total Number of Talukas: 12",
+          "North Goa Talukas (6): Bardez, Bicholim, Pernem, Sattari, Tiswadi, Ponda (administratively transferred)",
+          "South Goa Talukas (6): Canacona, Mormugao, Salcete, Sanguem, Quepem, Dharbandora",
+          "State Capital: Panaji (located in Tiswadi taluka)",
+          "Commercial Capital: Margao (located in Salcete taluka)"
+        ]
+      },
+      {
+        triggers: ["district", "goa"],
+        title: "Revenue Districts of Goa",
+        directAnswer: "The state of Goa has **2 districts**: **North Goa** and **South Goa**.",
+        description: "Revenue districts of Goa, India",
+        extract: "Goa has two revenue districts: North Goa (headquartered in Panaji) and South Goa (headquartered in Margao). Together, they contain 12 administrative talukas and 334 revenue villages.",
+        keyFacts: [
+          "Districts: North Goa and South Goa",
+          "North Goa District HQ: Panaji",
+          "South Goa District HQ: Margao",
+          "Total Talukas: 12"
+        ]
+      },
+      {
+        triggers: ["state", "india"],
+        title: "States and Union Territories of India",
+        directAnswer: "India is divided into **28 states** and **8 Union Territories**.",
+        description: "Federal administrative divisions of the Republic of India",
+        extract: "India is a federal union comprising 28 states and 8 union territories, for a total of 36 constituent entities. Each state has an elected legislature and government headed by a Chief Minister.",
+        keyFacts: [
+          "Total States: 28",
+          "Union Territories: 8 (including the National Capital Territory of Delhi)",
+          "National Capital: New Delhi"
+        ]
+      },
+      {
+        triggers: ["continent"],
+        title: "Continents of the World",
+        directAnswer: "There are **7 continents** on Earth: Asia, Africa, North America, South America, Antarctica, Europe, and Australia (Oceania).",
+        description: "Earth's seven major continuous landmasses",
+        extract: "Earth has 7 widely recognized continents. Asia is the largest by both surface area and population, while Antarctica is the only continent without a permanent human population.",
+        keyFacts: [
+          "Count: 7 Continents",
+          "List by Area: Asia, Africa, North America, South America, Antarctica, Europe, Australia",
+          "Largest Continent: Asia (44.58 million km²)",
+          "Smallest Continent: Australia (8.6 million km²)"
+        ]
+      },
+      {
+        triggers: ["bone", "human"],
+        title: "Human Skeletal System",
+        directAnswer: "An adult human body has **206 bones**.",
+        description: "Structural skeletal framework of Homo sapiens",
+        extract: "The adult human skeletal system consists of 206 individual bones organized into the axial skeleton (80 bones: skull, spine, rib cage) and appendicular skeleton (126 bones: limbs and girdles). Infants are born with approximately 270 bones, which fuse during development.",
+        keyFacts: [
+          "Adult Bone Count: 206 bones",
+          "Newborn Bone Count: ~270 bones (fuse during growth)",
+          "Largest / Strongest Bone: Femur (thigh bone)",
+          "Smallest Bone: Stapes (in the middle ear, ~3 mm)"
+        ]
+      },
+      {
+        triggers: ["planet", "solar"],
+        title: "Planets of the Solar System",
+        directAnswer: "There are **8 official planets** in the Solar System orbiting the Sun.",
+        description: "Celestial planetary bodies orbiting the Sun",
+        extract: "According to the International Astronomical Union (IAU), the Solar System has 8 official planets. In order from the Sun, they are: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune.",
+        keyFacts: [
+          "Count: 8 Planets",
+          "Terrestrial (Rocky) Planets: Mercury, Venus, Earth, Mars",
+          "Gas / Ice Giants: Jupiter, Saturn, Uranus, Neptune",
+          "Largest Planet: Jupiter",
+          "Dwarf Planets: Pluto (reclassified 2006), Eris, Haumea, Makemake, Ceres"
+        ]
+      },
+      {
         triggers: ["aldona"],
         title: "Aldona, Goa",
         directAnswer: "Aldona is a scenic, historic riverfront village in Bardez taluka, North Goa, India.",
@@ -704,7 +783,7 @@ export class ModelResponseGenerator {
     ];
 
     for (const item of localDict) {
-      if (item.triggers.every(t => lower.includes(t))) {
+      if (item.triggers.every(t => lower.includes(t) || (t.endsWith("s") && lower.includes(t.slice(0, -1))) || (!t.endsWith("s") && lower.includes(t + "s")))) {
         return item;
       }
     }
@@ -716,7 +795,8 @@ export class ModelResponseGenerator {
         "how", "many", "much", "did", "do", "does", "is", "are", "was", "were",
         "what", "who", "which", "where", "when", "why", "win", "won", "in", "on",
         "at", "for", "to", "of", "the", "a", "an", "latest", "edition", "current",
-        "recent", "tell", "me", "about", "give", "list"
+        "recent", "tell", "me", "about", "give", "list", "there", "has", "have",
+        "state", "country", "nation", "city", "place", "province", "located"
       ]);
       const tokens = clean.toLowerCase().split(/\s+/).filter(w => !fluff.has(w) && w.length > 1);
       let searchTerm = tokens.length > 0 ? tokens.join(" ") : clean;
@@ -730,7 +810,7 @@ export class ModelResponseGenerator {
 
       const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchTerm)}&utf8=&format=json&origin=*`;
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2200); // 2.2s timeout
+      const timeoutId = setTimeout(() => controller.abort(), 2800); // 2.8s timeout
       const searchRes = await fetch(searchUrl, { signal: controller.signal });
       clearTimeout(timeoutId);
 
@@ -738,15 +818,30 @@ export class ModelResponseGenerator {
         const searchData = await searchRes.json();
         const hits = searchData?.query?.search;
         if (hits && hits.length > 0) {
+          // Dynamic relevance scoring: match query keywords against article titles
+          const scoreHit = (h) => {
+            let score = 0;
+            const tLower = h.title.toLowerCase();
+            tokens.forEach(tok => {
+              if (tLower.includes(tok)) score += 12;
+              if (tok.endsWith("s") && tLower.includes(tok.slice(0, -1))) score += 8;
+              if (!tok.endsWith("s") && tLower.includes(tok + "s")) score += 8;
+            });
+            if (tLower.startsWith("list of")) score += 6;
+            return score;
+          };
+          hits.sort((a, b) => scoreHit(b) - scoreHit(a));
           const topTitle = hits[0].title;
           const sumRes = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(topTitle)}`);
           if (sumRes.ok) {
             const sumData = await sumRes.json();
-            if (sumData.extract && sumData.extract.length > 25 && sumData.type !== "disambiguation") {
+            if (sumData.extract && sumData.extract.length > 20 && sumData.type !== "disambiguation") {
+              const sentences = sumData.extract.split(/(?<=[.?!])\s+/);
               return {
                 title: sumData.title,
                 description: sumData.description || "",
-                extract: sumData.extract
+                extract: sumData.extract,
+                directAnswer: sentences.length > 0 ? sentences[0] : sumData.extract
               };
             }
           }
@@ -877,14 +972,16 @@ export class ModelResponseGenerator {
         if (knowledge && knowledge.directAnswer) {
           // Instant direct local fact
           if (primary.singularity.id === "atlas-omni-70b") {
-            fullText = `### 🌐 Verified Knowledge Intelligence via ${modelName}\n`
-              + `**Topic:** **${knowledge.title}**${knowledge.description ? ` *(${knowledge.description})*` : ""}\n\n`
-              + `> ${knowledge.directAnswer}\n\n`
-              + `**Comprehensive Overview:**\n`
-              + `${knowledge.extract}\n\n`
+            fullText = `### 🌐 Executive Knowledge Synthesis via ${modelName}\n`
+              + `*Cognitive Topography: World Facts, Governance & Entity Intelligence (${primary.sharePercent.toFixed(1)}% Gravitational Capture)*\n\n`
+              + `> 💡 **Direct Resolution:**\n`
+              + `> **${knowledge.directAnswer}**\n\n`
               + (knowledge.keyFacts && knowledge.keyFacts.length > 0 ?
-                `**Key Verified Data Points:**\n` + knowledge.keyFacts.map(f => `• ${f}`).join("\n") + "\n\n" : "")
-              + `*Dispatched via **${modelName}** with optimal domain affinity (${primary.sharePercent.toFixed(1)}% gravitational capture).*`;
+                `#### 📋 Verified Structured Breakdown:\n` + knowledge.keyFacts.map(f => `• ${f}`).join("\n") + "\n\n" : "")
+              + `#### 🏛️ Factual Context & Reference Intelligence:\n`
+              + `**Topic:** **${knowledge.title}**${knowledge.description ? ` *(${knowledge.description})*` : ""}\n\n`
+              + `${knowledge.extract}\n\n`
+              + `*Dispatched via **${modelName}** (Continuous Field-Theoretic Orchestration).*`;
           } else {
             fullText = `### Technical Overview via ${modelName}\n`
               + `**Topic:** **${knowledge.title}**\n\n`
@@ -919,11 +1016,12 @@ export class ModelResponseGenerator {
           } else if (knowledge) {
             // 3. Fallback to smart Wikipedia search knowledge
             if (primary.singularity.id === "atlas-omni-70b") {
-              fullText = `### 🌐 Verified Knowledge Intelligence via ${modelName}\n`
-                + `**Topic:** **${knowledge.title}**${knowledge.description ? ` *(${knowledge.description})*` : ""}\n\n`
-                + `**Comprehensive Overview:**\n`
+              fullText = `### 🌐 Executive Knowledge Synthesis via ${modelName}\n`
+                + `*Cognitive Topography: World Facts & Global Intelligence (${primary.sharePercent.toFixed(1)}% Gravitational Capture)*\n\n`
+                + (knowledge.directAnswer ? `> 💡 **Direct Resolution:**\n> **${knowledge.directAnswer}**\n\n` : "")
+                + `#### 📋 Factual Overview — **${knowledge.title}**${knowledge.description ? ` *(${knowledge.description})*` : ""}:\n\n`
                 + `${knowledge.extract}\n\n`
-                + `*Dispatched via **${modelName}** with optimal domain affinity (${primary.sharePercent.toFixed(1)}% gravitational capture).*`;
+                + `*Dispatched via **${modelName}** with optimal domain affinity.*`;
             } else if (primary.singularity.id === "deepcoder-70b") {
               fullText = `### Technical Representation via ${modelName}\n`
                 + `**Topic:** **${knowledge.title}**${knowledge.description ? ` (${knowledge.description})` : ""}\n\n`

@@ -25,6 +25,7 @@ async function main() {
   await test('square root of 49 is what?');
   await test('what is 25 percent of 800');
   await test('who was lord rams wife?');
+  await test('how many talukas are there in the state of GOA');
   await test('how to center a div in css');
   await test('write a poem about thunderstorms');
 }
