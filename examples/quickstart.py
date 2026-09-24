@@ -69,7 +69,7 @@ def run_quickstart():
     creative_model = LLMSingularity(
         id="creative-writer-8b",
         name="Hermes-Prose-8B",
-        domain_description="Expressive creative writing, emotional character dialogue, prose, fiction, poetry, soliloquy, melancholy, and evocative storytelling.",
+        domain_description="Expressive creative writing, songs, lyrics, emotional character dialogue, prose, fiction, poetry, soliloquy, melancholy, storytelling, fantasy tales, romantic letters, and imaginative narratives.",
         parameters_b=8.0,
         benchmark_scores={"alpaca_eval": 0.89, "eq_bench": 0.85},
         context_window_k=64.0,
@@ -81,6 +81,11 @@ def run_quickstart():
             "Craft a tense noir detective dialogue scene in the rainy midnight",
             "Write an emotional soliloquy of a weary artisan watching time slip away",
             "Expressive fiction narrative with rich metaphors and emotional prose",
+            "Write me a song about love and heartbreak under the moonlight",
+            "Tell me a story about a dragon who befriends a lonely child",
+            "Compose a lullaby for a baby falling asleep under the stars",
+            "Write lyrics for a folk ballad about the changing seasons",
+            "Create an imaginative fantasy tale of an enchanted forest kingdom",
         ],
     )
 

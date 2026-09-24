@@ -51,7 +51,7 @@ export const INITIAL_SINGULARITIES = [
     id: "hermes-prose-8b",
     name: "Hermes-Prose-8B",
     role: "Creative Prose & Nuance",
-    description: "Expressive creative writing, emotional character dialogues, screenplays, melancholy, poetry, metaphors, and evocative storytelling.",
+    description: "Expressive creative writing, songs, lyrics, emotional character dialogues, screenplays, melancholy, poetry, metaphors, fantasy tales, and evocative storytelling.",
     parametersB: 8,
     mass: 49.6,
     costPerM: 0.20,
@@ -63,7 +63,11 @@ export const INITIAL_SINGULARITIES = [
       "Write an emotional, melancholic soliloquy of a weary artisan watching time slip away",
       "Compose a lyrical ballad in iambic pentameter about moonlight reflecting on still water",
       "Craft a tense noir detective dialogue in the pouring midnight rain",
-      "Narrate an atmospheric fantasy tale of an ancient kingdom fading into myth"
+      "Narrate an atmospheric fantasy tale of an ancient kingdom fading into myth",
+      "Write me a song about love and heartbreak under the moonlight",
+      "Tell me a story about a dragon who befriends a lonely child",
+      "Compose a lullaby for a baby falling asleep under the stars",
+      "Write lyrics for a folk ballad about the changing seasons"
     ]
   }
 ];
