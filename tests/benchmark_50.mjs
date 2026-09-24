@@ -1,9 +1,9 @@
 // 50-Prompt Comprehensive Routing Benchmark Suite
 globalThis.localStorage = { getItem: () => null, setItem: () => {} };
 
-import('../docs/js/constants.js?v=6.6').then(async c => {
-  const { ClientEmbedder } = await import('../docs/js/embedder.js?v=6.6');
-  const { GravitationalEngine } = await import('../docs/js/physics.js?v=6.6');
+import('../docs/js/constants.js?v=6.7').then(async c => {
+  const { ClientEmbedder } = await import('../docs/js/embedder.js?v=6.7');
+  const { GravitationalEngine } = await import('../docs/js/physics.js?v=6.7');
 
   const engine = new GravitationalEngine(new ClientEmbedder(128, 42));
   engine.setSingularities(c.INITIAL_SINGULARITIES);

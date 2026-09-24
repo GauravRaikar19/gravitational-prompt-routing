@@ -671,17 +671,34 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 .terminal-body {
-  flex: 1;
-  min-height: 440px;
-  max-height: 750px;
+  height: 470px;
+  max-height: 500px;
   overflow-y: auto;
-  background: rgba(6, 8, 14, 0.92);
+  background: rgba(6, 8, 14, 0.95);
   border: 1px solid var(--border-subtle);
   border-radius: 10px;
   padding: 1.15rem 1.35rem;
   font-family: 'Inter', sans-serif;
   font-size: 0.92rem;
   line-height: 1.68;
+}
+
+.terminal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.terminal-body::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+}
+
+.terminal-body::-webkit-scrollbar-thumb {
+  background: rgba(0, 242, 254, 0.3);
+  border-radius: 4px;
+}
+
+.terminal-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 242, 254, 0.6);
 }
 
 .terminal-placeholder {
@@ -706,23 +723,61 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 .live-stream-container h3, 
-.live-stream-container h4 {
+.live-stream-container h4,
+.live-stream-container h5 {
   color: var(--color-cyan);
   margin-top: 1rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.45rem;
   font-family: var(--font-display);
 }
 
 .live-stream-container blockquote {
-  border-left: 3px solid var(--color-pink);
-  padding-left: 1rem;
-  margin: 0.75rem 0;
-  color: #cbd5e1;
-  font-style: italic;
-  background: rgba(236, 72, 153, 0.05);
+  border-left: 3px solid var(--color-cyan);
+  padding: 0.65rem 1rem;
+  margin: 0.65rem 0;
+  color: #e2e8f0;
+  font-style: normal;
+  background: rgba(0, 242, 254, 0.06);
   border-radius: 0 8px 8px 0;
-  padding-top: 0.4rem;
-  padding-bottom: 0.4rem;
+  line-height: 1.65;
+}
+
+.code-block-wrapper {
+  background: #070a12;
+  border: 1px solid rgba(0, 242, 254, 0.25);
+  border-radius: 8px;
+  margin: 0.85rem 0;
+  overflow: hidden;
+}
+
+.code-block-header {
+  background: rgba(0, 242, 254, 0.08);
+  border-bottom: 1px solid rgba(0, 242, 254, 0.15);
+  padding: 0.25rem 0.75rem;
+  font-family: monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.code-block {
+  padding: 0.85rem 1rem !important;
+  margin: 0 !important;
+  overflow-x: auto;
+  font-family: 'Fira Code', 'Courier New', monospace;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: #38bdf8;
+  background: transparent !important;
+}
+
+.code-block code {
+  background: transparent !important;
+  padding: 0 !important;
+  color: #38bdf8 !important;
+  border-radius: 0;
 }
 
 .live-stream-container code {

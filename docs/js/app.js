@@ -1,7 +1,7 @@
-import { INITIAL_SINGULARITIES, PRESET_PROMPTS, DEFAULT_G, DEFAULT_EPSILON, DEFAULT_DELTA, DEFAULT_LAGRANGE_THRESHOLD } from "./constants.js?v=6.6";
-import { ClientEmbedder } from "./embedder.js?v=6.6";
-import { GravitationalEngine } from "./physics.js?v=6.6";
-import { ModelResponseGenerator } from "./generator.js?v=6.6";
+import { INITIAL_SINGULARITIES, PRESET_PROMPTS, DEFAULT_G, DEFAULT_EPSILON, DEFAULT_DELTA, DEFAULT_LAGRANGE_THRESHOLD } from "./constants.js?v=6.7";
+import { ClientEmbedder } from "./embedder.js?v=6.7";
+import { GravitationalEngine } from "./physics.js?v=6.7";
+import { ModelResponseGenerator } from "./generator.js?v=6.7";
 
 // DOM Elements
 const canvas = document.getElementById("spaceCanvas");
@@ -332,7 +332,7 @@ function executeRouting() {
   triggerGeneration(result);
 }
 
-// Simple Markdown-to-HTML Formatter
+// Markdown-to-HTML Formatter with Code Blocks & Grouped Blockquotes
 function formatMarkdown(raw) {
   if (!raw) return "";
   let out = raw
@@ -340,14 +340,27 @@ function formatMarkdown(raw) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
 
-  // Bold **text**
-  out = out.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-  // Headings: ### Title
-  out = out.replace(/^### (.*$)/gim, "<h4>$1</h4>");
+  // Fenced Code blocks: ```lang ... ```
+  out = out.replace(/```([a-z0-9_-]*)\n([\s\S]*?)```/gim, (m, lang, code) => {
+    return `<div class="code-block-wrapper"><div class="code-block-header">${lang || "CODE"}</div><pre class="code-block"><code>${code.trim()}</code></pre></div>`;
+  });
+
   // Inline code: `code`
   out = out.replace(/`([^`]+)`/g, "<code>$1</code>");
-  // Blockquotes: &gt; quote
-  out = out.replace(/^&gt; (.*$)/gim, "<blockquote>$1</blockquote>");
+
+  // Bold **text**
+  out = out.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+  // Headings
+  out = out.replace(/^#### (.*$)/gim, "<h5>$1</h5>");
+  out = out.replace(/^### (.*$)/gim, "<h4>$1</h4>");
+  out = out.replace(/^## (.*$)/gim, "<h3>$1</h3>");
+
+  // Group consecutive blockquote lines into a single coherent blockquote box
+  out = out.replace(/((?:^&gt;[^\n]*\n?)+)/gm, (match) => {
+    const cleaned = match.replace(/^&gt;\s?/gm, "").trim();
+    return `<blockquote>${cleaned.replace(/\n/g, "<br>")}</blockquote>`;
+  });
 
   return out;
 }
