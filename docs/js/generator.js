@@ -13,8 +13,12 @@ export class ModelResponseGenerator {
     this.mode = localStorage.getItem("gpr_api_mode") || "autonomous"; // "autonomous", "ollama", "cloud"
     this.ollamaUrl = localStorage.getItem("gpr_ollama_url") || "http://localhost:11434";
     this.cloudApiKey = localStorage.getItem("gpr_cloud_key") || "";
-    this.cloudEndpoint = localStorage.getItem("gpr_cloud_endpoint") || "https://api.groq.com/openai/v1";
-    this.cloudModel = localStorage.getItem("gpr_cloud_model") || "llama-3.1-70b-versatile";
+    let savedModel = localStorage.getItem("gpr_cloud_model");
+    if (!savedModel || savedModel === "llama-3.1-70b-versatile") {
+      savedModel = "llama-3.3-70b-versatile";
+      try { localStorage.setItem("gpr_cloud_model", "llama-3.3-70b-versatile"); } catch (e) {}
+    }
+    this.cloudModel = savedModel;
   }
 
   saveConfig(mode, ollamaUrl, cloudKey, cloudEndpoint, cloudModel) {
@@ -49,7 +53,8 @@ export class ModelResponseGenerator {
         onComplete();
         return;
       } catch (err) {
-        console.warn("Cloud API connection failed, falling back to Autonomous Synthesis:", err);
+        console.error("Cloud API connection failed, falling back to Autonomous Synthesis:", err);
+        onChunk(`### ⚠️ Cloud LLM Connection Notice\n\n**${err.message}**\n\n*Falling back to Autonomous Knowledge Synthesizer...*\n\n---\n\n`);
       }
     }
 
@@ -1369,12 +1374,17 @@ export class ModelResponseGenerator {
 
   async _streamCloudAPI(modelId = "", prompt = "", onChunk) {
     let resolvedModel = this.cloudModel;
+    if (!resolvedModel || resolvedModel === "llama-3.1-70b-versatile") {
+      resolvedModel = "llama-3.3-70b-versatile";
+    }
+
     if (this.cloudEndpoint.includes("groq.com")) {
       // Dynamic routing to matched open-source frontier models on Groq
       if (modelId.includes("deepseek") || modelId.includes("r1")) {
         resolvedModel = "deepseek-r1-distill-llama-70b";
       } else if (modelId.includes("coder") || modelId.includes("qwen")) {
-        resolvedModel = "qwen-2.5-coder-32b";
+        // Groq serves Llama-3.3-70B for general reasoning & code
+        resolvedModel = "llama-3.3-70b-versatile";
       } else if (modelId.includes("llama")) {
         resolvedModel = "llama-3.3-70b-versatile";
       } else {
@@ -1386,7 +1396,7 @@ export class ModelResponseGenerator {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${this.cloudApiKey}`
+        "Authorization": `Bearer ${this.cloudApiKey.trim()}`
       },
       body: JSON.stringify({
         model: resolvedModel,
@@ -1395,21 +1405,58 @@ export class ModelResponseGenerator {
       })
     });
 
+    if (!res.ok) {
+      let errMsg = `HTTP ${res.status}: ${res.statusText}`;
+      try {
+        const errJson = await res.json();
+        if (errJson?.error?.message) {
+          errMsg = errJson.error.message;
+        }
+      } catch (e) {}
+      throw new Error(`Groq API Error (${resolvedModel}): ${errMsg}`);
+    }
+
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
     let accumulated = "";
+    let buffer = "";
 
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
-      const chunk = decoder.decode(value);
-      const lines = chunk.split("\n");
-      for (const line of lines) {
-        if (line.startsWith("data: ") && !line.includes("[DONE]")) {
-          const json = JSON.parse(line.slice(6));
-          accumulated += json.choices[0]?.delta?.content || "";
-          onChunk(accumulated);
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop() || "";
+
+      for (const rawLine of lines) {
+        const line = rawLine.trim();
+        if (!line || line === "data: [DONE]") continue;
+        if (line.startsWith("data: ")) {
+          try {
+            const json = JSON.parse(line.slice(6));
+            const delta = json.choices?.[0]?.delta?.content || "";
+            if (delta) {
+              accumulated += delta;
+              onChunk(accumulated);
+            }
+          } catch (e) {
+            // Buffer split across network packet, ignore partial json
+          }
         }
+      }
+    }
+
+    if (!accumulated && buffer.trim()) {
+      // Check if any leftover data
+      if (buffer.startsWith("data: ") && !buffer.includes("[DONE]")) {
+        try {
+          const json = JSON.parse(buffer.slice(6));
+          const delta = json.choices?.[0]?.delta?.content || "";
+          if (delta) {
+            accumulated += delta;
+            onChunk(accumulated);
+          }
+        } catch (e) {}
       }
     }
   }
