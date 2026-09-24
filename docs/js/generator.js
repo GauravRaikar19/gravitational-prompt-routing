@@ -1391,6 +1391,7 @@ export class ModelResponseGenerator {
     let endpoint = (this.cloudEndpoint || "https://api.groq.com/openai/v1").trim();
     if (!endpoint) endpoint = "https://api.groq.com/openai/v1";
 
+    let resolvedModel = this.cloudModel || "openai/gpt-oss-120b";
     if (endpoint.includes("groq.com")) {
       // Dynamic routing to active models on Groq
       if (modelId.includes("coder") || modelId.includes("qwen")) {
