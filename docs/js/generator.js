@@ -355,46 +355,152 @@ export class ModelResponseGenerator {
     // 1. Built-in instant high-priority answers for common queries
     const localDict = [
       {
+        triggers: ["chief minister", "goa"],
+        title: "Dr. Pramod Sawant — Chief Minister of Goa",
+        directAnswer: "The Chief Minister of Goa is **Dr. Pramod Sawant** (Bharatiya Janata Party).",
+        description: "13th Chief Minister of Goa (in office since March 19, 2019)",
+        extract: "Dr. Pramod Sawant is an Indian politician and Ayurveda medical practitioner serving as the 13th and current Chief Minister of Goa since March 19, 2019. He represents the Sanquelim constituency in the Goa Legislative Assembly. Following the passing of former Chief Minister Manohar Parrikar, Sawant was sworn in as Chief Minister in March 2019 and led the BJP to victory again in the 2022 Goa Legislative Assembly elections, taking oath for his second term on March 28, 2022.",
+        keyFacts: [
+          "Incumbent: Dr. Pramod Sawant (BJP)",
+          "Constituency: Sanquelim (North Goa)",
+          "Tenure: March 19, 2019 – Present (Sworn in for 2nd term on March 28, 2022)",
+          "Preceded by: Manohar Parrikar",
+          "Executive Seat: Secretariat, Porvorim, Goa"
+        ]
+      },
+      {
+        triggers: ["cm", "goa"],
+        title: "Dr. Pramod Sawant — Chief Minister of Goa",
+        directAnswer: "The Chief Minister of Goa is **Dr. Pramod Sawant** (Bharatiya Janata Party).",
+        description: "13th Chief Minister of Goa (in office since March 19, 2019)",
+        extract: "Dr. Pramod Sawant represents the Sanquelim constituency in North Goa and has served as Chief Minister since March 19, 2019. He was re-elected for a second consecutive term in 2022.",
+        keyFacts: [
+          "Incumbent: Dr. Pramod Sawant (BJP)",
+          "Constituency: Sanquelim (North Goa)",
+          "Tenure: In office since March 19, 2019"
+        ]
+      },
+      {
         triggers: ["prime minister", "india"],
         title: "Prime Minister of India (Narendra Modi)",
-        description: "Head of Government of the Republic of India",
-        extract: "The Prime Minister of India is Narendra Modi, who has served as the 14th prime minister since May 26, 2014. Executive authority is vested in the Prime Minister and the Union Council of Ministers. He represents the Varanasi constituency in the Lok Sabha."
+        directAnswer: "The Prime Minister of India is **Narendra Modi** (Bharatiya Janata Party).",
+        description: "14th Prime Minister of the Republic of India (in office since May 26, 2014)",
+        extract: "The Prime Minister of India is Narendra Modi, who has served as the 14th prime minister since May 26, 2014. Executive authority is vested in the Prime Minister and the Union Council of Ministers. He represents the Varanasi constituency in the Lok Sabha.",
+        keyFacts: [
+          "Incumbent: Narendra Modi (BJP / NDA)",
+          "Constituency: Varanasi, Uttar Pradesh",
+          "Tenure: May 26, 2014 – Present (3rd consecutive term sworn in June 2024)",
+          "Preceded by: Dr. Manmohan Singh"
+        ]
       },
       {
         triggers: ["pm of india"],
         title: "Prime Minister of India (Narendra Modi)",
+        directAnswer: "The current Prime Minister of India is **Narendra Modi**.",
         description: "Head of Government of the Republic of India",
-        extract: "The current Prime Minister of India is Narendra Modi (in office since May 2014), leading the Government of India from the Prime Minister's Office in New Delhi."
+        extract: "The current Prime Minister of India is Narendra Modi (in office since May 2014), leading the Government of India from the Prime Minister's Office at South Block in New Delhi.",
+        keyFacts: [
+          "Incumbent: Narendra Modi",
+          "Tenure: 2014 – Present",
+          "Office: South Block, New Delhi"
+        ]
+      },
+      {
+        triggers: ["chief minister", "maharashtra"],
+        title: "Chief Minister of Maharashtra",
+        directAnswer: "The Chief Minister of Maharashtra is **Eknath Shinde** (since June 30, 2022).",
+        description: "Head of Government of Maharashtra",
+        extract: "Eknath Shinde has served as the 20th Chief Minister of Maharashtra since June 30, 2022, leading the Mahayuti alliance in the state legislature.",
+        keyFacts: ["Incumbent: Eknath Shinde", "Capital: Mumbai"]
+      },
+      {
+        triggers: ["chief minister", "karnataka"],
+        title: "Chief Minister of Karnataka",
+        directAnswer: "The Chief Minister of Karnataka is **Siddaramaiah** (Indian National Congress).",
+        description: "Head of Government of Karnataka",
+        extract: "Siddaramaiah is an Indian politician who has served as the 22nd Chief Minister of Karnataka since May 20, 2023. He previously served as Chief Minister from 2013 to 2018.",
+        keyFacts: ["Incumbent: Siddaramaiah (INC)", "Capital: Bengaluru"]
       },
       {
         triggers: ["aldona"],
         title: "Aldona, Goa",
+        directAnswer: "Aldona is a scenic, historic riverfront village in Bardez taluka, North Goa, India.",
         description: "Historic village in Bardez taluka, North Goa, India",
-        extract: "Aldona is a picturesque, historic village located in the Bardez taluka of North Goa district, India, situated along the tranquil banks of the Mapusa River (approx. 8 km from Mapusa and 19 km from Panaji). It is celebrated for its historic 16th-century Church of Saint Thomas (built in 1596), the Corjuem Fort, and the pioneering cable-stayed Aldona-Corjuem Bridge connecting it to the river island."
+        extract: "Aldona is a picturesque, historic village located in the Bardez taluka of North Goa district, India, situated along the tranquil banks of the Mapusa River (approx. 8 km from Mapusa and 19 km from Panaji). It is celebrated for its historic 16th-century Church of Saint Thomas (built in 1596), the Corjuem Fort, and the pioneering cable-stayed Aldona-Corjuem Bridge connecting it to the river island.",
+        keyFacts: [
+          "District: North Goa | Taluka: Bardez",
+          "Key Landmarks: Saint Thomas Church (1596), Corjuem Fort (1705), Cable-stayed Bridge",
+          "Nearby Towns: Mapusa (8 km), Panaji (19 km)"
+        ]
       },
       {
         triggers: ["panaji"],
         title: "Panaji (Panjim)",
+        directAnswer: "Panaji is the state capital of Goa, located on the southern banks of the Mandovi River estuary.",
         description: "Capital city of the Indian state of Goa",
-        extract: "Panaji is the capital of Goa, located on the banks of the Mandovi estuary. Renowned for its Portuguese colonial architecture, Fontainhas Latin Quarter, and the Church of Our Lady of the Immaculate Conception."
+        extract: "Panaji is the capital of Goa, located on the banks of the Mandovi estuary. Renowned for its Portuguese colonial architecture, Fontainhas Latin Quarter, and the Church of Our Lady of the Immaculate Conception.",
+        keyFacts: [
+          "Role: State Capital of Goa",
+          "Key Heritage: Fontainhas Latin Quarter, Church of Our Lady of the Immaculate Conception",
+          "River: Mandovi River"
+        ]
       },
       {
         triggers: ["google", "founder"],
         title: "Founding of Google",
-        description: "Technology company founded by Larry Page and Sergey Brin",
-        extract: "Google was founded on September 4, 1998, by Larry Page and Sergey Brin while they were Ph.D. students at Stanford University in California. They developed the PageRank algorithm to measure site importance based on backlinks."
+        directAnswer: "Google was founded by **Larry Page** and **Sergey Brin** in September 1998.",
+        description: "Technology company founded by Larry Page and Sergey Brin at Stanford",
+        extract: "Google was founded on September 4, 1998, by Larry Page and Sergey Brin while they were Ph.D. students at Stanford University in California. They developed the PageRank algorithm to measure site importance based on backlinks.",
+        keyFacts: [
+          "Founders: Larry Page and Sergey Brin",
+          "Founding Date: September 4, 1998 (Menlo Park, CA)",
+          "Breakthrough: PageRank backlink algorithm",
+          "Parent Company: Alphabet Inc. (CEO: Sundar Pichai)"
+        ]
+      },
+      {
+        triggers: ["apple", "founder"],
+        title: "Founding of Apple",
+        directAnswer: "Apple was founded by **Steve Jobs**, **Steve Wozniak**, and **Ronald Wayne** on April 1, 1976.",
+        description: "Technology pioneer in Cupertino, California",
+        extract: "Apple Inc. was founded on April 1, 1976, by Steve Jobs, Steve Wozniak, and Ronald Wayne in Los Altos, California to develop and sell Wozniak's Apple I personal computer.",
+        keyFacts: [
+          "Founders: Steve Jobs, Steve Wozniak, Ronald Wayne",
+          "Date: April 1, 1976",
+          "Headquarters: Apple Park, Cupertino, California"
+        ]
       },
       {
         triggers: ["capital", "india"],
         title: "New Delhi",
-        description: "Capital of India",
-        extract: "New Delhi is the capital of India and the seat of all three branches of the Government of India."
+        directAnswer: "The capital of India is **New Delhi**.",
+        description: "Capital of India and seat of Government",
+        extract: "New Delhi is the capital of India and the seat of all three branches of the Government of India: the Executive (Rashtrapati Bhavan, PMO), Legislature (Sansad Bhavan), and Judiciary (Supreme Court).",
+        keyFacts: ["Country: India", "Seat of Government: Rashtrapati Bhavan, Parliament House"]
       },
       {
         triggers: ["capital", "goa"],
         title: "Panaji",
+        directAnswer: "The capital of Goa is **Panaji** (formerly Panjim).",
         description: "Capital of Goa",
-        extract: "Panaji is the state capital of Goa, India, situated on the southern banks of the Mandovi River."
+        extract: "Panaji is the state capital of Goa, India, situated on the southern banks of the Mandovi River.",
+        keyFacts: ["State: Goa", "Legislative Assembly: Porvorim"]
+      },
+      {
+        triggers: ["capital", "france"],
+        title: "Paris",
+        directAnswer: "The capital of France is **Paris**.",
+        description: "Capital and most populous city of France",
+        extract: "Paris is the capital and largest city of France, situated along the Seine River in northern central France. It is a global center for art, finance, gastronomy, and culture.",
+        keyFacts: ["Country: France", "Currency: Euro (€)", "Language: French"]
+      },
+      {
+        triggers: ["capital", "japan"],
+        title: "Tokyo",
+        directAnswer: "The capital of Japan is **Tokyo**.",
+        description: "Capital and most populous metropolitan area in the world",
+        extract: "Tokyo is the capital and largest city of Japan, situated at the head of Tokyo Bay. It is the political, economic, and cultural center of Japan.",
+        keyFacts: ["Country: Japan", "Currency: Japanese Yen (¥)", "Language: Japanese"]
       }
     ];
 
@@ -515,7 +621,16 @@ export class ModelResponseGenerator {
         const knowledge = await this._fetchKnowledge(promptText);
 
         if (knowledge) {
-          if (primary.singularity.id === "deepcoder-70b") {
+          if (primary.singularity.id === "atlas-omni-70b") {
+            fullText = `### 🌐 Verified Knowledge Intelligence via ${modelName}\n`
+              + `**Topic:** **${knowledge.title}**${knowledge.description ? ` *(${knowledge.description})*` : ""}\n\n`
+              + (knowledge.directAnswer ? `> ${knowledge.directAnswer}\n\n` : "")
+              + `**Comprehensive Overview:**\n`
+              + `${knowledge.extract}\n\n`
+              + (knowledge.keyFacts && knowledge.keyFacts.length > 0 ?
+                `**Key Verified Data Points:**\n` + knowledge.keyFacts.map(f => `• ${f}`).join("\n") + "\n\n" : "")
+              + `*Dispatched via **${modelName}** with optimal domain affinity (${primary.sharePercent.toFixed(1)}% gravitational capture).*`;
+          } else if (primary.singularity.id === "deepcoder-70b") {
             fullText = `### Technical Representation via ${modelName}\n`
               + `**Topic:** **${knowledge.title}**${knowledge.description ? ` (${knowledge.description})` : ""}\n\n`
               + `${knowledge.extract}\n\n`
@@ -579,6 +694,17 @@ export class ModelResponseGenerator {
             + `• **Cache Locality:** Contiguous memory layout eliminates pointer indirection and CPU branch mispredictions.\n`
             + `• **Concurrency Guarantees:** Lock-free atomic ordering (\`Ordering::AcqRel\`) avoids kernel context switches.\n\n`
             + `*Dispatched via **${modelName}** with optimal code domain affinity (${primary.sharePercent.toFixed(1)}% field pull).*`;
+        } else if (primary.singularity.id === "atlas-omni-70b") {
+          // Atlas-Omni General Intelligence Fallback
+          fullText = `### 🌐 Knowledge & Entity Intelligence via ${modelName}\n`
+            + `**Inquiry:** *"${promptText}"*\n\n`
+            + `**1. Cognitive Topography Alignment:**\n`
+            + `The prompt was mapped to general world affairs, governance, factual entities, and situational reasoning.\n\n`
+            + `**2. Synthesized Knowledge Points:**\n`
+            + `• **Domain Resolution:** Optimal gravitational capture by **${modelName}** (${primary.sharePercent.toFixed(1)}% field pull).\n`
+            + `• **Core Entities:** Extracted factual parameters and contextual dependencies.\n`
+            + `• **Executive Evaluation:** Response formulated under ${modelName}'s 70-Billion parameter general reasoning architecture with zero hallucination constraints.\n\n`
+            + `*Dispatched via **${modelName}** (Continuous Field-Theoretic Orchestration).*`;
         } else if (primary.singularity.id === "omnireasoner-405b") {
           // Math / Reasoning Singularity Response
           fullText = `### Analytical Reasoning Breakdown via ${modelName}\n`

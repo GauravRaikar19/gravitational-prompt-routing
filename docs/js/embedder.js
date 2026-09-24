@@ -8,7 +8,7 @@
 const STOPWORDS = new Set([
   "the", "a", "an", "is", "in", "it", "of", "and", "or", "to", "for", "with",
   "on", "at", "by", "from", "as", "this", "that", "are", "was", "were", "be",
-  "been", "being", "have", "has", "had", "do", "does", "did", "who", "which",
+  "been", "being", "have", "has", "had", "do", "does", "did",
   "me", "my", "i", "you", "your", "we", "us", "our", "can", "could",
   "would", "should", "will", "shall", "may", "might", "about", "just",
   "some", "any", "no", "not", "so", "but", "if", "then", "than"
@@ -16,6 +16,29 @@ const STOPWORDS = new Set([
 
 // Domain signal keywords and boost phrases — mirror of Python DeterministicEmbedder
 const DOMAIN_SIGNALS = {
+  knowledge: {
+    keywords: new Set([
+      "who", "what", "where", "when", "why", "which", "how",
+      "minister", "chief", "prime", "president", "governor", "mayor",
+      "leader", "cabinet", "parliament", "congress", "senate", "assembly",
+      "government", "governance", "democracy", "republic", "election",
+      "party", "bjp", "democrat", "republican", "politics", "political",
+      "goa", "india", "delhi", "panaji", "mumbai", "karnataka", "maharashtra",
+      "aldona", "france", "germany", "japan", "china", "usa", "uk", "russia",
+      "capital", "city", "country", "state", "nation", "territory", "district",
+      "geography", "history", "historical", "founded", "founder", "founding",
+      "population", "economy", "gdp", "currency", "language", "official",
+      "headquarters", "ceo", "company", "treaty", "monument", "culture",
+      "heritage", "unesco", "landmark", "tourism", "biography", "facts",
+      "policy", "administration", "constitution", "executive", "law"
+    ]),
+    boostPhrases: [
+      "world geography governance political leadership factual Q&A state",
+      "who is what is where is capital prime minister president facts",
+      "history biography country state leadership government administration"
+    ],
+    weight: 3.8
+  },
   creative: {
     keywords: new Set([
       "song", "poem", "poetry", "story", "stories", "tale", "tales",
