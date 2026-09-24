@@ -495,6 +495,45 @@ export class ModelResponseGenerator {
         keyFacts: ["Country: France", "Currency: Euro (€)", "Language: French"]
       },
       {
+        triggers: ["ram", "wife"],
+        title: "Sita (Consort of Lord Rama)",
+        directAnswer: "Lord Rama's wife was **Sita** (also known as Janaki, Vaidehi, and Maithili).",
+        description: "Central figure of the Hindu epic Ramayana and avatar of Goddess Lakshmi",
+        extract: "Sita is the principal female protagonist of the Hindu epic Ramayana and the consort of Lord Rama (the seventh avatar of Vishnu). She was the adoptive daughter of King Janaka of Videha (Mithila) and Queen Sunayana. In Hindu tradition, Sita is revered as the epitome of devotion, moral fortitude, courage, and self-sacrifice.",
+        keyFacts: [
+          "Consort of: Lord Rama (King of Ayodhya)",
+          "Parents: King Janaka and Queen Sunayana of Mithila",
+          "Sons: Lava and Kusha",
+          "Also known as: Janaki, Vaidehi, Maithili, Bhumija",
+          "Significance: Central heroine of the Ramayana; avatar of Goddess Lakshmi"
+        ]
+      },
+      {
+        triggers: ["rama", "wife"],
+        title: "Sita (Consort of Lord Rama)",
+        directAnswer: "Lord Rama's wife was **Sita** (also known as Janaki, Vaidehi, and Maithili).",
+        description: "Central figure of the Hindu epic Ramayana and avatar of Goddess Lakshmi",
+        extract: "Sita is the principal female protagonist of the Hindu epic Ramayana and the consort of Lord Rama. She was the daughter of King Janaka of Mithila and is celebrated as the epitome of purity, devotion, and virtue.",
+        keyFacts: [
+          "Consort of: Lord Rama",
+          "Parents: King Janaka of Mithila",
+          "Significance: Avatar of Goddess Lakshmi in the Ramayana"
+        ]
+      },
+      {
+        triggers: ["asian games", "medal"],
+        title: "India at the Asian Games",
+        directAnswer: "At the latest edition of the Asian Games (Hangzhou 2022, held in 2023), India won a record **107 medals** (28 Gold, 38 Silver, and 41 Bronze).",
+        description: "Historic 100+ medal haul for India at the 19th Asian Games",
+        extract: "India recorded its most successful campaign in Asian Games history at the 2022 Hangzhou Games with 107 total medals, crossing the 100-medal milestone for the first time and finishing 4th in the overall medal table.",
+        keyFacts: [
+          "Total Medals: 107 (Historic Best)",
+          "Gold: 28 | Silver: 38 | Bronze: 41",
+          "Edition: 19th Asian Games (Hangzhou, China)",
+          "Overall Standing: 4th place"
+        ]
+      },
+      {
         triggers: ["capital", "japan"],
         title: "Tokyo",
         directAnswer: "The capital of Japan is **Tokyo**.",
@@ -520,7 +559,14 @@ export class ModelResponseGenerator {
         "recent", "tell", "me", "about", "give", "list"
       ]);
       const tokens = clean.toLowerCase().split(/\s+/).filter(w => !fluff.has(w) && w.length > 1);
-      const searchTerm = tokens.length > 0 ? tokens.join(" ") : clean;
+      let searchTerm = tokens.length > 0 ? tokens.join(" ") : clean;
+
+      // Smart entity alias redirection for known mythological/historical queries
+      if ((lower.includes("ram") || lower.includes("rama")) && lower.includes("wife")) {
+        searchTerm = "Sita Ramayana";
+      } else if (lower.includes("asian games") && lower.includes("medal")) {
+        searchTerm = "India at the 2022 Asian Games";
+      }
 
       const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchTerm)}&utf8=&format=json&origin=*`;
       const controller = new AbortController();
@@ -558,12 +604,16 @@ export class ModelResponseGenerator {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 6500); // 6.5s timeout
-      const url = `https://text.pollinations.ai/${encodeURIComponent(promptText)}?model=openai&seed=42`;
+      const url = `https://text.pollinations.ai/${encodeURIComponent(promptText)}`;
       const res = await fetch(url, { signal: controller.signal });
       clearTimeout(timeoutId);
       if (res.ok) {
-        const text = await res.text();
-        if (text && text.trim().length > 20 && !text.includes("<!DOCTYPE")) {
+        let text = await res.text();
+        if (text && text.trim().length > 10 && !text.includes("<!DOCTYPE") && !text.includes("502: Bad gateway")) {
+          // Strip any promotional footer
+          if (text.includes("---")) {
+            text = text.split("---")[0].trim();
+          }
           return text.trim();
         }
       }

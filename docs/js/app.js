@@ -1,7 +1,7 @@
-import { INITIAL_SINGULARITIES, PRESET_PROMPTS, DEFAULT_G, DEFAULT_EPSILON, DEFAULT_DELTA, DEFAULT_LAGRANGE_THRESHOLD } from "./constants.js?v=6.3";
-import { ClientEmbedder } from "./embedder.js?v=6.3";
-import { GravitationalEngine } from "./physics.js?v=6.3";
-import { ModelResponseGenerator } from "./generator.js?v=6.3";
+import { INITIAL_SINGULARITIES, PRESET_PROMPTS, DEFAULT_G, DEFAULT_EPSILON, DEFAULT_DELTA, DEFAULT_LAGRANGE_THRESHOLD } from "./constants.js?v=6.4";
+import { ClientEmbedder } from "./embedder.js?v=6.4";
+import { GravitationalEngine } from "./physics.js?v=6.4";
+import { ModelResponseGenerator } from "./generator.js?v=6.4";
 
 // DOM Elements
 const canvas = document.getElementById("spaceCanvas");
@@ -471,6 +471,7 @@ function updateTelemetryUI(result) {
 
 // Preset Buttons Setup
 function initPresets() {
+  if (!presetContainer) return;
   presetContainer.innerHTML = "";
   for (const p of PRESET_PROMPTS) {
     const btn = document.createElement("button");
@@ -605,7 +606,7 @@ saveConfigBtn.addEventListener("click", (e) => {
 closeModal();
 toggleModalSubsections(generator.mode);
 initPresets();
-// Trigger initial demo prompt
-promptInput.value = PRESET_PROMPTS[0].prompt;
+// Trigger initial prompt
+promptInput.value = "Who was Lord Rama's wife?";
 executeRouting();
 
