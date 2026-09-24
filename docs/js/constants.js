@@ -19,8 +19,8 @@ export const INITIAL_SINGULARITIES = [
     latencyMs: 110,
     color: "#00f2fe", // Electric Cyan
     glowColor: "rgba(0, 242, 254, 0.4)",
-    // 2D Canvas normalized target position (-1 to 1)
-    canvasPos: { x: -0.55, y: 0.45 },
+    // 2D Canvas normalized target position (-1 to 1) - Bottom-Left Quadrant
+    canvasPos: { x: -0.65, y: 0.48 },
     exemplars: [
       "Write a memory-safe lock-free ring buffer in Rust with zero heap allocation",
       "Optimize this PostgreSQL query execution plan and B-Tree index",
@@ -41,7 +41,8 @@ export const INITIAL_SINGULARITIES = [
     latencyMs: 320,
     color: "#a855f7", // Cosmic Violet
     glowColor: "rgba(168, 85, 247, 0.4)",
-    canvasPos: { x: 0.55, y: 0.45 },
+    // 2D Canvas normalized target position - Bottom-Right Quadrant
+    canvasPos: { x: 0.65, y: 0.48 },
     exemplars: [
       "Derive the Christoffel symbols and Riemann curvature tensor for a black hole",
       "Prove the Riemann hypothesis for non-trivial zeros and analytic continuation",
@@ -61,7 +62,8 @@ export const INITIAL_SINGULARITIES = [
     latencyMs: 130,
     color: "#f59e0b", // Warm Amber
     glowColor: "rgba(245, 158, 11, 0.4)",
-    canvasPos: { x: -0.48, y: -0.52 },
+    // 2D Canvas normalized target position - Top-Left Quadrant
+    canvasPos: { x: -0.65, y: -0.48 },
     exemplars: [
       "Write an emotional, melancholic soliloquy of a weary artisan watching time slip away",
       "Compose a lyrical ballad in iambic pentameter about moonlight reflecting on still water",
@@ -84,7 +86,8 @@ export const INITIAL_SINGULARITIES = [
     latencyMs: 125,
     color: "#10b981", // Emerald Green
     glowColor: "rgba(16, 185, 129, 0.4)",
-    canvasPos: { x: 0.48, y: -0.52 },
+    // 2D Canvas normalized target position - Top-Right Quadrant
+    canvasPos: { x: 0.65, y: -0.48 },
     exemplars: [
       "Who is the chief minister of Goa and what is their political party and term?",
       "Who is the prime minister of India and what are the key powers of the executive branch?",

@@ -130,30 +130,80 @@
             </button>
           </div>
 
-          <!-- Compact 3-Column Sliders Row -->
-          <div class="sliders-row-compact">
-            <div class="slider-group-compact">
-              <div class="slider-label-row">
-                <span>Cost (λ_Cost)</span>
-                <strong><span id="costVal">0.0</span></strong>
+          <!-- Gravitational Physics & Field Tuning Controls -->
+          <div class="tuning-panel card">
+            <div class="tuning-header">
+              <div class="tuning-title">
+                <span class="tuning-icon">⚙️</span>
+                <strong>Field Gravitational Tuning</strong>
+                <span class="tuning-badge">Real-Time Routing Weights</span>
               </div>
-              <input type="range" id="costSlider" min="0.0" max="3.0" step="0.1" value="0.0">
+              <span class="tuning-hint">Adjust how physics prioritizes model intelligence vs speed vs budget</span>
             </div>
 
-            <div class="slider-group-compact">
-              <div class="slider-label-row">
-                <span>Latency (λ_Lat)</span>
-                <strong><span id="latencyVal">0.0</span></strong>
+            <div class="tuning-sliders-grid">
+              <!-- Slider 1: Cost Sensitivity -->
+              <div class="slider-card" id="sliderCardCost">
+                <div class="slider-header-row">
+                  <div class="slider-title-group">
+                    <span class="slider-name">💰 Cost Sensitivity</span>
+                    <span class="slider-param">(λ_cost)</span>
+                  </div>
+                  <div class="slider-val-badge">
+                    <span id="costVal">0.0</span>
+                    <span id="costModeLabel" class="slider-status-hint">Neutral</span>
+                  </div>
+                </div>
+                <div class="slider-desc">Penalizes token cost. Higher values pull toward budget-friendly models.</div>
+                <input type="range" id="costSlider" min="0.0" max="3.0" step="0.1" value="0.0">
+                <div class="slider-scale-row">
+                  <span>0.0 (Pure IQ)</span>
+                  <span>1.5 (Balanced)</span>
+                  <span>3.0 (Max Budget)</span>
+                </div>
               </div>
-              <input type="range" id="latencySlider" min="0.0" max="3.0" step="0.1" value="0.0">
-            </div>
 
-            <div class="slider-group-compact">
-              <div class="slider-label-row">
-                <span>Decay (δ)</span>
-                <strong><span id="deltaVal">3.0</span></strong>
+              <!-- Slider 2: Speed Priority -->
+              <div class="slider-card" id="sliderCardLatency">
+                <div class="slider-header-row">
+                  <div class="slider-title-group">
+                    <span class="slider-name">⚡ Speed Priority</span>
+                    <span class="slider-param">(λ_latency)</span>
+                  </div>
+                  <div class="slider-val-badge">
+                    <span id="latencyVal">0.0</span>
+                    <span id="latencyModeLabel" class="slider-status-hint">Neutral</span>
+                  </div>
+                </div>
+                <div class="slider-desc">Penalizes response delay. Higher values favor ultra-fast streaming models.</div>
+                <input type="range" id="latencySlider" min="0.0" max="3.0" step="0.1" value="0.0">
+                <div class="slider-scale-row">
+                  <span>0.0 (Pure IQ)</span>
+                  <span>1.5 (Balanced)</span>
+                  <span>3.0 (Ultra Fast)</span>
+                </div>
               </div>
-              <input type="range" id="deltaSlider" min="1.5" max="4.0" step="0.1" value="3.0">
+
+              <!-- Slider 3: Field Sharpness -->
+              <div class="slider-card" id="sliderCardDelta">
+                <div class="slider-header-row">
+                  <div class="slider-title-group">
+                    <span class="slider-name">🧲 Field Sharpness</span>
+                    <span class="slider-param">(δ Decay)</span>
+                  </div>
+                  <div class="slider-val-badge">
+                    <span id="deltaVal">3.0</span>
+                    <span id="deltaModeLabel" class="slider-status-hint">Inverse-Cube</span>
+                  </div>
+                </div>
+                <div class="slider-desc">Controls field falloff (1/r^δ). Higher values focus sharply on #1 model; lower allows dual Lagrange co-orbit.</div>
+                <input type="range" id="deltaSlider" min="1.5" max="4.0" step="0.1" value="3.0">
+                <div class="slider-scale-row">
+                  <span>1.5 (Co-Orbit)</span>
+                  <span>3.0 (Standard)</span>
+                  <span>4.0 (Laser Focus)</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -258,7 +308,7 @@
 
   </div>
 
-  <!-- Application Module Script with cache-busting v=7.8 -->
-  <script type="module" src="js/app.js?v=7.8"></script>
+  <!-- Application Module Script with cache-busting v=7.9 -->
+  <script type="module" src="js/app.js?v=7.9"></script>
 </body>
 </html>

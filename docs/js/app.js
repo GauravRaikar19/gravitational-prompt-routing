@@ -1,7 +1,7 @@
-import { INITIAL_SINGULARITIES, PRESET_PROMPTS, DEFAULT_G, DEFAULT_EPSILON, DEFAULT_DELTA, DEFAULT_LAGRANGE_THRESHOLD } from "./constants.js?v=7.8";
-import { ClientEmbedder } from "./embedder.js?v=7.8";
-import { GravitationalEngine } from "./physics.js?v=7.8";
-import { ModelResponseGenerator } from "./generator.js?v=7.8";
+import { INITIAL_SINGULARITIES, PRESET_PROMPTS, DEFAULT_G, DEFAULT_EPSILON, DEFAULT_DELTA, DEFAULT_LAGRANGE_THRESHOLD } from "./constants.js?v=7.9";
+import { ClientEmbedder } from "./embedder.js?v=7.9";
+import { GravitationalEngine } from "./physics.js?v=7.9";
+import { ModelResponseGenerator } from "./generator.js?v=7.9";
 
 // DOM Elements
 const canvas = document.getElementById("spaceCanvas");
@@ -13,10 +13,13 @@ const routeBtn = document.getElementById("routeBtn");
 // Sliders & value displays
 const costSlider = document.getElementById("costSlider");
 const costVal = document.getElementById("costVal");
+const costModeLabel = document.getElementById("costModeLabel");
 const latencySlider = document.getElementById("latencySlider");
 const latencyVal = document.getElementById("latencyVal");
+const latencyModeLabel = document.getElementById("latencyModeLabel");
 const deltaSlider = document.getElementById("deltaSlider");
 const deltaVal = document.getElementById("deltaVal");
+const deltaModeLabel = document.getElementById("deltaModeLabel");
 
 // Telemetry DOM
 const statusBadge = document.getElementById("statusBadge");
@@ -86,16 +89,21 @@ function resizeCanvas() {
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
-// Coordinate transforms: Normalized (-1 to 1) -> Screen px
+// Coordinate transforms: Normalized (-1 to 1) -> Screen px with responsive padding
 function toScreenX(normX) {
   const rect = canvas.getBoundingClientRect();
-  const scale = Math.min(rect.width, rect.height) * 0.42;
-  return rect.width / 2 + normX * scale;
+  // Ensure comfortable margin on both sides so badges never clip or collide
+  const margin = Math.min(130, rect.width * 0.18);
+  const usableWidth = (rect.width / 2) - margin;
+  return rect.width / 2 + normX * Math.max(usableWidth, 120);
 }
+
 function toScreenY(normY) {
   const rect = canvas.getBoundingClientRect();
-  const scale = Math.min(rect.width, rect.height) * 0.42;
-  return rect.height / 2 + normY * scale;
+  // Ensure vertical clearance for labels above top planets and below bottom planets
+  const margin = Math.min(65, rect.height * 0.20);
+  const usableHeight = (rect.height / 2) - margin;
+  return rect.height / 2 + normY * Math.max(usableHeight, 75);
 }
 
 // Background Starfield
@@ -147,7 +155,7 @@ function drawPotentialField(width, height) {
   ctx.restore();
 }
 
-// Draw Celestial Model Singularities
+// Draw Celestial Model Singularities with Glassmorphic Badges
 function drawSingularities() {
   const singularities = engine.singularities;
 
@@ -159,7 +167,7 @@ function drawSingularities() {
     const isSecondary = currentEvaluation?.secondary?.singularity.id === s.id && currentEvaluation?.isLagrange;
 
     // Atmospheric Glow
-    const glowRadius = isPrimary ? 55 : (isSecondary ? 45 : 32);
+    const glowRadius = isPrimary ? 65 : (isSecondary ? 50 : 36);
     const gradient = ctx.createRadialGradient(sx, sy, 8, sx, sy, glowRadius);
     gradient.addColorStop(0, s.glowColor);
     gradient.addColorStop(1, "transparent");
@@ -172,28 +180,75 @@ function drawSingularities() {
     // Central Core
     ctx.fillStyle = s.color;
     ctx.beginPath();
-    ctx.arc(sx, sy, isPrimary ? 12 : 9, 0, Math.PI * 2);
+    ctx.arc(sx, sy, isPrimary ? 13 : 9, 0, Math.PI * 2);
     ctx.fill();
 
-    // Rotating orbital ring
+    // Core Highlight
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.arc(sx - 3, sy - 3, isPrimary ? 4 : 2.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Rotating orbital rings
     ctx.save();
     ctx.strokeStyle = s.color;
-    ctx.globalAlpha = isPrimary ? 0.8 : 0.4;
-    ctx.lineWidth = 1.5;
+    ctx.globalAlpha = isPrimary ? 0.85 : 0.35;
+    ctx.lineWidth = isPrimary ? 1.8 : 1.2;
     ctx.beginPath();
-    ctx.arc(sx, sy, isPrimary ? 22 : 16, 0, Math.PI * 2);
+    ctx.arc(sx, sy, isPrimary ? 24 : 17, 0, Math.PI * 2);
     ctx.stroke();
+
+    if (isPrimary) {
+      ctx.globalAlpha = 0.4;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.arc(sx, sy, 34, 0, Math.PI * 2);
+      ctx.stroke();
+    }
     ctx.restore();
 
-    // Model Name & Role Label
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "600 13px 'Outfit', sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText(s.name, sx, sy - 28);
+    // Directional Glassmorphic Label Pill (Above for Top planets, Below for Bottom planets)
+    const isTop = s.canvasPos.y < 0;
+    
+    ctx.save();
+    ctx.font = "600 12.5px 'Outfit', sans-serif";
+    const nameWidth = ctx.measureText(s.name).width;
+    ctx.font = "500 9.5px 'Inter', sans-serif";
+    const roleWidth = ctx.measureText(s.role).width;
+    const badgeW = Math.max(nameWidth, roleWidth) + 20;
+    const badgeH = 34;
+    const badgeX = sx - badgeW / 2;
+    const badgeY = isTop ? (sy - 52) : (sy + 18);
 
-    ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
-    ctx.font = "400 10px 'Inter', sans-serif";
-    ctx.fillText(s.role, sx, sy - 15);
+    // Pill container with dark backdrop
+    ctx.fillStyle = isPrimary 
+      ? "rgba(10, 16, 30, 0.94)" 
+      : "rgba(8, 12, 22, 0.85)";
+    ctx.strokeStyle = isPrimary 
+      ? s.color 
+      : (isSecondary ? "rgba(236, 72, 153, 0.6)" : "rgba(255, 255, 255, 0.15)");
+    ctx.lineWidth = isPrimary ? 1.6 : 1;
+
+    ctx.beginPath();
+    if (ctx.roundRect) {
+      ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 7);
+    } else {
+      ctx.rect(badgeX, badgeY, badgeW, badgeH);
+    }
+    ctx.fill();
+    ctx.stroke();
+
+    // Model Name
+    ctx.fillStyle = isPrimary ? "#ffffff" : "rgba(255, 255, 255, 0.95)";
+    ctx.font = "600 12.5px 'Outfit', sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(s.name, sx, badgeY + 14);
+
+    // Role Subtitle
+    ctx.fillStyle = isPrimary ? s.color : "rgba(255, 255, 255, 0.6)";
+    ctx.font = "500 9.5px 'Inter', sans-serif";
+    ctx.fillText(s.role, sx, badgeY + 27);
+    ctx.restore();
   }
 }
 
@@ -503,11 +558,34 @@ function initPresets() {
   }
 }
 
-// Slider Event Listeners
+// Slider Event Listeners with Descriptive Feedback
+function updateSliderBadges(cost, latency, delta) {
+  if (costModeLabel) {
+    if (cost <= 0.05) costModeLabel.textContent = "Neutral (Pure IQ)";
+    else if (cost <= 1.0) costModeLabel.textContent = "Mild Penalty";
+    else if (cost <= 2.0) costModeLabel.textContent = "Moderate Penalty";
+    else costModeLabel.textContent = "Max Budget Focus";
+  }
+
+  if (latencyModeLabel) {
+    if (latency <= 0.05) latencyModeLabel.textContent = "Neutral";
+    else if (latency <= 1.0) latencyModeLabel.textContent = "Fast Stream";
+    else if (latency <= 2.0) latencyModeLabel.textContent = "High Speed Priority";
+    else latencyModeLabel.textContent = "Ultra-Fastest Only";
+  }
+
+  if (deltaModeLabel) {
+    if (delta < 2.2) deltaModeLabel.textContent = "Diffuse (Co-Orbit)";
+    else if (delta < 3.2) deltaModeLabel.textContent = "Inverse-Cube (Balanced)";
+    else deltaModeLabel.textContent = "Laser Sharp Focus";
+  }
+}
+
 costSlider.addEventListener("input", (e) => {
   const val = parseFloat(e.target.value);
   costVal.textContent = val.toFixed(1);
   engine.lambdaCost = val;
+  updateSliderBadges(engine.lambdaCost, engine.lambdaLatency, engine.delta);
   executeRouting();
 });
 
@@ -515,6 +593,7 @@ latencySlider.addEventListener("input", (e) => {
   const val = parseFloat(e.target.value);
   latencyVal.textContent = val.toFixed(1);
   engine.lambdaLatency = val;
+  updateSliderBadges(engine.lambdaCost, engine.lambdaLatency, engine.delta);
   executeRouting();
 });
 
@@ -522,6 +601,7 @@ deltaSlider.addEventListener("input", (e) => {
   const val = parseFloat(e.target.value);
   deltaVal.textContent = val.toFixed(1);
   engine.delta = val;
+  updateSliderBadges(engine.lambdaCost, engine.lambdaLatency, engine.delta);
   executeRouting();
 });
 
@@ -706,6 +786,7 @@ saveConfigBtn.addEventListener("click", (e) => {
   closeModal();
   toggleModalSubsections(generator.mode);
   initPresets();
+  updateSliderBadges(engine.lambdaCost, engine.lambdaLatency, engine.delta);
   // Trigger initial prompt
   promptInput.value = "Who was Lord Rama's wife?";
   executeRouting();
