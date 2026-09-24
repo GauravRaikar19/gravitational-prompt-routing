@@ -13,6 +13,7 @@ export class ModelResponseGenerator {
     this.mode = localStorage.getItem("gpr_api_mode") || "autonomous"; // "autonomous", "ollama", "cloud"
     this.ollamaUrl = localStorage.getItem("gpr_ollama_url") || "http://localhost:11434";
     this.cloudApiKey = localStorage.getItem("gpr_cloud_key") || "";
+    this.cloudEndpoint = localStorage.getItem("gpr_cloud_endpoint") || "https://api.groq.com/openai/v1";
     let savedModel = localStorage.getItem("gpr_cloud_model");
     if (!savedModel || savedModel === "llama-3.1-70b-versatile") {
       savedModel = "llama-3.3-70b-versatile";
@@ -1373,31 +1374,38 @@ export class ModelResponseGenerator {
   }
 
   async _streamCloudAPI(modelId = "", prompt = "", onChunk) {
+    let endpoint = (this.cloudEndpoint || "https://api.groq.com/openai/v1").trim();
+    if (!endpoint) endpoint = "https://api.groq.com/openai/v1";
+
     let resolvedModel = this.cloudModel;
     if (!resolvedModel || resolvedModel === "llama-3.1-70b-versatile") {
       resolvedModel = "llama-3.3-70b-versatile";
     }
 
-    if (this.cloudEndpoint.includes("groq.com")) {
+    if (endpoint.includes("groq.com")) {
       // Dynamic routing to matched open-source frontier models on Groq
       if (modelId.includes("deepseek") || modelId.includes("r1")) {
         resolvedModel = "deepseek-r1-distill-llama-70b";
-      } else if (modelId.includes("coder") || modelId.includes("qwen")) {
-        // Groq serves Llama-3.3-70B for general reasoning & code
-        resolvedModel = "llama-3.3-70b-versatile";
-      } else if (modelId.includes("llama")) {
-        resolvedModel = "llama-3.3-70b-versatile";
       } else {
         resolvedModel = "llama-3.3-70b-versatile";
       }
     }
 
-    const res = await fetch(`${this.cloudEndpoint}/chat/completions`, {
+    let requestUrl = `${endpoint}/chat/completions`;
+    const headers = {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${this.cloudApiKey.trim()}`
+    };
+
+    // If running on local dev server, use the local proxy to eliminate browser CORS
+    if (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
+      requestUrl = "/api/proxy";
+      headers["X-Target-URL"] = `${endpoint}/chat/completions`;
+    }
+
+    const res = await fetch(requestUrl, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${this.cloudApiKey.trim()}`
-      },
+      headers: headers,
       body: JSON.stringify({
         model: resolvedModel,
         messages: [{ role: "user", content: prompt }],

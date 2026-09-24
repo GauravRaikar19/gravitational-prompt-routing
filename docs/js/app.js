@@ -1,7 +1,7 @@
-import { INITIAL_SINGULARITIES, PRESET_PROMPTS, DEFAULT_G, DEFAULT_EPSILON, DEFAULT_DELTA, DEFAULT_LAGRANGE_THRESHOLD } from "./constants.js?v=7.2";
-import { ClientEmbedder } from "./embedder.js?v=7.2";
-import { GravitationalEngine } from "./physics.js?v=7.2";
-import { ModelResponseGenerator } from "./generator.js?v=7.2";
+import { INITIAL_SINGULARITIES, PRESET_PROMPTS, DEFAULT_G, DEFAULT_EPSILON, DEFAULT_DELTA, DEFAULT_LAGRANGE_THRESHOLD } from "./constants.js?v=7.3";
+import { ClientEmbedder } from "./embedder.js?v=7.3";
+import { GravitationalEngine } from "./physics.js?v=7.3";
+import { ModelResponseGenerator } from "./generator.js?v=7.3";
 
 // DOM Elements
 const canvas = document.getElementById("spaceCanvas");
