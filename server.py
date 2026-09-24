@@ -28,6 +28,8 @@ class ProxyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
             auth_header = self.headers.get("Authorization", "")
             target_url = self.headers.get("X-Target-URL", "https://api.groq.com/openai/v1/chat/completions")
+            if not target_url or "undefined" in target_url or not target_url.startswith("http"):
+                target_url = "https://api.groq.com/openai/v1/chat/completions"
 
             req = urllib.request.Request(
                 target_url,
