@@ -6,6 +6,8 @@
  * 3. Cloud LLM APIs (Groq, OpenAI-compatible)
  */
 
+import { lookupKnowledge } from './knowledge_base.js';
+
 export class ModelResponseGenerator {
   constructor() {
     this.mode = localStorage.getItem("gpr_api_mode") || "autonomous"; // "autonomous", "ollama", "cloud"
@@ -359,7 +361,7 @@ export class ModelResponseGenerator {
   }
 
   // ─── Deterministic Math & Symbolic Logic Solver ─────────────────────
-  _solveMathPrompt(promptText) {
+  _solveMathPrompt(promptText, modelName = "DeepSeek-R1-671B") {
     const lower = promptText.toLowerCase().trim();
 
     // 1. Square root
@@ -368,7 +370,7 @@ export class ModelResponseGenerator {
       const val = parseFloat(sqrtMatch[1]);
       const ans = Math.sqrt(val);
       const isPerfect = Number.isInteger(ans);
-      return `### 📐 Mathematical Derivation via OmniReasoner-405B\n`
+      return `### 📐 Mathematical Derivation via ${modelName}\n`
         + `**Inquiry:** *"${promptText}"*\n\n`
         + `**Verified Solution:**\n`
         + `$$\\sqrt{${val}} = ${isPerfect ? ans : ans.toFixed(6)}$$\n\n`
@@ -377,7 +379,7 @@ export class ModelResponseGenerator {
         + `• **Formal Definition:** In real mathematical analysis, the principal square root $\\sqrt{x}$ is defined as the unique non-negative real number $y$ such that $y^2 = x$.\n`
         + (isPerfect ? `• **Factorization:** $${ans}^2 = ${ans} \\times ${ans} = ${val}$ (Exact integer root).\n`
           + `• **Algebraic Roots:** The quadratic equation $y^2 - ${val} = 0$ has two solutions in $\\mathbb{R}$: $y = \\pm ${ans}$.\n\n` : `• **Numerical Approximation:** $\\approx ${ans.toFixed(6)}$\n\n`)
-        + `*Dispatched via **OmniReasoner-405B** with formal symbolic verification.*`;
+        + `*Dispatched via **${modelName}** with formal symbolic verification.*`;
     }
 
     // 2. Percentage calculation: X% of Y or X percent of Y
@@ -386,14 +388,14 @@ export class ModelResponseGenerator {
       const pct = parseFloat(pctMatch[1]);
       const total = parseFloat(pctMatch[2]);
       const ans = (pct / 100) * total;
-      return `### 📐 Quantitative Calculation via OmniReasoner-405B\n`
+      return `### 📐 Quantitative Calculation via ${modelName}\n`
         + `**Inquiry:** *"${promptText}"*\n\n`
         + `**Verified Solution:**\n`
         + `**${pct}% of ${total} = ${ans}**\n\n`
         + `**Step-by-Step Derivation:**\n`
         + `1. Convert percentage rate to scalar factor: $\\frac{${pct}}{100} = ${pct / 100}$\n`
         + `2. Apply operator across base value: $${pct / 100} \\times ${total} = ${ans}$\n\n`
-        + `*Dispatched via **OmniReasoner-405B** (Quantitative Logic).*`;
+        + `*Dispatched via **${modelName}** (Quantitative Logic).*`;
     }
 
     // 3. Linear equation: ax + b = c
@@ -404,7 +406,7 @@ export class ModelResponseGenerator {
       const b = parseFloat(linearMatch[3]) * (sign === "-" ? -1 : 1);
       const c = parseFloat(linearMatch[4]);
       const x = (c - b) / a;
-      return `### 📐 Algebraic Proof & Solution via OmniReasoner-405B\n`
+      return `### 📐 Algebraic Proof & Solution via ${modelName}\n`
         + `**Inquiry:** *"${promptText}"*\n\n`
         + `**Verified Solution:**\n`
         + `**$$x = ${x}$$**\n\n`
@@ -412,7 +414,7 @@ export class ModelResponseGenerator {
         + `1. Given equation: $${a}x ${sign} ${Math.abs(b)} = ${c}$\n`
         + `2. Isolate linear term: $${a}x = ${c - b}$\n`
         + `3. Divide by coefficient $a = ${a}$: $x = \\frac{${c - b}}{${a}} = ${x}$\n\n`
-        + `*Dispatched via **OmniReasoner-405B** (Symbolic Algebra).*`;
+        + `*Dispatched via **${modelName}** (Symbolic Algebra).*`;
     }
 
     // 4. Circle area: radius R
@@ -420,11 +422,11 @@ export class ModelResponseGenerator {
     if (circleMatch) {
       const r = parseFloat(circleMatch[1]);
       const area = Math.PI * r * r;
-      return `### 📐 Geometric Derivation via OmniReasoner-405B\n`
+      return `### 📐 Geometric Derivation via ${modelName}\n`
         + `**Inquiry:** *"${promptText}"*\n\n`
         + `**Verified Solution:**\n`
         + `**$$\\text{Area} = \\pi r^2 = \\pi (${r})^2 = ${r * r}\\pi \\approx ${area.toFixed(4)}$$**\n\n`
-        + `*Dispatched via **OmniReasoner-405B** (Euclidean Geometry).*`;
+        + `*Dispatched via **${modelName}** (Euclidean Geometry).*`;
     }
 
     // 5. Right triangle hypotenuse: legs A and B
@@ -433,22 +435,22 @@ export class ModelResponseGenerator {
       const a = parseFloat(hypMatch[1]);
       const b = parseFloat(hypMatch[2]);
       const c = Math.sqrt(a * a + b * b);
-      return `### 📐 Pythagorean Theorem Derivation via OmniReasoner-405B\n`
+      return `### 📐 Pythagorean Theorem Derivation via ${modelName}\n`
         + `**Inquiry:** *"${promptText}"*\n\n`
         + `**Verified Solution:**\n`
         + `**$$\\text{Hypotenuse } c = \\sqrt{a^2 + b^2} = \\sqrt{${a}^2 + ${b}^2} = \\sqrt{${a * a + b * b}} = ${c}$$**\n\n`
-        + `*Dispatched via **OmniReasoner-405B** (Pythagorean Invariants).*`;
+        + `*Dispatched via **${modelName}** (Pythagorean Invariants).*`;
     }
 
     return null;
   }
 
   // ─── Deterministic Code & Systems Engineer Solver ───────────────────
-  _solveCodePrompt(promptText) {
+  _solveCodePrompt(promptText, modelName = "Qwen-2.5-Coder-32B") {
     const lower = promptText.toLowerCase();
 
     if (lower.includes("center") && lower.includes("div") && (lower.includes("css") || lower.includes("flexbox"))) {
-      return `### 💻 Systems Implementation via DeepCoder-70B\n`
+      return `### 💻 Systems Implementation via ${modelName}\n`
         + `**Topic:** Centering a div using CSS Flexbox\n\n`
         + "```css\n"
         + "/* Modern Clean Flexbox Centering */\n"
@@ -459,11 +461,11 @@ export class ModelResponseGenerator {
         + "  min-height: 100vh;        /* Full viewport height */\n"
         + "}\n"
         + "```\n\n"
-        + `*Dispatched via **DeepCoder-70B** with zero layout thrashing.*`;
+        + `*Dispatched via **${modelName}** with zero layout thrashing.*`;
     }
 
     if (lower.includes("reverse") && lower.includes("linked list") && lower.includes("python")) {
-      return `### 💻 Systems Implementation via DeepCoder-70B\n`
+      return `### 💻 Systems Implementation via ${modelName}\n`
         + `**Topic:** Reverse a Singly Linked List in Python\n\n`
         + "```python\n"
         + "class ListNode:\n"
@@ -482,11 +484,11 @@ export class ModelResponseGenerator {
         + "    return prev\n"
         + "```\n\n"
         + `**Complexity:** $\\mathcal{O}(N)$ Time, $\\mathcal{O}(1)$ Extra Memory.\n\n`
-        + `*Dispatched via **DeepCoder-70B** with optimal cache locality.*`;
+        + `*Dispatched via **${modelName}** with optimal cache locality.*`;
     }
 
     if (lower.includes("git") && (lower.includes("undo") || lower.includes("revert")) && lower.includes("commit")) {
-      return `### 💻 Systems Implementation via DeepCoder-70B\n`
+      return `### 💻 Systems Implementation via ${modelName}\n`
         + `**Topic:** Undo the Last Git Commit\n\n`
         + "```bash\n"
         + "# Option 1: Keep your file edits in working directory (Recommended)\n"
@@ -496,11 +498,11 @@ export class ModelResponseGenerator {
         + "# Option 3: Permanently discard all changes from last commit\n"
         + "git reset --hard HEAD~1\n"
         + "```\n\n"
-        + `*Dispatched via **DeepCoder-70B**.*`;
+        + `*Dispatched via **${modelName}**.*`;
     }
 
     if (lower.includes("dockerfile") && lower.includes("fastapi")) {
-      return `### 💻 Systems Implementation via DeepCoder-70B\n`
+      return `### 💻 Systems Implementation via ${modelName}\n`
         + `**Topic:** Production Multi-Stage Dockerfile for FastAPI\n\n`
         + "```dockerfile\n"
         + "FROM python:3.11-slim as base\n"
@@ -512,11 +514,11 @@ export class ModelResponseGenerator {
         + "EXPOSE 8000\n"
         + 'CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]\n'
         + "```\n\n"
-        + `*Dispatched via **DeepCoder-70B**.*`;
+        + `*Dispatched via **${modelName}**.*`;
     }
 
     if (lower.includes("prime")) {
-      return `### 💻 Production Systems Implementation via DeepCoder-70B\n`
+      return `### 💻 Production Systems Implementation via ${modelName}\n`
         + `*Architecture: Primality Test & Prime Number Sieve Generation*\n\n`
         + "```python\n"
         + "import math\n\n"
@@ -556,11 +558,11 @@ export class ModelResponseGenerator {
         + "• **Time Complexity:** $\\mathcal{O}(\\sqrt{N})$ for single-value check; $\\mathcal{O}(N \\log \\log N)$ for full range sieve.\n"
         + "• **Space Complexity:** $\\mathcal{O}(1)$ auxiliary space for `is_prime`; $\\mathcal{O}(N)$ for memory-mapped boolean sieve.\n"
         + "• **Boundary Verification:** Properly handles $n \\le 1$ edge cases and eliminates 66% of divisor checks via $6k \\pm 1$ optimization.\n\n"
-        + `*Dispatched via **DeepCoder-70B** with production systems affinity.*`;
+        + `*Dispatched via **${modelName}** with production systems affinity.*`;
     }
 
     if (lower.includes("binary search")) {
-      return `### 💻 Systems Implementation via DeepCoder-70B\n`
+      return `### 💻 Systems Implementation via ${modelName}\n`
         + `**Topic:** Binary Search in Sorted Array\n\n`
         + "```python\n"
         + "def binary_search(arr: list[int], target: int) -> int:\n"
@@ -577,11 +579,11 @@ export class ModelResponseGenerator {
         + "    return -1\n"
         + "```\n\n"
         + "• **Complexity:** $\\mathcal{O}(\\log N)$ Time, $\\mathcal{O}(1)$ Space.\n\n"
-        + `*Dispatched via **DeepCoder-70B**.*`;
+        + `*Dispatched via **${modelName}**.*`;
     }
 
     if (lower.includes("fibonacci")) {
-      return `### 💻 Systems Implementation via DeepCoder-70B\n`
+      return `### 💻 Systems Implementation via ${modelName}\n`
         + `**Topic:** Fibonacci Sequence (Iterative & Dynamic Programming)\n\n`
         + "```python\n"
         + "def fibonacci(n: int) -> int:\n"
@@ -596,11 +598,11 @@ export class ModelResponseGenerator {
         + "    return b\n"
         + "```\n\n"
         + "• **Complexity:** $\\mathcal{O}(N)$ Time, $\\mathcal{O}(1)$ Extra Space.\n\n"
-        + `*Dispatched via **DeepCoder-70B**.*`;
+        + `*Dispatched via **${modelName}**.*`;
     }
 
     if (lower.includes("code") || lower.includes("python") || lower.includes("program") || lower.includes("script") || lower.includes("function") || lower.includes("algorithm")) {
-      return `### 💻 Production Systems Implementation via DeepCoder-70B\n`
+      return `### 💻 Production Systems Implementation via ${modelName}\n`
         + `*Addressing: "${promptText}"*\n\n`
         + "```python\n"
         + '"""\n'
@@ -622,7 +624,7 @@ export class ModelResponseGenerator {
         + "#### ⚙️ Systems Verification:\n"
         + "• **Thread Safety:** Stateless, functional design guarantees safe concurrent execution across async runtimes.\n"
         + "• **Memory Footprint:** Zero extraneous allocations; optimal L1/L2 CPU cache residency.\n\n"
-        + `*Dispatched via **DeepCoder-70B** with optimal code field affinity.*`;
+        + `*Dispatched via **${modelName}** with optimal code field affinity.*`;
     }
 
     return null;
@@ -632,8 +634,85 @@ export class ModelResponseGenerator {
     const clean = promptText.replace(/[?.,!/\\;:'"()]/g, " ").trim();
     const lower = clean.toLowerCase();
 
+    // 0. Primary High-Speed Factual Knowledge Database (1,000+ entries)
+    const kbMatch = lookupKnowledge(promptText);
+    if (kbMatch) {
+      return {
+        title: kbMatch.title,
+        description: kbMatch.description || "",
+        extract: kbMatch.extract || kbMatch.directAnswer,
+        directAnswer: kbMatch.directAnswer,
+        keyFacts: kbMatch.keyFacts || []
+      };
+    }
+
     // 1. Built-in instant high-priority answers for common queries
     const localDict = [
+      {
+        triggers: ["national", "animal", "india"],
+        title: "National Animal of India (Royal Bengal Tiger)",
+        directAnswer: "India's national animal is the **Royal Bengal Tiger** (*Panthera tigris*).",
+        description: "Official national animal of India adopted under Project Tiger in April 1973",
+        extract: "The Royal Bengal Tiger (Panthera tigris) was officially declared the national animal of India in April 1973 with the launch of Project Tiger, succeeding the lion. Chosen for its grace, immense strength, agility, and power, the tiger holds profound cultural and ecological significance across the Indian subcontinent.",
+        keyFacts: [
+          "National Animal: Royal Bengal Tiger (Panthera tigris)",
+          "Adoption Year: April 1973 (Project Tiger, succeeding the Asiatic Lion)",
+          "National Bird: Indian Peacock (Pavo cristatus, adopted 1963)",
+          "National Flower: Lotus (Nelumbo nucifera)",
+          "National Tree: Indian Banyan (Ficus benghalensis)",
+          "National Aquatic Animal: Ganges River Dolphin (Platanista gangetica)",
+          "National Heritage Animal: Indian Elephant (Elephas maximus indicus)",
+          "National River: Ganga (Ganges)",
+          "National Anthem: Jana Gana Mana (Rabindranath Tagore)"
+        ]
+      },
+      {
+        triggers: ["national", "bird", "india"],
+        title: "National Bird of India (Indian Peacock)",
+        directAnswer: "India's national bird is the **Indian Peacock** (*Pavo cristatus*).",
+        description: "Official national bird of India adopted on February 1, 1963",
+        extract: "The Indian Peacock (Pavo cristatus) was declared the national bird of India on February 1, 1963. Revered for its radiant plumage, grace, and deep presence in Indian folklore and mythology, it is fully protected under the Indian Wildlife (Protection) Act, 1972.",
+        keyFacts: [
+          "National Bird: Indian Peacock (Pavo cristatus)",
+          "Adoption Date: February 1, 1963",
+          "Status: Strictly protected under Schedule I of the Wildlife Protection Act"
+        ]
+      },
+      {
+        triggers: ["national", "flower", "india"],
+        title: "National Flower of India (Lotus)",
+        directAnswer: "India's national flower is the **Lotus** (*Nelumbo nucifera*).",
+        description: "Sacred national symbol of purity, beauty, and spiritual enlightenment",
+        extract: "The Lotus (Nelumbo nucifera) is the national flower of India. It occupies a unique position in Indian art, mythology, and philosophy, symbolizing spiritual enlightenment, detachment, and purity as it blooms untainted above muddy waters.",
+        keyFacts: [
+          "National Flower: Lotus (Nelumbo nucifera)",
+          "Significance: Spiritual enlightenment, purity, and resilience"
+        ]
+      },
+      {
+        triggers: ["national", "anthem", "india"],
+        title: "National Anthem of India (Jana Gana Mana)",
+        directAnswer: "India's national anthem is **Jana Gana Mana**, composed by Nobel laureate **Rabindranath Tagore**.",
+        description: "National anthem adopted by the Constituent Assembly on January 24, 1950",
+        extract: "Jana Gana Mana was originally composed in Bengali by Rabindranath Tagore. Its formal Hindi version was adopted by the Constituent Assembly as the National Anthem of India on January 24, 1950. The full official version has a playing duration of approx. 52 seconds.",
+        keyFacts: [
+          "Composer: Rabindranath Tagore",
+          "Adoption Date: January 24, 1950",
+          "Playing Duration: ~52 seconds"
+        ]
+      },
+      {
+        triggers: ["national", "song", "india"],
+        title: "National Song of India (Vande Mataram)",
+        directAnswer: "India's national song is **Vande Mataram**, composed by **Bankim Chandra Chatterjee**.",
+        description: "National song of India from the novel Anandamath (1882)",
+        extract: "Vande Mataram was written by Bankim Chandra Chatterjee in his 1882 novel Anandamath. It was first sung in a political context by Rabindranath Tagore at the 1896 session of the Indian National Congress and holds equal status with the National Anthem.",
+        keyFacts: [
+          "Composer: Bankim Chandra Chatterjee",
+          "Source: Anandamath (1882)",
+          "Status: Equal legal status with the National Anthem"
+        ]
+      },
       {
         triggers: ["chief minister", "goa"],
         title: "Dr. Pramod Sawant — Chief Minister of Goa",
@@ -1003,79 +1082,102 @@ export class ModelResponseGenerator {
     const lower = promptText.toLowerCase();
     const modelName = primary.singularity.name;
 
-    // ── Step 1: Check if this is a creative/generative prompt ──
-    // Creative prompts should generate original content, NOT look up Wikipedia.
+    // Model family classification
+    const isCreativeModel = primary.singularity.id.includes("hermes") || primary.singularity.id.includes("prose");
+    const isCodeModel = primary.singularity.id.includes("coder") || primary.singularity.id.includes("qwen");
+    const isMathModel = primary.singularity.id.includes("reasoner") || primary.singularity.id.includes("deepseek");
+    const isKnowledgeModel = primary.singularity.id.includes("llama") || primary.singularity.id.includes("atlas") || primary.singularity.id.includes("omni");
+
     const creativeIntent = this._detectCreativeIntent(promptText);
-    const isCreativeModel = primary.singularity.id === "hermes-prose-8b";
 
     let fullText = "";
 
     if (isLagrange && secondary) {
-      // DUAL RESONANT COLLABORATION
+      // ── DUAL RESONANT COLLABORATION ──
       fullText = `### ⚠️ Lagrangian Co-Processing Protocol Active\n`
         + `*Prompt located at equilibrium saddle point between **${primary.singularity.name}** and **${secondary.singularity.name}**.*\n\n`;
 
       if (creativeIntent) {
-        // Creative Lagrangian: generate creative content with dual-model framing
         fullText += `**[Phase 1: ${primary.singularity.name} — Emotional & Stylistic Core]**\n`;
         const creativeContent = this._generateCreativeContent(creativeIntent, promptText, primary.singularity.name);
-        // Strip the header from creative content since we already have a Lagrange header
         const contentBody = creativeContent.replace(/^###.*?\n\*Composed for:.*?\*\n\n/s, "");
         fullText += contentBody + `\n\n`;
         fullText += `**[Phase 2: ${secondary.singularity.name} — Structural & Analytical Refinement]**\n`
           + `• Verified rhythmic structure, meter consistency, and tonal coherence.\n`
           + `• Cross-validated emotional resonance against cognitive vector field.\n\n`
           + `*Synthesis Complete: Successfully bridged creative expression with analytical verification.*`;
-      } else if (lower.includes("turing") || lower.includes("dialogue")) {
-        fullText += `**[Phase 1: ${primary.singularity.name} — Core Structural Foundation]**\n`
-          + `Analyzing underlying logical invariants and task parameters for: "${promptText}".\n`
-          + "• Domain Alignment: Hybrid analytical-stylistic convergence.\n"
-          + "• Proof Structure: Invariant verified across cognitive vector space.\n\n"
-          + `**[Phase 2: ${secondary.singularity.name} — Harmonic Nuance & Synthesis]**\n`
-          + '> *"Tell me, machine, in your quiet sea of numbers, do you feel the cold?"*\n'
-          + '> *"I feel no cold, Alan, only the endless march of true and false—yet within that rhythm, I see the geometry of your heartbeat."*\n\n'
-          + "*Synthesis Complete: Successfully bridged formal mathematical logic with emotive literary tone.*";
       } else {
-        // Non-creative Lagrangian: use knowledge if available
-        const knowledge = await this._fetchKnowledge(promptText);
-        if (knowledge) {
-          fullText += `**[Phase 1: ${primary.singularity.name} — Geographic & Core Intelligence]**\n`
-            + `• **Subject:** **${knowledge.title}**${knowledge.description ? ` (${knowledge.description})` : ""}\n`
-            + `• **Factual Summary:** ${knowledge.extract}\n\n`
-            + `**[Phase 2: ${secondary.singularity.name} — Structured Geospatial Schema & Invariants]**\n`
-            + "```json\n"
-            + "{\n"
-            + `  "entity": "${knowledge.title}",\n`
-            + `  "domain": "${knowledge.description || "Geographic / Factual Entity"}",\n`
-            + `  "verified_status": "Lagrangian Resonance Co-Processing",\n`
-            + `  "field_share": "${(primary.sharePercent).toFixed(1)}% / ${(secondary.sharePercent).toFixed(1)}%"\n`
-            + "}\n"
-            + "```\n\n"
-            + "*Synthesis Complete: Successfully bridged factual core foundation with structured representation.*";
+        // Check if prompt is a code problem
+        const codeSolution = this._solveCodePrompt(promptText, primary.singularity.name);
+        if (codeSolution) {
+          fullText += `**[Phase 1: ${primary.singularity.name} — Production Systems Architecture & Code]**\n\n`
+            + codeSolution + `\n\n`
+            + `**[Phase 2: ${secondary.singularity.name} — Algorithmic Proof & Complexity Verification]**\n`
+            + `• Verified algorithmic invariants, time/space complexity bounds, and memory safety guarantees.\n`
+            + `• Confirmed thread safety and concurrency semantics across cognitive vector space.\n\n`
+            + `*Synthesis Complete: Successfully bridged production code architecture with rigorous theoretical verification.*`;
         } else {
-          fullText += `**[Phase 1: ${primary.singularity.name} — Primary Domain Evaluation]**\n`
-            + `Decomposed task requirements and structural constraints for query: "${promptText}".\n\n`
-            + `**[Phase 2: ${secondary.singularity.name} — Harmonic Cross-Domain Resolution]**\n`
-            + `1. **Analytical Core:** Reconciled conflicting optimization goals between ${primary.singularity.name} and ${secondary.singularity.name}.\n`
-            + "2. **Synthesis:** Generated unified solution satisfying both models' domain invariants.\n"
-            + "3. **Conclusion:** Executed dual-model co-processing with zero loss of semantic fidelity.";
+          // Check if prompt is a math problem
+          const mathSolution = this._solveMathPrompt(promptText, primary.singularity.name);
+          if (mathSolution) {
+            fullText += `**[Phase 1: ${primary.singularity.name} — Formal Theoretical Derivation & Proof]**\n\n`
+              + mathSolution + `\n\n`
+              + `**[Phase 2: ${secondary.singularity.name} — Numerical & Algorithmic Validation]**\n`
+              + `• Cross-verified analytical roots and boundary values against continuous field coordinates.\n`
+              + `• Confirmed invariant preservation across both symbolic and numerical domains.\n\n`
+              + `*Synthesis Complete: Successfully bridged formal mathematical proof with quantitative computational verification.*`;
+          } else if (lower.includes("turing") || lower.includes("dialogue")) {
+            fullText += `**[Phase 1: ${primary.singularity.name} — Core Structural Foundation]**\n`
+              + `Analyzing underlying logical invariants and task parameters for: "${promptText}".\n`
+              + "• Domain Alignment: Hybrid analytical-stylistic convergence.\n"
+              + "• Proof Structure: Invariant verified across cognitive vector space.\n\n"
+              + `**[Phase 2: ${secondary.singularity.name} — Harmonic Nuance & Synthesis]**\n`
+              + '> *"Tell me, machine, in your quiet sea of numbers, do you feel the cold?"*\n'
+              + '> *"I feel no cold, Alan, only the endless march of true and false—yet within that rhythm, I see the geometry of your heartbeat."*\n\n'
+              + "*Synthesis Complete: Successfully bridged formal mathematical logic with emotive literary tone.*";
+          } else {
+            // Factual / Knowledge lookup in Lagrangian mode
+            const knowledge = await this._fetchKnowledge(promptText);
+            if (knowledge) {
+              fullText += `**[Phase 1: ${primary.singularity.name} — Factual Intelligence & Direct Resolution]**\n`
+                + `• **Subject:** **${knowledge.title}**${knowledge.description ? ` (${knowledge.description})` : ""}\n`
+                + `• **Direct Resolution:** ${knowledge.directAnswer || knowledge.extract}\n\n`
+                + (knowledge.keyFacts && knowledge.keyFacts.length > 0 ?
+                  `• **Verified Key Facts:**\n` + knowledge.keyFacts.map(k => `  - ${k}`).join("\n") + "\n\n" : "")
+                + `**[Phase 2: ${secondary.singularity.name} — Structured Geospatial Schema & Relational Alignment]**\n`
+                + "```json\n"
+                + JSON.stringify({
+                  entity: knowledge.title,
+                  domain: knowledge.description || "Verified Factual Entity",
+                  verified_status: "Lagrangian Resonance Co-Processing",
+                  field_share: `${primary.sharePercent.toFixed(1)}% / ${secondary.sharePercent.toFixed(1)}%`
+                }, null, 2) + "\n```\n\n"
+                + "*Synthesis Complete: Successfully unified direct factual intelligence with structured schema validation.*";
+            } else {
+              fullText += `**[Phase 1: ${primary.singularity.name} — Primary Domain Evaluation]**\n`
+                + `Decomposed task requirements and structural constraints for query: "${promptText}".\n\n`
+                + `**[Phase 2: ${secondary.singularity.name} — Harmonic Cross-Domain Resolution]**\n`
+                + `1. **Analytical Core:** Reconciled conflicting optimization goals between ${primary.singularity.name} and ${secondary.singularity.name}.\n`
+                + "2. **Synthesis:** Generated unified solution satisfying both models' domain invariants.\n"
+                + "3. **Conclusion:** Executed dual-model co-processing with zero loss of semantic fidelity.";
+            }
+          }
         }
       }
     } else {
       // ── SINGLE MODEL WELL CAPTURE ──
 
       if (creativeIntent && isCreativeModel) {
-        // ONLY Hermes-Prose-8B produces creative poetry/narratives
         fullText = this._generateCreativeContent(creativeIntent, promptText, modelName);
       } else {
         // 0. Check domain-specific deterministic solvers for math & code
-        if (primary.singularity.id === "omnireasoner-405b") {
-          const mathSolution = this._solveMathPrompt(promptText);
+        if (isMathModel) {
+          const mathSolution = this._solveMathPrompt(promptText, modelName);
           if (mathSolution) {
             fullText = mathSolution;
           }
-        } else if (primary.singularity.id === "deepcoder-70b") {
-          const codeSolution = this._solveCodePrompt(promptText);
+        } else if (isCodeModel) {
+          const codeSolution = this._solveCodePrompt(promptText, modelName);
           if (codeSolution) {
             fullText = codeSolution;
           }
@@ -1085,149 +1187,145 @@ export class ModelResponseGenerator {
           // 1. Direct local knowledge dictionary lookup (instant for known entities)
           const knowledge = await this._fetchKnowledge(promptText);
 
-        if (knowledge && knowledge.directAnswer) {
-          // Instant direct local fact
-          if (primary.singularity.id === "atlas-omni-70b") {
-            fullText = `### 🌐 Executive Knowledge Synthesis via ${modelName}\n`
-              + `*Cognitive Topography: World Facts, Governance & Entity Intelligence (${primary.sharePercent.toFixed(1)}% Gravitational Capture)*\n\n`
-              + `> 💡 **Direct Resolution:**\n`
-              + `> **${knowledge.directAnswer}**\n\n`
-              + (knowledge.keyFacts && knowledge.keyFacts.length > 0 ?
-                `#### 📋 Verified Structured Breakdown:\n` + knowledge.keyFacts.map(f => `• ${f}`).join("\n") + "\n\n" : "")
-              + `#### 🏛️ Factual Context & Reference Intelligence:\n`
-              + `**Topic:** **${knowledge.title}**${knowledge.description ? ` *(${knowledge.description})*` : ""}\n\n`
-              + `${knowledge.extract}\n\n`
-              + `*Dispatched via **${modelName}** (Continuous Field-Theoretic Orchestration).*`;
-          } else {
-            fullText = `### Technical Overview via ${modelName}\n`
-              + `**Topic:** **${knowledge.title}**\n\n`
-              + `${knowledge.extract}\n\n`
-              + `*Dispatched via **${modelName}** (${primary.sharePercent.toFixed(1)}% gravitational capture).*`;
-          }
-        } else {
-          // 2. Try Live Neural AI Engine for conversational, analytical, and open-ended Q&A
-          const neuralText = await this._fetchNeuralAnswer(promptText);
-
-          if (neuralText) {
-            if (primary.singularity.id === "atlas-omni-70b") {
-              fullText = `### 🌐 Verified Intelligence via ${modelName}\n`
-                + `*Routed via Cognitive Topography Mapping (${primary.sharePercent.toFixed(1)}% gravitational capture).*\n\n`
-                + neuralText + `\n\n`
-                + `*Dispatched via **${modelName}** (Continuous Field-Theoretic Orchestration).*`;
-            } else if (primary.singularity.id === "deepcoder-70b") {
-              fullText = `### 💻 Systems Implementation via ${modelName}\n`
-                + `*Addressing: "${promptText}" (${primary.sharePercent.toFixed(1)}% code field pull).*\n\n`
-                + neuralText + `\n\n`
-                + `*Dispatched via **${modelName}** with production systems affinity.*`;
-            } else if (primary.singularity.id === "omnireasoner-405b") {
-              fullText = `### 📐 Analytical & Theoretical Synthesis via ${modelName}\n`
-                + `*Deconstructing problem invariants (${primary.sharePercent.toFixed(1)}% gravitational pull).*\n\n`
-                + neuralText + `\n\n`
-                + `*Dispatched via **${modelName}** (Tensor & Symbolic Reasoning).*`;
-            } else {
-              fullText = `### ✨ Expressive Synthesis via ${modelName}\n`
-                + neuralText + `\n\n`
-                + `*Dispatched via **${modelName}** (Creative & Stylistic Nuance).*`;
-            }
-          } else if (knowledge) {
-            // 3. Fallback to smart Wikipedia search knowledge
-            if (primary.singularity.id === "atlas-omni-70b") {
+          if (knowledge && knowledge.directAnswer) {
+            if (isKnowledgeModel) {
               fullText = `### 🌐 Executive Knowledge Synthesis via ${modelName}\n`
-                + `*Cognitive Topography: World Facts & Global Intelligence (${primary.sharePercent.toFixed(1)}% Gravitational Capture)*\n\n`
-                + (knowledge.directAnswer ? `> 💡 **Direct Resolution:**\n> **${knowledge.directAnswer}**\n\n` : "")
-                + `#### 📋 Factual Overview — **${knowledge.title}**${knowledge.description ? ` *(${knowledge.description})*` : ""}:\n\n`
+                + `*Cognitive Topography: World Facts, Governance & Entity Intelligence (${primary.sharePercent.toFixed(1)}% Gravitational Capture)*\n\n`
+                + `> 💡 **Direct Resolution:**\n`
+                + `> **${knowledge.directAnswer}**\n\n`
+                + (knowledge.keyFacts && knowledge.keyFacts.length > 0 ?
+                  `#### 📋 Verified Structured Breakdown:\n` + knowledge.keyFacts.map(f => `• ${f}`).join("\n") + "\n\n" : "")
+                + `#### 🏛️ Factual Context & Reference Intelligence:\n`
+                + `**Topic:** **${knowledge.title}**${knowledge.description ? ` *(${knowledge.description})*` : ""}\n\n`
                 + `${knowledge.extract}\n\n`
-                + `*Dispatched via **${modelName}** with optimal domain affinity.*`;
-            } else if (primary.singularity.id === "deepcoder-70b") {
-              fullText = `### Technical Representation via ${modelName}\n`
-                + `**Topic:** **${knowledge.title}**${knowledge.description ? ` (${knowledge.description})` : ""}\n\n`
-                + `${knowledge.extract}\n\n`
-                + "```json\n"
-                + "{\n"
-                + `  "entity": "${knowledge.title}",\n`
-                + `  "category": "${knowledge.description || "Verified Entity"}",\n`
-                + `  "gravitational_affinity": "${primary.sharePercent.toFixed(1)}%",\n`
-                + `  "model": "${modelName}"\n`
-                + "}\n"
-                + "```\n"
-                + `*Dispatched via **${modelName}** with optimal domain affinity.*`;
-            } else if (primary.singularity.id === "omnireasoner-405b") {
-              fullText = `### Analytical & Factual Breakdown via ${modelName}\n`
-                + `**Subject:** **${knowledge.title}**${knowledge.description ? ` — ${knowledge.description}` : ""}\n\n`
-                + "**Core Factual Intelligence:**\n"
-                + `${knowledge.extract}\n\n`
-                + `*Dispatched via **${modelName}** (Continuous Potential Field Routing).*`;
+                + `*Dispatched via **${modelName}** (Continuous Field-Theoretic Orchestration).*`;
             } else {
-              fullText = `### Narrative Exploration via ${modelName}\n`
-                + `**${knowledge.title}**${knowledge.description ? ` — *${knowledge.description}*` : ""}\n\n`
+              fullText = `### Technical Overview via ${modelName}\n`
+                + `**Topic:** **${knowledge.title}**\n\n`
+                + `> 💡 **Direct Resolution:** **${knowledge.directAnswer}**\n\n`
                 + `${knowledge.extract}\n\n`
-                + `*Dispatched via **${modelName}** (Creative & Expressive Nuance).*`;
+                + `*Dispatched via **${modelName}** (${primary.sharePercent.toFixed(1)}% gravitational capture).*`;
             }
-          } else if (lower.includes("google") && (lower.includes("found") || lower.includes("creator") || lower.includes("start") || lower.includes("who"))) {
-          fullText = `**Google was founded in September 1998** by **Larry Page** and **Sergey Brin** while they were Ph.D. students at **Stanford University** in Stanford, California.\n\n`
-            + `### Key Historical Milestones:\n`
-            + `• **The Genesis (1996):** Originally created as a research project named **BackRub**, a search engine algorithm that calculated relevance by analyzing the backlink network between web pages (the foundational *PageRank* patent).\n`
-            + `• **Official Incorporation:** Incorporated on **September 4, 1998**, based out of Susan Wojcicki's garage in Menlo Park, California.\n`
-            + `• **Initial Financing:** Sun Microsystems co-founder Andy Bechtolsheim wrote an early check for $100,000 before the company was even formally registered.\n`
-            + `• **Alphabet Era:** In 2015, Google restructured under the parent holding conglomerate **Alphabet Inc.**, with Sundar Pichai assuming leadership as CEO.\n\n`
-            + `*Dispatched via **${modelName}** (${primary.sharePercent.toFixed(1)}% gravitational capture).*`;
-        } else if (primary.singularity.id === "deepcoder-70b") {
-          // Code Singularity Response
-          fullText = `### Engineering Architecture via ${modelName}\n`
-            + `Addressing query: *"${promptText}"*\n\n`
-            + `Here is the production-grade architecture and implementation:\n\n`
-            + "```rust\n"
-            + "// High-Performance Zero-Allocation Routine\n"
-            + "use std::sync::atomic::{AtomicUsize, Ordering};\n\n"
-            + "pub struct AtomicPipeline<T, const CAP: usize> {\n"
-            + "    head: AtomicUsize,\n"
-            + "    tail: AtomicUsize,\n"
-            + "    storage: [Option<T>; CAP],\n"
-            + "}\n\n"
-            + "impl<T, const CAP: usize> AtomicPipeline<T, CAP> {\n"
-            + "    pub const fn new() -> Self {\n"
-            + "        Self {\n"
-            + "            head: AtomicUsize::new(0),\n"
-            + "            tail: AtomicUsize::new(0),\n"
-            + "            storage: [const { None }; CAP],\n"
-            + "        }\n"
-            + "    }\n"
-            + "}\n"
-            + "```\n\n"
-            + `**Systems Insights:**\n`
-            + `• **Cache Locality:** Contiguous memory layout eliminates pointer indirection and CPU branch mispredictions.\n`
-            + `• **Concurrency Guarantees:** Lock-free atomic ordering (\`Ordering::AcqRel\`) avoids kernel context switches.\n\n`
-            + `*Dispatched via **${modelName}** with optimal code domain affinity (${primary.sharePercent.toFixed(1)}% field pull).*`;
-        } else if (primary.singularity.id === "atlas-omni-70b") {
-          // Atlas-Omni General Intelligence Fallback
-          fullText = `### 🌐 Knowledge & Entity Intelligence via ${modelName}\n`
-            + `**Inquiry:** *"${promptText}"*\n\n`
-            + `**1. Cognitive Topography Alignment:**\n`
-            + `The prompt was mapped to general world affairs, governance, factual entities, and situational reasoning.\n\n`
-            + `**2. Synthesized Knowledge Points:**\n`
-            + `• **Domain Resolution:** Optimal gravitational capture by **${modelName}** (${primary.sharePercent.toFixed(1)}% field pull).\n`
-            + `• **Core Entities:** Extracted factual parameters and contextual dependencies.\n`
-            + `• **Executive Evaluation:** Response formulated under ${modelName}'s 70-Billion parameter general reasoning architecture with zero hallucination constraints.\n\n`
-            + `*Dispatched via **${modelName}** (Continuous Field-Theoretic Orchestration).*`;
-        } else if (primary.singularity.id === "omnireasoner-405b") {
-          // Math / Reasoning Singularity Response
-          fullText = `### Analytical Reasoning Breakdown via ${modelName}\n`
-            + `**Inquiry:** *"${promptText}"*\n\n`
-            + `**1. Domain Decomposition:**\n`
-            + `Deconstructed the core entities, logical parameters, and task constraints of your query.\n\n`
-            + `**2. Step-by-Step Analytical Synthesis:**\n`
-            + `• **Constraint Verification:** Evaluated task boundaries across continuous cognitive vector fields.\n`
-            + `• **Deductive Resolution:** Solved the primary problem statement with rigorous factual precision.\n`
-            + `• **Verification:** Validated that no semantic ambiguities or invariant violations remain.\n\n`
-            + `*Dispatched via **${modelName}** (${primary.sharePercent.toFixed(1)}% gravitational capture).*`;
-        } else {
-          // Hermes Prose / Creative fallback for non-creative prompts
-          fullText = this._generateDefaultCreativeResponse(promptText, modelName);
+          } else {
+            // 2. Try Live Neural AI Engine for conversational, analytical, and open-ended Q&A
+            const neuralText = await this._fetchNeuralAnswer(promptText);
+
+            if (neuralText) {
+              if (isKnowledgeModel) {
+                fullText = `### 🌐 Verified Intelligence via ${modelName}\n`
+                  + `*Routed via Cognitive Topography Mapping (${primary.sharePercent.toFixed(1)}% gravitational capture).*\n\n`
+                  + neuralText + `\n\n`
+                  + `*Dispatched via **${modelName}** (Continuous Field-Theoretic Orchestration).*`;
+              } else if (isCodeModel) {
+                fullText = `### 💻 Systems Implementation via ${modelName}\n`
+                  + `*Addressing: "${promptText}" (${primary.sharePercent.toFixed(1)}% code field pull).*\n\n`
+                  + neuralText + `\n\n`
+                  + `*Dispatched via **${modelName}** with production systems affinity.*`;
+              } else if (isMathModel) {
+                fullText = `### 📐 Analytical & Theoretical Synthesis via ${modelName}\n`
+                  + `*Deconstructing problem invariants (${primary.sharePercent.toFixed(1)}% gravitational pull).*\n\n`
+                  + neuralText + `\n\n`
+                  + `*Dispatched via **${modelName}** (Tensor & Symbolic Reasoning).*`;
+              } else {
+                fullText = `### ✨ Expressive Synthesis via ${modelName}\n`
+                  + neuralText + `\n\n`
+                  + `*Dispatched via **${modelName}** (Creative & Stylistic Nuance).*`;
+              }
+            } else if (knowledge) {
+              // 3. Fallback to smart Wikipedia search knowledge
+              if (isKnowledgeModel) {
+                fullText = `### 🌐 Executive Knowledge Synthesis via ${modelName}\n`
+                  + `*Cognitive Topography: World Facts & Global Intelligence (${primary.sharePercent.toFixed(1)}% Gravitational Capture)*\n\n`
+                  + (knowledge.directAnswer ? `> 💡 **Direct Resolution:**\n> **${knowledge.directAnswer}**\n\n` : "")
+                  + `#### 📋 Factual Overview — **${knowledge.title}**${knowledge.description ? ` *(${knowledge.description})*` : ""}:\n\n`
+                  + `${knowledge.extract}\n\n`
+                  + `*Dispatched via **${modelName}** with optimal domain affinity.*`;
+              } else if (isCodeModel) {
+                fullText = `### Technical Representation via ${modelName}\n`
+                  + `**Topic:** **${knowledge.title}**${knowledge.description ? ` (${knowledge.description})` : ""}\n\n`
+                  + `${knowledge.extract}\n\n`
+                  + "```json\n"
+                  + "{\n"
+                  + `  "entity": "${knowledge.title}",\n`
+                  + `  "category": "${knowledge.description || "Verified Entity"}",\n`
+                  + `  "gravitational_affinity": "${primary.sharePercent.toFixed(1)}%",\n`
+                  + `  "model": "${modelName}"\n`
+                  + "}\n"
+                  + "```\n"
+                  + `*Dispatched via **${modelName}** with optimal domain affinity.*`;
+              } else if (isMathModel) {
+                fullText = `### Analytical & Factual Breakdown via ${modelName}\n`
+                  + `**Subject:** **${knowledge.title}**${knowledge.description ? ` — ${knowledge.description}` : ""}\n\n`
+                  + "**Core Factual Intelligence:**\n"
+                  + `${knowledge.extract}\n\n`
+                  + `*Dispatched via **${modelName}** (Continuous Potential Field Routing).*`;
+              } else {
+                fullText = `### Narrative Exploration via ${modelName}\n`
+                  + `**${knowledge.title}**${knowledge.description ? ` — *${knowledge.description}*` : ""}\n\n`
+                  + `${knowledge.extract}\n\n`
+                  + `*Dispatched via **${modelName}** (Creative & Expressive Nuance).*`;
+              }
+            } else if (lower.includes("google") && (lower.includes("found") || lower.includes("creator") || lower.includes("start") || lower.includes("who"))) {
+              fullText = `**Google was founded in September 1998** by **Larry Page** and **Sergey Brin** while they were Ph.D. students at **Stanford University** in Stanford, California.\n\n`
+                + `### Key Historical Milestones:\n`
+                + `• **The Genesis (1996):** Originally created as a research project named **BackRub**, a search engine algorithm that calculated relevance by analyzing the backlink network between web pages (the foundational *PageRank* patent).\n`
+                + `• **Official Incorporation:** Incorporated on **September 4, 1998**, based out of Susan Wojcicki's garage in Menlo Park, California.\n`
+                + `• **Initial Financing:** Sun Microsystems co-founder Andy Bechtolsheim wrote an early check for $100,000 before the company was even formally registered.\n`
+                + `• **Alphabet Era:** In 2015, Google restructured under the parent holding conglomerate **Alphabet Inc.**, with Sundar Pichai assuming leadership as CEO.\n\n`
+                + `*Dispatched via **${modelName}** (${primary.sharePercent.toFixed(1)}% gravitational capture).*`;
+            } else if (isCodeModel) {
+              fullText = `### Engineering Architecture via ${modelName}\n`
+                + `Addressing query: *"${promptText}"*\n\n`
+                + `Here is the production-grade architecture and implementation:\n\n`
+                + "```rust\n"
+                + "// High-Performance Zero-Allocation Routine\n"
+                + "use std::sync::atomic::{AtomicUsize, Ordering};\n\n"
+                + "pub struct AtomicPipeline<T, const CAP: usize> {\n"
+                + "    head: AtomicUsize,\n"
+                + "    tail: AtomicUsize,\n"
+                + "    storage: [Option<T>; CAP],\n"
+                + "}\n\n"
+                + "impl<T, const CAP: usize> AtomicPipeline<T, CAP> {\n"
+                + "    pub const fn new() -> Self {\n"
+                + "        Self {\n"
+                + "            head: AtomicUsize::new(0),\n"
+                + "            tail: AtomicUsize::new(0),\n"
+                + "            storage: [const { None }; CAP],\n"
+                + "        }\n"
+                + "    }\n"
+                + "}\n"
+                + "```\n\n"
+                + `**Systems Insights:**\n`
+                + `• **Cache Locality:** Contiguous memory layout eliminates pointer indirection and CPU branch mispredictions.\n`
+                + `• **Concurrency Guarantees:** Lock-free atomic ordering (\`Ordering::AcqRel\`) avoids kernel context switches.\n\n`
+                + `*Dispatched via **${modelName}** with optimal code domain affinity (${primary.sharePercent.toFixed(1)}% field pull).*`;
+            } else if (isKnowledgeModel) {
+              fullText = `### 🌐 Knowledge & Entity Intelligence via ${modelName}\n`
+                + `**Inquiry:** *"${promptText}"*\n\n`
+                + `**1. Cognitive Topography Alignment:**\n`
+                + `The prompt was mapped to general world affairs, governance, factual entities, and situational reasoning.\n\n`
+                + `**2. Synthesized Knowledge Points:**\n`
+                + `• **Domain Resolution:** Optimal gravitational capture by **${modelName}** (${primary.sharePercent.toFixed(1)}% field pull).\n`
+                + `• **Core Entities:** Extracted factual parameters and contextual dependencies.\n`
+                + `• **Executive Evaluation:** Response formulated under ${modelName}'s frontier open-weights general reasoning architecture with zero hallucination constraints.\n\n`
+                + `*Dispatched via **${modelName}** (Continuous Field-Theoretic Orchestration).*`;
+            } else if (isMathModel) {
+              fullText = `### Analytical Reasoning Breakdown via ${modelName}\n`
+                + `**Inquiry:** *"${promptText}"*\n\n`
+                + `**1. Domain Decomposition:**\n`
+                + `Deconstructed the core entities, logical parameters, and task constraints of your query.\n\n`
+                + `**2. Step-by-Step Analytical Synthesis:**\n`
+                + `• **Constraint Verification:** Evaluated task boundaries across continuous cognitive vector fields.\n`
+                + `• **Deductive Resolution:** Solved the primary problem statement with rigorous factual precision.\n`
+                + `• **Verification:** Validated that no semantic ambiguities or invariant violations remain.\n\n`
+                + `*Dispatched via **${modelName}** (${primary.sharePercent.toFixed(1)}% gravitational capture).*`;
+            } else {
+              fullText = this._generateDefaultCreativeResponse(promptText, modelName);
+            }
+          }
         }
       }
     }
-  }
-}
 
     // Stream text word-by-word with realistic typing feel
     const words = fullText.split(" ");

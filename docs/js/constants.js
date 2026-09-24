@@ -9,14 +9,14 @@ export const DEFAULT_LAGRANGE_THRESHOLD = 0.15; // 15% margin for co-processing
 
 export const INITIAL_SINGULARITIES = [
   {
-    id: "deepcoder-70b",
-    name: "DeepCoder-70B",
+    id: "qwen-2.5-coder-32b",
+    name: "Qwen-2.5-Coder-32B",
     role: "Code & Systems Architecture",
-    description: "Specialized in software engineering, low-level systems, Rust, C++, Python, algorithms, concurrency, and debugging.",
-    parametersB: 70,
-    mass: 56.7,
-    costPerM: 0.80,
-    latencyMs: 180,
+    description: "Alibaba's premier open coding model. Specialized in software engineering, low-level systems, Rust, C++, Python, algorithms, concurrency, Docker, SQL, and systems architecture.",
+    parametersB: 32,
+    mass: 58.5,
+    costPerM: 0.20,
+    latencyMs: 110,
     color: "#00f2fe", // Electric Cyan
     glowColor: "rgba(0, 242, 254, 0.4)",
     // 2D Canvas normalized target position (-1 to 1)
@@ -25,18 +25,20 @@ export const INITIAL_SINGULARITIES = [
       "Write a memory-safe lock-free ring buffer in Rust with zero heap allocation",
       "Optimize this PostgreSQL query execution plan and B-Tree index",
       "Implement concurrent thread pool in C++ with work-stealing deque",
-      "Fix null pointer dereference and memory leak in Linux kernel module"
+      "Fix null pointer dereference and memory leak in Linux kernel module",
+      "Write python code to check prime number and generate sieve",
+      "Implement binary search algorithm in Python and C++"
     ]
   },
   {
-    id: "omnireasoner-405b",
-    name: "OmniReasoner-405B",
-    role: "Theoretical Math & Logic",
-    description: "Master of formal mathematical proofs, theoretical physics, calculus, tensors, symbolic logic, and multi-step reasoning.",
-    parametersB: 405,
-    mass: 68.3,
-    costPerM: 3.00,
-    latencyMs: 450,
+    id: "deepseek-r1-671b",
+    name: "DeepSeek-R1-671B",
+    role: "Theoretical Math & Deep Reasoning",
+    description: "DeepSeek's frontier 671B MoE reasoning model. Master of formal mathematical proofs, theoretical physics, calculus, tensors, symbolic logic, and multi-step analytical reasoning.",
+    parametersB: 671,
+    mass: 74.2,
+    costPerM: 0.55,
+    latencyMs: 320,
     color: "#a855f7", // Cosmic Violet
     glowColor: "rgba(168, 85, 247, 0.4)",
     canvasPos: { x: 0.55, y: 0.45 },
@@ -44,18 +46,19 @@ export const INITIAL_SINGULARITIES = [
       "Derive the Christoffel symbols and Riemann curvature tensor for a black hole",
       "Prove the Riemann hypothesis for non-trivial zeros and analytic continuation",
       "Solve nonlinear differential equations with Navier-Stokes approximations",
-      "Derive the Euler-Lagrange equations of motion in Hamiltonian mechanics"
+      "Derive the Euler-Lagrange equations of motion in Hamiltonian mechanics",
+      "Solve quadratic equation and calculate hypotenuse using Pythagorean theorem"
     ]
   },
   {
-    id: "hermes-prose-8b",
-    name: "Hermes-Prose-8B",
+    id: "hermes-3-70b",
+    name: "Hermes-3-70B",
     role: "Creative Prose & Nuance",
-    description: "Expressive creative writing, songs, lyrics, emotional character dialogues, screenplays, melancholy, poetry, metaphors, fantasy tales, and evocative storytelling.",
-    parametersB: 8,
-    mass: 49.6,
-    costPerM: 0.20,
-    latencyMs: 90,
+    description: "Nous Research's frontier flagship model. Acclaimed for expressive creative writing, songs, lyrics, emotional character dialogues, screenplays, melancholy, poetry, metaphors, fantasy tales, and evocative storytelling.",
+    parametersB: 70,
+    mass: 53.0,
+    costPerM: 0.35,
+    latencyMs: 130,
     color: "#f59e0b", // Warm Amber
     glowColor: "rgba(245, 158, 11, 0.4)",
     canvasPos: { x: -0.48, y: -0.52 },
@@ -67,18 +70,18 @@ export const INITIAL_SINGULARITIES = [
       "Write me a song about love and heartbreak under the moonlight",
       "Tell me a story about a dragon who befriends a lonely child",
       "Compose a lullaby for a baby falling asleep under the stars",
-      "Write lyrics for a folk ballad about the changing seasons"
+      "Write a poem about thunderstorms and heavy rainfall"
     ]
   },
   {
-    id: "atlas-omni-70b",
-    name: "Atlas-Omni-70B",
+    id: "llama-3.3-70b-instruct",
+    name: "Llama-3.3-70B-Instruct",
     role: "World Knowledge & General Q&A",
-    description: "World geography, governance, political leadership, factual Q&A, historical entities, state ministers, current affairs, and conversational reasoning.",
+    description: "Meta's flagship open-weights model for world geography, governance, political leadership, factual Q&A, historical entities, state ministers, current affairs, and encyclopedic reasoning.",
     parametersB: 70,
-    mass: 62.4,
-    costPerM: 0.65,
-    latencyMs: 135,
+    mass: 65.0,
+    costPerM: 0.40,
+    latencyMs: 125,
     color: "#10b981", // Emerald Green
     glowColor: "rgba(16, 185, 129, 0.4)",
     canvasPos: { x: 0.48, y: -0.52 },
@@ -88,8 +91,9 @@ export const INITIAL_SINGULARITIES = [
       "Explain the history, founding, and administrative capital of Aldona and Panaji Goa",
       "Who founded Google, Apple, and Microsoft and what were their breakthrough inventions?",
       "What is the capital city, official language, and currency of France and Germany?",
-      "Summarize the constitutional structure of the Indian parliamentary democracy",
-      "Who is the governor or president of the republic and what are their constitutional duties?"
+      "What is the national animal, bird, flower, and anthem of India?",
+      "How many talukas and districts are there in Goa?",
+      "Summarize the constitutional structure of the Indian parliamentary democracy"
     ]
   }
 ];

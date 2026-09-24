@@ -25,7 +25,7 @@ const DOMAIN_SIGNALS = {
       "party", "bjp", "democrat", "republican", "politics", "political",
       "goa", "india", "delhi", "panaji", "mumbai", "karnataka", "maharashtra",
       "aldona", "france", "germany", "japan", "china", "usa", "uk", "russia", "australia",
-      "capital", "city", "country", "state", "nation", "territory", "district",
+      "capital", "city", "country", "state", "nation", "national", "territory", "district", "taluka", "talukas",
       "geography", "history", "historical", "founded", "founder", "founding", "established",
       "population", "economy", "gdp", "currency", "language", "official",
       "headquarters", "ceo", "company", "treaty", "monument", "culture",
@@ -33,14 +33,22 @@ const DOMAIN_SIGNALS = {
       "policy", "administration", "constitution", "executive", "law",
       "boiling", "continents", "ocean", "painted", "painter", "mona", "lisa",
       "war", "century", "ram", "rama", "wife", "sita", "medals", "asian", "games",
-      "shakespeare", "romeo", "juliet", "hamlet"
+      "shakespeare", "romeo", "juliet", "hamlet",
+      "animal", "animals", "bird", "birds", "flower", "tree", "anthem", "emblem",
+      "flag", "symbol", "symbols", "tiger", "peacock", "river", "sport", "game",
+      "highest", "longest", "largest", "deepest", "fastest", "discovery", "invented",
+      "inventor", "nobel", "prize", "planet", "planets", "bone", "bones", "skeleton",
+      "suez", "panama", "canal", "everest", "nile", "amazon", "gandhi", "nehru", "modi",
+      "murmu", "ambedkar", "valmiki", "vyasa", "gitanjali", "taj", "mahal", "colosseum",
+      "eiffel", "pyramid", "giza", "element", "elements", "atomic", "chemical", "compound",
+      "water", "salt", "glucose", "formula", "formulae", "galaxy", "olympic", "olympics", "fifa", "worldcup"
     ]),
     boostPhrases: [
-      "world geography governance political leadership factual Q&A state",
-      "who is where is capital prime minister president facts history",
-      "history biography country state leadership government administration"
+      "world geography governance political leadership factual Q&A state national symbol",
+      "who is where is capital prime minister president facts history national animal",
+      "history biography country state leadership government administration animal symbol"
     ],
-    weight: 3.6
+    weight: 4.2
   },
   creative: {
     keywords: new Set([
@@ -48,7 +56,7 @@ const DOMAIN_SIGNALS = {
       "compose", "sing", "lyric", "lyrics", "ballad", "lullaby",
       "sonnet", "haiku", "verse", "rhyme", "rhymes", "creative",
       "fiction", "novel", "narrative", "narrator", "prose",
-      "dialogue", "monologue", "soliloquy", "screenplay", "script",
+      "dialogue", "monologue", "soliloquy", "screenplay",
       "emotional", "melancholy", "melancholic", "evocative", "poetic",
       "artistic", "expressive", "metaphor", "allegory", "imagery",
       "fantasy", "fairy", "fable", "myth", "legend",
@@ -72,7 +80,7 @@ const DOMAIN_SIGNALS = {
       "lyrical ballad verse expressive narrative",
       "poetic monologue metaphor evocative"
     ],
-    weight: 3.6
+    weight: 4.0
   },
   code: {
     keywords: new Set([
@@ -96,7 +104,8 @@ const DOMAIN_SIGNALS = {
       "optimization", "performance", "benchmark", "latency",
       "test", "testing", "unittest", "pytest",
       "refactor", "implement", "implementation",
-      "css", "flexbox", "div", "html", "style", "frontend", "center"
+      "css", "flexbox", "div", "html", "style", "frontend", "center",
+      "prime", "primes", "sieve", "eratosthenes", "fibonacci", "reverse", "linkedlist"
     ]),
     boostPhrases: [
       "software engineering programming algorithms systems",
@@ -104,7 +113,7 @@ const DOMAIN_SIGNALS = {
       "debugging optimization performance code database sql",
       "implementation architecture pipeline docker kubernetes"
     ],
-    weight: 3.8
+    weight: 4.2
   },
   math: {
     keywords: new Set([
@@ -134,7 +143,7 @@ const DOMAIN_SIGNALS = {
       "analytical reasoning verification axiom equation",
       "symbolic computation equations square root arithmetic"
     ],
-    weight: 3.8
+    weight: 4.2
   }
 };
 
@@ -168,9 +177,21 @@ export class ClientEmbedder {
     return { idx, sign };
   }
 
-  _detectDomainSignals(tokens) {
-    const tokenSet = new Set(tokens);
+  _detectDomainSignals(tokens, rawText = "") {
+    const textLower = rawText.toLowerCase();
+    const tokenSet = new Set();
+    for (const t of tokens) {
+      tokenSet.add(t);
+      if (t.endsWith("'s")) tokenSet.add(t.slice(0, -2));
+      if (t.endsWith("s") && t.length > 3) tokenSet.add(t.slice(0, -1));
+    }
     const signals = {};
+
+    // 1. High-priority compound intent detection
+    const isCodeIntent = /(?:write|give|create|implement)\s+(?:me\s+)?(?:a\s+)?(?:code|program|script|function|algorithm|query|sql|dockerfile|regex)|code\s+to|script\s+to|sql\s+query|second\s+highest\s+salary|prime\s+number|binary\s+search|center\s+(?:a\s+)?div|fibonacci|sort\s+array|reverse\s+linked|dockerfile|docker-compose|containerize|css\s+flexbox|git\s+(?:command|commit|rebase|merge)|fastapi|express\s+js|acid\s+properties|rest\s+and\s+graphql|box\s+model|cors|rate\s+limiting|thread\s+pool|zero\s+allocation|ring\s+buffer|quicksort|debounce|throttle|webpack|beautifulsoup|lru\s+cache|jwt\s+authentication|sql\s+injection|terraform/i.test(textLower);
+    const isCreativeIntent = /(?:write|compose|craft|narrate)\s+(?:me\s+)?(?:a\s+)?(?:poem|song|lyrics|story|ballad|soliloquy|monologue|lullaby|haiku|sonnet|verse|tale|speech|letter)|tell\s+me\s+a\s+story|tell\s+a\s+(?:poignant|atmospheric|heartfelt|haunting)|melanchol|atmospheric\s+fantasy|lyrical\s+ballad|poetic\s+monologue|haunting\s+tale|dramatic\s+speech/i.test(textLower);
+    const isMathIntent = /(?:square\s*root|sqrt|percent\s+of|percentage|hypotenuse|solve\s+\d+x|pythagor|derive|curvature\s+tensor|schwarzschild|christoffel|integral\s+of|derivative\s+of|prove\s+by\s+induction|riemann\s+hypothesis|navier-stokes|euler-lagrange|kinetic\s+energy|standard\s+deviation)/i.test(textLower);
+    const isKnowledgeIntent = /(?:capital\s+of|national\s+(?:animal|bird|flower|anthem|tree|song|emblem)|chief\s+minister|prime\s+minister|president\s+of|governor\s+of|administrator\s+of|how\s+many\s+(?:talukas|districts|bones|continents|planets|states|oceans|medals|runs)|who\s+(?:is|was|invented|discovered|wrote|founded|scored|won)|what\s+(?:is|was|does|are)\s+(?:the\s+)?(?:capital|currency|language|symbol|atomic\s+number|highest|longest|nearest|fastest|hottest|largest|smallest|boiling|speed\s+of\s+light|earth\s+gravitational)|dna\s+stand|universal\s+donor|blood\s+group|powerhouse\s+of|speed\s+of\s+light|gravitational\s+acceleration|boiling\s+point|suez\s+canal|panama\s+canal|world\s+war|republic\s+day|independence|aldona|panaji|talukas|ramayana|mahabharata|gitanjali|eiffel|pyramid|taj\s+mahal|colosseum|great\s+wall|olympic|fifa|solar\s+system)/i.test(textLower);
 
     for (const [domain, config] of Object.entries(DOMAIN_SIGNALS)) {
       let matchCount = 0;
@@ -178,9 +199,29 @@ export class ClientEmbedder {
         if (config.keywords.has(kw)) matchCount++;
       }
       if (matchCount > 0) {
-        // Strength scales with number of keyword hits, saturating around 4-5 matches
-        signals[domain] = Math.min(2.0, matchCount / 2.0);
+        signals[domain] = Math.min(2.5, matchCount / 2.0);
       }
+    }
+
+    if (isCreativeIntent) {
+      signals.creative = 4.2;
+      delete signals.code;
+      delete signals.math;
+      delete signals.knowledge;
+    } else if (isCodeIntent) {
+      signals.code = 4.2;
+      delete signals.creative;
+      delete signals.knowledge;
+      delete signals.math;
+    } else if (isMathIntent) {
+      signals.math = 4.2;
+      delete signals.creative;
+      delete signals.knowledge;
+    } else if (isKnowledgeIntent) {
+      signals.knowledge = 4.2;
+      delete signals.creative;
+      delete signals.math;
+      delete signals.code;
     }
 
     return signals;
@@ -216,7 +257,7 @@ export class ClientEmbedder {
     }
 
     // 2. Domain-aware keyword boosting
-    const domainSignals = this._detectDomainSignals(tokens);
+    const domainSignals = this._detectDomainSignals(tokens, text);
     for (const [domain, strength] of Object.entries(domainSignals)) {
       const config = DOMAIN_SIGNALS[domain];
       const boostWeight = config.weight * strength;
