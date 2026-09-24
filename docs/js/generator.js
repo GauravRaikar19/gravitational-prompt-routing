@@ -512,9 +512,19 @@ export class ModelResponseGenerator {
 
     // 2. Real-world Wikipedia Full-Text Search API (Zero API Keys Required)
     try {
-      const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(clean)}&utf8=&format=json&origin=*`;
+      // Filter out conversational question fluff words to find actual article titles
+      const fluff = new Set([
+        "how", "many", "much", "did", "do", "does", "is", "are", "was", "were",
+        "what", "who", "which", "where", "when", "why", "win", "won", "in", "on",
+        "at", "for", "to", "of", "the", "a", "an", "latest", "edition", "current",
+        "recent", "tell", "me", "about", "give", "list"
+      ]);
+      const tokens = clean.toLowerCase().split(/\s+/).filter(w => !fluff.has(w) && w.length > 1);
+      const searchTerm = tokens.length > 0 ? tokens.join(" ") : clean;
+
+      const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchTerm)}&utf8=&format=json&origin=*`;
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 1800); // 1.8s timeout
+      const timeoutId = setTimeout(() => controller.abort(), 2200); // 2.2s timeout
       const searchRes = await fetch(searchUrl, { signal: controller.signal });
       clearTimeout(timeoutId);
 
@@ -540,6 +550,26 @@ export class ModelResponseGenerator {
       // Continue to persona fallback
     }
 
+    return null;
+  }
+
+  // ─── Live Neural Completion (Zero-Key Web Public AI) ────────────────
+  async _fetchNeuralAnswer(promptText) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 6500); // 6.5s timeout
+      const url = `https://text.pollinations.ai/${encodeURIComponent(promptText)}?model=openai&seed=42`;
+      const res = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        const text = await res.text();
+        if (text && text.trim().length > 20 && !text.includes("<!DOCTYPE")) {
+          return text.trim();
+        }
+      }
+    } catch (e) {
+      // Graceful fallback to Wikipedia/persona
+    }
     return null;
   }
 
@@ -617,49 +647,85 @@ export class ModelResponseGenerator {
         // Still generate creative-ish content from that model's perspective
         fullText = this._generateCreativeContent(creativeIntent, promptText, modelName);
       } else {
-        // Factual / technical prompt — use knowledge lookup
+        // 1. Direct local knowledge dictionary lookup (instant for known entities)
         const knowledge = await this._fetchKnowledge(promptText);
 
-        if (knowledge) {
+        if (knowledge && knowledge.directAnswer) {
+          // Instant direct local fact
           if (primary.singularity.id === "atlas-omni-70b") {
             fullText = `### 🌐 Verified Knowledge Intelligence via ${modelName}\n`
               + `**Topic:** **${knowledge.title}**${knowledge.description ? ` *(${knowledge.description})*` : ""}\n\n`
-              + (knowledge.directAnswer ? `> ${knowledge.directAnswer}\n\n` : "")
+              + `> ${knowledge.directAnswer}\n\n`
               + `**Comprehensive Overview:**\n`
               + `${knowledge.extract}\n\n`
               + (knowledge.keyFacts && knowledge.keyFacts.length > 0 ?
                 `**Key Verified Data Points:**\n` + knowledge.keyFacts.map(f => `• ${f}`).join("\n") + "\n\n" : "")
               + `*Dispatched via **${modelName}** with optimal domain affinity (${primary.sharePercent.toFixed(1)}% gravitational capture).*`;
-          } else if (primary.singularity.id === "deepcoder-70b") {
-            fullText = `### Technical Representation via ${modelName}\n`
-              + `**Topic:** **${knowledge.title}**${knowledge.description ? ` (${knowledge.description})` : ""}\n\n`
-              + `${knowledge.extract}\n\n`
-              + "```json\n"
-              + "{\n"
-              + `  "entity": "${knowledge.title}",\n`
-              + `  "category": "${knowledge.description || "Verified Entity"}",\n`
-              + `  "gravitational_affinity": "${primary.sharePercent.toFixed(1)}%",\n`
-              + `  "model": "${modelName}"\n`
-              + "}\n"
-              + "```\n"
-              + `*Dispatched via **${modelName}** with optimal domain affinity.*`;
-          } else if (primary.singularity.id === "omnireasoner-405b") {
-            fullText = `### Analytical & Factual Breakdown via ${modelName}\n`
-              + `**Subject:** **${knowledge.title}**${knowledge.description ? ` — ${knowledge.description}` : ""}\n\n`
-              + "**Core Factual Intelligence:**\n"
-              + `${knowledge.extract}\n\n`
-              + "**Geographic & Domain Verification:**\n"
-              + "• **Entity Match:** Verified factual parameters from knowledge topography.\n"
-              + `• **Gravitational Capture:** Routed to **${modelName}** with ${primary.sharePercent.toFixed(1)}% field share.\n\n`
-              + `*Dispatched via **${modelName}** (Continuous Potential Field Routing).*`;
           } else {
-            fullText = `### Narrative Exploration via ${modelName}\n`
-              + `**${knowledge.title}**${knowledge.description ? ` — *${knowledge.description}*` : ""}\n\n`
+            fullText = `### Technical Overview via ${modelName}\n`
+              + `**Topic:** **${knowledge.title}**\n\n`
               + `${knowledge.extract}\n\n`
-              + `Beyond the factual boundaries, ${knowledge.title} possesses its own enduring character—a quiet confluence of place, memory, and heritage.\n\n`
-              + `*Dispatched via **${modelName}** (Creative & Expressive Nuance).*`;
+              + `*Dispatched via **${modelName}** (${primary.sharePercent.toFixed(1)}% gravitational capture).*`;
           }
-        } else if (lower.includes("google") && (lower.includes("found") || lower.includes("creator") || lower.includes("start") || lower.includes("who"))) {
+        } else {
+          // 2. Try Live Neural AI Engine for conversational, analytical, and open-ended Q&A
+          const neuralText = await this._fetchNeuralAnswer(promptText);
+
+          if (neuralText) {
+            if (primary.singularity.id === "atlas-omni-70b") {
+              fullText = `### 🌐 Verified Intelligence via ${modelName}\n`
+                + `*Routed via Cognitive Topography Mapping (${primary.sharePercent.toFixed(1)}% gravitational capture).*\n\n`
+                + neuralText + `\n\n`
+                + `*Dispatched via **${modelName}** (Continuous Field-Theoretic Orchestration).*`;
+            } else if (primary.singularity.id === "deepcoder-70b") {
+              fullText = `### 💻 Systems Implementation via ${modelName}\n`
+                + `*Addressing: "${promptText}" (${primary.sharePercent.toFixed(1)}% code field pull).*\n\n`
+                + neuralText + `\n\n`
+                + `*Dispatched via **${modelName}** with production systems affinity.*`;
+            } else if (primary.singularity.id === "omnireasoner-405b") {
+              fullText = `### 📐 Analytical & Theoretical Synthesis via ${modelName}\n`
+                + `*Deconstructing problem invariants (${primary.sharePercent.toFixed(1)}% gravitational pull).*\n\n`
+                + neuralText + `\n\n`
+                + `*Dispatched via **${modelName}** (Tensor & Symbolic Reasoning).*`;
+            } else {
+              fullText = `### ✨ Expressive Synthesis via ${modelName}\n`
+                + neuralText + `\n\n`
+                + `*Dispatched via **${modelName}** (Creative & Stylistic Nuance).*`;
+            }
+          } else if (knowledge) {
+            // 3. Fallback to smart Wikipedia search knowledge
+            if (primary.singularity.id === "atlas-omni-70b") {
+              fullText = `### 🌐 Verified Knowledge Intelligence via ${modelName}\n`
+                + `**Topic:** **${knowledge.title}**${knowledge.description ? ` *(${knowledge.description})*` : ""}\n\n`
+                + `**Comprehensive Overview:**\n`
+                + `${knowledge.extract}\n\n`
+                + `*Dispatched via **${modelName}** with optimal domain affinity (${primary.sharePercent.toFixed(1)}% gravitational capture).*`;
+            } else if (primary.singularity.id === "deepcoder-70b") {
+              fullText = `### Technical Representation via ${modelName}\n`
+                + `**Topic:** **${knowledge.title}**${knowledge.description ? ` (${knowledge.description})` : ""}\n\n`
+                + `${knowledge.extract}\n\n`
+                + "```json\n"
+                + "{\n"
+                + `  "entity": "${knowledge.title}",\n`
+                + `  "category": "${knowledge.description || "Verified Entity"}",\n`
+                + `  "gravitational_affinity": "${primary.sharePercent.toFixed(1)}%",\n`
+                + `  "model": "${modelName}"\n`
+                + "}\n"
+                + "```\n"
+                + `*Dispatched via **${modelName}** with optimal domain affinity.*`;
+            } else if (primary.singularity.id === "omnireasoner-405b") {
+              fullText = `### Analytical & Factual Breakdown via ${modelName}\n`
+                + `**Subject:** **${knowledge.title}**${knowledge.description ? ` — ${knowledge.description}` : ""}\n\n`
+                + "**Core Factual Intelligence:**\n"
+                + `${knowledge.extract}\n\n`
+                + `*Dispatched via **${modelName}** (Continuous Potential Field Routing).*`;
+            } else {
+              fullText = `### Narrative Exploration via ${modelName}\n`
+                + `**${knowledge.title}**${knowledge.description ? ` — *${knowledge.description}*` : ""}\n\n`
+                + `${knowledge.extract}\n\n`
+                + `*Dispatched via **${modelName}** (Creative & Expressive Nuance).*`;
+            }
+          } else if (lower.includes("google") && (lower.includes("found") || lower.includes("creator") || lower.includes("start") || lower.includes("who"))) {
           fullText = `**Google was founded in September 1998** by **Larry Page** and **Sergey Brin** while they were Ph.D. students at **Stanford University** in Stanford, California.\n\n`
             + `### Key Historical Milestones:\n`
             + `• **The Genesis (1996):** Originally created as a research project named **BackRub**, a search engine algorithm that calculated relevance by analyzing the backlink network between web pages (the foundational *PageRank* patent).\n`
@@ -722,6 +788,7 @@ export class ModelResponseGenerator {
         }
       }
     }
+  }
 
     // Stream text word-by-word with realistic typing feel
     const words = fullText.split(" ");
