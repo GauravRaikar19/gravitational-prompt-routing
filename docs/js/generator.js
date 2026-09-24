@@ -59,8 +59,17 @@ export class ModelResponseGenerator {
         onComplete();
         return;
       } catch (err) {
-        console.error("Cloud API connection failed, falling back to Autonomous Synthesis:", err);
-        onChunk(`### ⚠️ Cloud LLM Connection Notice\n\n**${err.message}**\n\n*Falling back to Autonomous Knowledge Synthesizer...*\n\n---\n\n`);
+        console.error("Cloud API connection failed:", err);
+        const errMsg = `### ⚠️ Cloud LLM Connection Error\n\n`
+          + `**Provider:** Groq (${this.cloudModel})\n`
+          + `**Error Details:** ${err.message}\n\n`
+          + `> 💡 **Groq Key Notice:**\n`
+          + `> If you copied your key from the Groq dashboard table (which shows \`gsk_...abcd\`), the middle was masked with dots!\n`
+          + `> Please click **+ Create API Key** on Groq, type any name, and click the **Copy** button on the popup window immediately before closing it.\n\n`
+          + `*Dispatched via **${primary.singularity.name}**.*`;
+        onChunk(errMsg);
+        onComplete();
+        return;
       }
     }
 
@@ -1397,9 +1406,10 @@ export class ModelResponseGenerator {
     }
 
     let requestUrl = `${endpoint}/chat/completions`;
+    const cleanKey = this.cloudApiKey.trim().replace(/^["']|["']$/g, '');
     const headers = {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${this.cloudApiKey.trim()}`
+      "Authorization": `Bearer ${cleanKey}`
     };
 
     // If running on local dev server, use the local proxy to eliminate browser CORS
