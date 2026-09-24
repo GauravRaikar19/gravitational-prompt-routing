@@ -18,33 +18,36 @@ const STOPWORDS = new Set([
 const DOMAIN_SIGNALS = {
   knowledge: {
     keywords: new Set([
-      "who", "what", "where", "when", "why", "which", "how",
+      "who", "where", "when", "which",
       "minister", "chief", "prime", "president", "governor", "mayor",
       "leader", "cabinet", "parliament", "congress", "senate", "assembly",
       "government", "governance", "democracy", "republic", "election",
       "party", "bjp", "democrat", "republican", "politics", "political",
       "goa", "india", "delhi", "panaji", "mumbai", "karnataka", "maharashtra",
-      "aldona", "france", "germany", "japan", "china", "usa", "uk", "russia",
+      "aldona", "france", "germany", "japan", "china", "usa", "uk", "russia", "australia",
       "capital", "city", "country", "state", "nation", "territory", "district",
-      "geography", "history", "historical", "founded", "founder", "founding",
+      "geography", "history", "historical", "founded", "founder", "founding", "established",
       "population", "economy", "gdp", "currency", "language", "official",
       "headquarters", "ceo", "company", "treaty", "monument", "culture",
       "heritage", "unesco", "landmark", "tourism", "biography", "facts",
-      "policy", "administration", "constitution", "executive", "law"
+      "policy", "administration", "constitution", "executive", "law",
+      "boiling", "continents", "ocean", "painted", "painter", "mona", "lisa",
+      "war", "century", "ram", "rama", "wife", "sita", "medals", "asian", "games",
+      "shakespeare", "romeo", "juliet", "hamlet"
     ]),
     boostPhrases: [
       "world geography governance political leadership factual Q&A state",
-      "who is what is where is capital prime minister president facts",
+      "who is where is capital prime minister president facts history",
       "history biography country state leadership government administration"
     ],
-    weight: 3.8
+    weight: 3.6
   },
   creative: {
     keywords: new Set([
       "song", "poem", "poetry", "story", "stories", "tale", "tales",
-      "write", "compose", "sing", "lyric", "lyrics", "ballad", "lullaby",
+      "compose", "sing", "lyric", "lyrics", "ballad", "lullaby",
       "sonnet", "haiku", "verse", "rhyme", "rhymes", "creative",
-      "fiction", "novel", "narrative", "narrator", "prose", "essay",
+      "fiction", "novel", "narrative", "narrator", "prose",
       "dialogue", "monologue", "soliloquy", "screenplay", "script",
       "emotional", "melancholy", "melancholic", "evocative", "poetic",
       "artistic", "expressive", "metaphor", "allegory", "imagery",
@@ -59,9 +62,9 @@ const DOMAIN_SIGNALS = {
       "heart", "soul", "spirit", "emotion", "feeling",
       "dragon", "princess", "knight", "castle", "kingdom",
       "magic", "magical", "enchanted", "mystical",
-      "baby", "child", "children",
+      "baby", "child", "children", "lullaby",
       "rain", "ocean", "forest", "mountain", "river",
-      "letter", "diary", "journal"
+      "letter", "diary", "journal", "greeting", "card", "birthday", "sweet"
     ]),
     boostPhrases: [
       "creative writing poetry prose fiction",
@@ -69,7 +72,7 @@ const DOMAIN_SIGNALS = {
       "lyrical ballad verse expressive narrative",
       "poetic monologue metaphor evocative"
     ],
-    weight: 3.5
+    weight: 3.6
   },
   code: {
     keywords: new Set([
@@ -81,53 +84,57 @@ const DOMAIN_SIGNALS = {
       "database", "sql", "postgresql", "mysql", "mongodb", "redis",
       "memory", "heap", "stack", "pointer", "buffer", "array",
       "lock-free", "concurrent", "thread", "async", "await",
-      "git", "docker", "kubernetes", "deploy", "ci", "cd",
-      "bug", "fix", "error", "exception", "crash",
+      "git", "docker", "dockerfile", "kubernetes", "ingress", "nginx", "controller",
+      "deploy", "ci", "cd", "bash", "shell", "script", "s3", "backup",
+      "bug", "fix", "error", "exception", "crash", "typeerror", "undefined",
       "class", "object", "interface", "struct", "enum",
       "loop", "recursion", "sort", "search", "hash",
-      "binary", "tree", "graph", "linked", "queue",
+      "binary", "tree", "graph", "linked", "list", "queue", "deque",
       "atomic", "mutex", "semaphore", "deadlock",
       "kernel", "syscall", "linux", "operating",
       "architecture", "microservice", "pipeline",
-      "optimization", "performance", "benchmark",
+      "optimization", "performance", "benchmark", "latency",
       "test", "testing", "unittest", "pytest",
-      "refactor", "implement", "implementation"
+      "refactor", "implement", "implementation",
+      "css", "flexbox", "div", "html", "style", "frontend", "center"
     ]),
     boostPhrases: [
       "software engineering programming algorithms systems",
-      "lock-free concurrent memory buffer Rust C++",
-      "debugging optimization performance code",
-      "implementation architecture pipeline"
+      "lock-free concurrent memory buffer Rust C++ python javascript",
+      "debugging optimization performance code database sql",
+      "implementation architecture pipeline docker kubernetes"
     ],
-    weight: 3.0
+    weight: 3.8
   },
   math: {
     keywords: new Set([
-      "prove", "proof", "theorem", "lemma", "corollary",
-      "derive", "derivation", "equation", "formula",
+      "prove", "proof", "theorem", "lemma", "corollary", "induction",
+      "derive", "derivation", "equation", "formula", "quadratic",
       "calculus", "integral", "derivative", "differential",
       "algebra", "linear", "matrix", "vector", "eigenvalue",
       "topology", "manifold", "metric", "tensor", "curvature",
-      "geometry", "euclidean", "riemannian", "geodesic",
-      "probability", "statistics", "distribution", "variance",
+      "geometry", "euclidean", "riemannian", "geodesic", "hypotenuse", "triangle",
+      "circle", "area", "radius", "diameter", "circumference",
+      "probability", "statistics", "distribution", "variance", "dice",
       "hypothesis", "conjecture", "axiom", "postulate",
       "trigonometry", "sine", "cosine", "tangent",
-      "logarithm", "exponential", "polynomial",
-      "convergence", "divergence", "limit", "series",
+      "logarithm", "exponential", "polynomial", "power", "exponent",
+      "square", "root", "sqrt", "percent", "percentage", "tip",
+      "convergence", "divergence", "limit", "series", "sum", "integers",
       "riemann", "euler", "lagrange", "lagrangian",
       "hamiltonian", "schwarzschild", "christoffel",
       "navier-stokes", "fourier", "laplace",
-      "quantum", "relativity", "spacetime", "gravity",
-      "physics", "thermodynamics", "entropy",
-      "mathematical", "computation", "numerical"
+      "quantum", "relativity", "spacetime", "gravity", "heisenberg", "planck",
+      "physics", "thermodynamics", "entropy", "speed", "light", "vacuum",
+      "mathematical", "computation", "numerical", "arithmetic", "calculate", "solve"
     ]),
     boostPhrases: [
       "mathematical proof theorem derivation formal logic",
       "tensor curvature differential calculus physics",
-      "analytical reasoning verification axiom",
-      "symbolic computation equations"
+      "analytical reasoning verification axiom equation",
+      "symbolic computation equations square root arithmetic"
     ],
-    weight: 3.0
+    weight: 3.8
   }
 };
 

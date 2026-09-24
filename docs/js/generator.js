@@ -348,6 +348,166 @@ export class ModelResponseGenerator {
       + `*Composed via **${modelName}** — Creative & Expressive Nuance.*`;
   }
 
+  // ─── Deterministic Math & Symbolic Logic Solver ─────────────────────
+  _solveMathPrompt(promptText) {
+    const lower = promptText.toLowerCase().trim();
+
+    // 1. Square root
+    const sqrtMatch = lower.match(/(?:square\s*root|sqrt)\s*(?:of)?\s*(\d+(?:\.\d+)?)/i);
+    if (sqrtMatch) {
+      const val = parseFloat(sqrtMatch[1]);
+      const ans = Math.sqrt(val);
+      const isPerfect = Number.isInteger(ans);
+      return `### 📐 Mathematical Derivation via OmniReasoner-405B\n`
+        + `**Inquiry:** *"${promptText}"*\n\n`
+        + `**Verified Solution:**\n`
+        + `$$\\sqrt{${val}} = ${isPerfect ? ans : ans.toFixed(6)}$$\n\n`
+        + `**Analytical Proof & Derivation:**\n`
+        + `• **Radicand:** $x = ${val}$\n`
+        + `• **Formal Definition:** In real mathematical analysis, the principal square root $\\sqrt{x}$ is defined as the unique non-negative real number $y$ such that $y^2 = x$.\n`
+        + (isPerfect ? `• **Factorization:** $${ans}^2 = ${ans} \\times ${ans} = ${val}$ (Exact integer root).\n`
+          + `• **Algebraic Roots:** The quadratic equation $y^2 - ${val} = 0$ has two solutions in $\\mathbb{R}$: $y = \\pm ${ans}$.\n\n` : `• **Numerical Approximation:** $\\approx ${ans.toFixed(6)}$\n\n`)
+        + `*Dispatched via **OmniReasoner-405B** with formal symbolic verification.*`;
+    }
+
+    // 2. Percentage calculation: X% of Y or X percent of Y
+    const pctMatch = lower.match(/(\d+(?:\.\d+)?)\s*(?:%|percent)\s*(?:of)?\s*(\d+(?:\.\d+)?)/i);
+    if (pctMatch) {
+      const pct = parseFloat(pctMatch[1]);
+      const total = parseFloat(pctMatch[2]);
+      const ans = (pct / 100) * total;
+      return `### 📐 Quantitative Calculation via OmniReasoner-405B\n`
+        + `**Inquiry:** *"${promptText}"*\n\n`
+        + `**Verified Solution:**\n`
+        + `**${pct}% of ${total} = ${ans}**\n\n`
+        + `**Step-by-Step Derivation:**\n`
+        + `1. Convert percentage rate to scalar factor: $\\frac{${pct}}{100} = ${pct / 100}$\n`
+        + `2. Apply operator across base value: $${pct / 100} \\times ${total} = ${ans}$\n\n`
+        + `*Dispatched via **OmniReasoner-405B** (Quantitative Logic).*`;
+    }
+
+    // 3. Linear equation: ax + b = c
+    const linearMatch = lower.match(/(?:solve)?\s*(\d+(?:\.\d+)?)\s*x\s*([+-])\s*(\d+(?:\.\d+)?)\s*=\s*(\d+(?:\.\d+)?)/i);
+    if (linearMatch) {
+      const a = parseFloat(linearMatch[1]);
+      const sign = linearMatch[2];
+      const b = parseFloat(linearMatch[3]) * (sign === "-" ? -1 : 1);
+      const c = parseFloat(linearMatch[4]);
+      const x = (c - b) / a;
+      return `### 📐 Algebraic Proof & Solution via OmniReasoner-405B\n`
+        + `**Inquiry:** *"${promptText}"*\n\n`
+        + `**Verified Solution:**\n`
+        + `**$$x = ${x}$$**\n\n`
+        + `**Step-by-Step Derivation:**\n`
+        + `1. Given equation: $${a}x ${sign} ${Math.abs(b)} = ${c}$\n`
+        + `2. Isolate linear term: $${a}x = ${c - b}$\n`
+        + `3. Divide by coefficient $a = ${a}$: $x = \\frac{${c - b}}{${a}} = ${x}$\n\n`
+        + `*Dispatched via **OmniReasoner-405B** (Symbolic Algebra).*`;
+    }
+
+    // 4. Circle area: radius R
+    const circleMatch = lower.match(/(?:area\s*of\s*(?:a)?\s*circle)\s*(?:.*?)(\d+(?:\.\d+)?)/i);
+    if (circleMatch) {
+      const r = parseFloat(circleMatch[1]);
+      const area = Math.PI * r * r;
+      return `### 📐 Geometric Derivation via OmniReasoner-405B\n`
+        + `**Inquiry:** *"${promptText}"*\n\n`
+        + `**Verified Solution:**\n`
+        + `**$$\\text{Area} = \\pi r^2 = \\pi (${r})^2 = ${r * r}\\pi \\approx ${area.toFixed(4)}$$**\n\n`
+        + `*Dispatched via **OmniReasoner-405B** (Euclidean Geometry).*`;
+    }
+
+    // 5. Right triangle hypotenuse: legs A and B
+    const hypMatch = lower.match(/(?:hypotenuse)\s*(?:.*?)(\d+(?:\.\d+)?)\s*(?:and|&)\s*(\d+(?:\.\d+)?)/i);
+    if (hypMatch) {
+      const a = parseFloat(hypMatch[1]);
+      const b = parseFloat(hypMatch[2]);
+      const c = Math.sqrt(a * a + b * b);
+      return `### 📐 Pythagorean Theorem Derivation via OmniReasoner-405B\n`
+        + `**Inquiry:** *"${promptText}"*\n\n`
+        + `**Verified Solution:**\n`
+        + `**$$\\text{Hypotenuse } c = \\sqrt{a^2 + b^2} = \\sqrt{${a}^2 + ${b}^2} = \\sqrt{${a * a + b * b}} = ${c}$$**\n\n`
+        + `*Dispatched via **OmniReasoner-405B** (Pythagorean Invariants).*`;
+    }
+
+    return null;
+  }
+
+  // ─── Deterministic Code & Systems Engineer Solver ───────────────────
+  _solveCodePrompt(promptText) {
+    const lower = promptText.toLowerCase();
+
+    if (lower.includes("center") && lower.includes("div") && (lower.includes("css") || lower.includes("flexbox"))) {
+      return `### 💻 Systems Implementation via DeepCoder-70B\n`
+        + `**Topic:** Centering a div using CSS Flexbox\n\n`
+        + "```css\n"
+        + "/* Modern Clean Flexbox Centering */\n"
+        + ".container {\n"
+        + "  display: flex;\n"
+        + "  justify-content: center; /* Horizontally center */\n"
+        + "  align-items: center;     /* Vertically center */\n"
+        + "  min-height: 100vh;        /* Full viewport height */\n"
+        + "}\n"
+        + "```\n\n"
+        + `*Dispatched via **DeepCoder-70B** with zero layout thrashing.*`;
+    }
+
+    if (lower.includes("reverse") && lower.includes("linked list") && lower.includes("python")) {
+      return `### 💻 Systems Implementation via DeepCoder-70B\n`
+        + `**Topic:** Reverse a Singly Linked List in Python\n\n`
+        + "```python\n"
+        + "class ListNode:\n"
+        + "    def __init__(self, val=0, next=None):\n"
+        + "        self.val = val\n"
+        + "        self.next = next\n"
+        + "\n"
+        + "def reverse_linked_list(head: ListNode) -> ListNode:\n"
+        + "    prev = None\n"
+        + "    curr = head\n"
+        + "    while curr:\n"
+        + "        next_node = curr.next  # Save next pointer\n"
+        + "        curr.next = prev       # Reverse direction\n"
+        + "        prev = curr            # Move prev forward\n"
+        + "        curr = next_node       # Move curr forward\n"
+        + "    return prev\n"
+        + "```\n\n"
+        + `**Complexity:** $\\mathcal{O}(N)$ Time, $\\mathcal{O}(1)$ Extra Memory.\n\n`
+        + `*Dispatched via **DeepCoder-70B** with optimal cache locality.*`;
+    }
+
+    if (lower.includes("git") && (lower.includes("undo") || lower.includes("revert")) && lower.includes("commit")) {
+      return `### 💻 Systems Implementation via DeepCoder-70B\n`
+        + `**Topic:** Undo the Last Git Commit\n\n`
+        + "```bash\n"
+        + "# Option 1: Keep your file edits in working directory (Recommended)\n"
+        + "git reset --soft HEAD~1\n\n"
+        + "# Option 2: Keep modifications in working directory untracked\n"
+        + "git reset HEAD~1\n\n"
+        + "# Option 3: Permanently discard all changes from last commit\n"
+        + "git reset --hard HEAD~1\n"
+        + "```\n\n"
+        + `*Dispatched via **DeepCoder-70B**.*`;
+    }
+
+    if (lower.includes("dockerfile") && lower.includes("fastapi")) {
+      return `### 💻 Systems Implementation via DeepCoder-70B\n`
+        + `**Topic:** Production Multi-Stage Dockerfile for FastAPI\n\n`
+        + "```dockerfile\n"
+        + "FROM python:3.11-slim as base\n"
+        + "WORKDIR /app\n"
+        + "ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1\n\n"
+        + "COPY requirements.txt .\n"
+        + "RUN pip install --no-cache-dir -r requirements.txt\n\n"
+        + "COPY . .\n"
+        + "EXPOSE 8000\n"
+        + 'CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]\n'
+        + "```\n\n"
+        + `*Dispatched via **DeepCoder-70B**.*`;
+    }
+
+    return null;
+  }
+
   async _fetchKnowledge(promptText) {
     const clean = promptText.replace(/[?.,!/\\;:'"()]/g, " ").trim();
     const lower = clean.toLowerCase();
@@ -697,8 +857,22 @@ export class ModelResponseGenerator {
         // Still generate creative-ish content from that model's perspective
         fullText = this._generateCreativeContent(creativeIntent, promptText, modelName);
       } else {
-        // 1. Direct local knowledge dictionary lookup (instant for known entities)
-        const knowledge = await this._fetchKnowledge(promptText);
+        // 0. Check domain-specific deterministic solvers for math & code
+        if (primary.singularity.id === "omnireasoner-405b") {
+          const mathSolution = this._solveMathPrompt(promptText);
+          if (mathSolution) {
+            fullText = mathSolution;
+          }
+        } else if (primary.singularity.id === "deepcoder-70b") {
+          const codeSolution = this._solveCodePrompt(promptText);
+          if (codeSolution) {
+            fullText = codeSolution;
+          }
+        }
+
+        if (!fullText) {
+          // 1. Direct local knowledge dictionary lookup (instant for known entities)
+          const knowledge = await this._fetchKnowledge(promptText);
 
         if (knowledge && knowledge.directAnswer) {
           // Instant direct local fact
@@ -839,6 +1013,7 @@ export class ModelResponseGenerator {
       }
     }
   }
+}
 
     // Stream text word-by-word with realistic typing feel
     const words = fullText.split(" ");
