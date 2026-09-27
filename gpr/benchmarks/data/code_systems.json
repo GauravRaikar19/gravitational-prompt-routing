@@ -1,0 +1,402 @@
+[
+  {
+    "id": "code-0001",
+    "prompt": "write me a code to find prime number",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0002",
+    "prompt": "write python code to check if number is prime",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0003",
+    "prompt": "write a python function to reverse a linked list",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0004",
+    "prompt": "how to center a div in css",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0005",
+    "prompt": "how do I center a div using CSS flexbox?",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0006",
+    "prompt": "how to fix TypeError: cannot read properties of undefined in javascript",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0007",
+    "prompt": "write a sql query to find the second highest salary",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0008",
+    "prompt": "implement binary search algorithm in C++",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0009",
+    "prompt": "how does async await work in Node.js event loop?",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0010",
+    "prompt": "write a Dockerfile for a FastAPI python application",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0011",
+    "prompt": "optimize this postgresql index for query latency",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0012",
+    "prompt": "implement lock-free atomic queue in Rust",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "hard"
+  },
+  {
+    "id": "code-0013",
+    "prompt": "how to configure kubernetes ingress controller with nginx",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0014",
+    "prompt": "write a bash script to backup directory to s3",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0015",
+    "prompt": "write a git command to undo the last local commit",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0016",
+    "prompt": "how to sort an array of objects by date in javascript",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0017",
+    "prompt": "implement fibonacci sequence using dynamic programming in python",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0018",
+    "prompt": "write a rust function for zero allocation ring buffer",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0019",
+    "prompt": "implement quicksort algorithm in python with median of three pivot",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0020",
+    "prompt": "write a regex to validate email address format",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0021",
+    "prompt": "how to implement rate limiting middleware in Express js",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0022",
+    "prompt": "implement a thread pool with work stealing deque in C++",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "hard"
+  },
+  {
+    "id": "code-0023",
+    "prompt": "write a python script to parse JSON file and aggregate metrics",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0024",
+    "prompt": "how to implement debounce and throttle in javascript",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0025",
+    "prompt": "explain ACID properties in relational database systems",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0026",
+    "prompt": "what is the difference between git merge and git rebase",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0027",
+    "prompt": "what is the difference between REST and GraphQL APIs",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0028",
+    "prompt": "explain the CSS box model with margin border padding",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0029",
+    "prompt": "write a python function to detect cycle in linked list using floyd algorithm",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "hard"
+  },
+  {
+    "id": "code-0030",
+    "prompt": "how to resolve cross-origin resource sharing CORS error in fastapi",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0031",
+    "prompt": "write a python script to scrape web pages using beautifulsoup",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0032",
+    "prompt": "implement a LRU cache in python using OrderedDict",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0033",
+    "prompt": "write a SQL query to join orders and customers table",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0034",
+    "prompt": "how to implement JWT authentication in Node.js",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0035",
+    "prompt": "write a golang program for concurrent web crawler with worker pool",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0036",
+    "prompt": "how to prevent SQL injection in backend applications",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0037",
+    "prompt": "write a bash script to monitor CPU and memory usage",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0038",
+    "prompt": "implement merge sort algorithm in Java",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0039",
+    "prompt": "how to use React useEffect hook and avoid infinite loops",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0040",
+    "prompt": "write a terraform script to deploy AWS EC2 instance",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0041",
+    "prompt": "explain the difference between process and thread in operating systems",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0042",
+    "prompt": "write a python function for depth first search DFS on graph",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0043",
+    "prompt": "how to configure Redis cache for session storage in Node.js",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0044",
+    "prompt": "write a rust program implementing a custom iterator",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0045",
+    "prompt": "how to handle database transactions and rollbacks in postgres",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0046",
+    "prompt": "write a python decorator to measure function execution time",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0047",
+    "prompt": "implement trie data structure for autocomplete in javascript",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0048",
+    "prompt": "how to containerize a fullstack application with docker-compose",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0049",
+    "prompt": "write a typescript interface for strongly typed API responses",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  },
+  {
+    "id": "code-0050",
+    "prompt": "how to optimize webpack bundle size with code splitting",
+    "expected_model": "qwen-2.5-coder-32b",
+    "domain": "code",
+    "category": "Software Engineering",
+    "difficulty": "medium"
+  }
+]

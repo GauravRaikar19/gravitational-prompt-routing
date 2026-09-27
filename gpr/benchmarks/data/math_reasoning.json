@@ -1,0 +1,402 @@
+[
+  {
+    "id": "math-0001",
+    "prompt": "square root of 49 is what?",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0002",
+    "prompt": "square root of 144",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0003",
+    "prompt": "square root of 625",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0004",
+    "prompt": "square root of 100",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0005",
+    "prompt": "square root of 81",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0006",
+    "prompt": "what is 25 percent of 800",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0007",
+    "prompt": "what is 15 percent of 200",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0008",
+    "prompt": "what is 30 percent of 1500",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0009",
+    "prompt": "what is 20 percent of 500",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0010",
+    "prompt": "solve 3x + 12 = 45 for x",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0011",
+    "prompt": "solve 5x - 15 = 35 for x",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0012",
+    "prompt": "solve 2x + 8 = 20 for x",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0013",
+    "prompt": "solve 4x + 20 = 100 for x",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0014",
+    "prompt": "what is the area of a circle with radius 7 meters?",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0015",
+    "prompt": "what is the area of a circle with radius 14",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0016",
+    "prompt": "what is the hypotenuse of a right triangle with legs 3 and 4?",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0017",
+    "prompt": "hypotenuse with legs 5 and 12",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0018",
+    "prompt": "hypotenuse with legs 8 and 15",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0019",
+    "prompt": "derive the quadratic formula from ax^2 + bx + c = 0",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "hard"
+  },
+  {
+    "id": "math-0020",
+    "prompt": "calculate the derivative of sin(x) * e^x",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0021",
+    "prompt": "calculate the derivative of ln(x) + x^3",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0022",
+    "prompt": "what is the integral of 1/x dx?",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0023",
+    "prompt": "what is the integral of cos(x) dx",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0024",
+    "prompt": "prove by induction that sum of first n integers is n(n+1)/2",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "hard"
+  },
+  {
+    "id": "math-0025",
+    "prompt": "calculate the probability of rolling two sixes on fair dice",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0026",
+    "prompt": "what is the mathematical value of pi",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0027",
+    "prompt": "what is euler constant e approximation",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0028",
+    "prompt": "derive the Christoffel symbols and Riemann curvature tensor for a black hole",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "hard"
+  },
+  {
+    "id": "math-0029",
+    "prompt": "derive the Euler-Lagrange equations of motion in Hamiltonian mechanics",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "hard"
+  },
+  {
+    "id": "math-0030",
+    "prompt": "solve nonlinear differential equations with Navier-Stokes approximations",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "hard"
+  },
+  {
+    "id": "math-0031",
+    "prompt": "prove the Riemann hypothesis for non-trivial zeros and analytic continuation",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "hard"
+  },
+  {
+    "id": "math-0032",
+    "prompt": "explain Heisenberg uncertainty principle and Planck constant in quantum physics",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0033",
+    "prompt": "what is the formula for kinetic energy and potential energy",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0034",
+    "prompt": "calculate 15 percent tip on a 120 dollar restaurant bill",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0035",
+    "prompt": "calculate standard deviation and variance of a distribution",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0036",
+    "prompt": "calculate the eigenvalues of a 2x2 identity matrix",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0037",
+    "prompt": "prove that the square root of 2 is an irrational number",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "hard"
+  },
+  {
+    "id": "math-0038",
+    "prompt": "derive the Taylor series expansion of e^x at x=0",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "hard"
+  },
+  {
+    "id": "math-0039",
+    "prompt": "calculate the dot product of vectors [1, 2, 3] and [4, 5, 6]",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0040",
+    "prompt": "what is Bayes theorem and conditional probability formula",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0041",
+    "prompt": "solve the system of linear equations 2x + y = 5 and x - y = 1",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0042",
+    "prompt": "what is the limit of sin(x)/x as x approaches 0",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0043",
+    "prompt": "calculate the volume of a sphere with radius r",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0044",
+    "prompt": "explain the divergence theorem and Gauss law in vector calculus",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0045",
+    "prompt": "derive the wave equation from Maxwell equations",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "hard"
+  },
+  {
+    "id": "math-0046",
+    "prompt": "what is the definition of a compact manifold in topology",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0047",
+    "prompt": "prove Fermat little theorem using modular arithmetic",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "hard"
+  },
+  {
+    "id": "math-0048",
+    "prompt": "calculate the determinant of a 3x3 matrix",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  },
+  {
+    "id": "math-0049",
+    "prompt": "derive the binomial distribution formula from Bernoulli trials",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "hard"
+  },
+  {
+    "id": "math-0050",
+    "prompt": "explain entropy and the second law of thermodynamics",
+    "expected_model": "deepseek-r1-671b",
+    "domain": "math",
+    "category": "Math & Reasoning",
+    "difficulty": "medium"
+  }
+]

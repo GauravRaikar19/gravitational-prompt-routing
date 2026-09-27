@@ -6,10 +6,10 @@ Universal constants and cosmological parameters for Gravitational Prompt Routing
 DEFAULT_G: float = 1.0
 
 # Planck Softening Radius (prevents division by zero at singularity center)
-DEFAULT_EPSILON: float = 0.05
+DEFAULT_EPSILON: float = 0.08
 
-# Spatial Decay Exponent (2.0 = standard Newtonian inverse-square decay)
-DEFAULT_DECAY_DELTA: float = 2.0
+# Spatial Decay Exponent (3.0 for sharp potential wells)
+DEFAULT_DECAY_DELTA: float = 3.0
 
 # Default threshold for Lagrangian equilibrium (below which co-processing is triggered)
 DEFAULT_LAGRANGE_THRESHOLD: float = 0.15

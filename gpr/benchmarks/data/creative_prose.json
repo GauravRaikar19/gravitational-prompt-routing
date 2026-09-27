@@ -1,0 +1,402 @@
+[
+  {
+    "id": "creat-0001",
+    "prompt": "write a poem about thunderstorms",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0002",
+    "prompt": "write a poem about the sea and the stars",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0003",
+    "prompt": "compose a lyrical ballad in iambic pentameter about moonlight reflecting on still water",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0004",
+    "prompt": "write me a song about love and heartbreak under the moonlight",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0005",
+    "prompt": "craft a tense noir detective dialogue in the pouring midnight rain",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0006",
+    "prompt": "narrate an atmospheric fantasy tale of an ancient kingdom fading into myth",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0007",
+    "prompt": "write an emotional, melancholic soliloquy of a weary artisan watching time slip away",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0008",
+    "prompt": "compose a lullaby for a baby falling asleep under the stars",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0009",
+    "prompt": "tell me a story about a dragon who befriends a lonely child",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0010",
+    "prompt": "write a haiku about autumn leaves falling on a quiet stream",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0011",
+    "prompt": "write a dramatic dialogue between two rival kings before battle",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0012",
+    "prompt": "compose a sonnet about eternal love transcending time and space",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0013",
+    "prompt": "write a fantasy short story about an enchanted library of forgotten memories",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0014",
+    "prompt": "craft an emotional letter from an astronaut gazing at Earth from the void",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0015",
+    "prompt": "write a poetic monologue of an old oak tree witnessing centuries of human history",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0016",
+    "prompt": "compose an evocative poem about dawn breaking over snow-capped mountains",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0017",
+    "prompt": "write a humorous song about a cat that thinks it rules the universe",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0018",
+    "prompt": "write a gothic story about a haunted lighthouse on a stormy coast",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0019",
+    "prompt": "compose a romantic verse about wandering through Parisian cobblestone alleys",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0020",
+    "prompt": "write a monologue for a retired detective reflecting on their hardest unsolved case",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0021",
+    "prompt": "write a poem about winter frost creeping over windowpanes",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0022",
+    "prompt": "tell me an atmospheric tale of a desert wanderer searching for a lost oasis",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0023",
+    "prompt": "compose a song about a wandering musician finding solace in the rain",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0024",
+    "prompt": "draft a philosophical dialogue between an immortal philosopher and a child",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0025",
+    "prompt": "write a poem capturing the bittersweet feeling of returning to childhood home",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0026",
+    "prompt": "compose a heroic ballad about a forgotten knight defending a quiet bridge",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0027",
+    "prompt": "tell an emotional story of two estranged friends reuniting after thirty years",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0028",
+    "prompt": "write an expressive soliloquy of an orchestra conductor before their final performance",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0029",
+    "prompt": "craft a whimsical tale about a teacup that longed to sail the seven seas",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0030",
+    "prompt": "write an evocative poem about the constellations dancing across a desert sky",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0031",
+    "prompt": "compose a melancholy song about letters never sent and unspoken truths",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0032",
+    "prompt": "write a fantasy legend about a weaver who spun threads of golden sunrise",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0033",
+    "prompt": "craft a gritty noir detective monologue about a foggy waterfront murder",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0034",
+    "prompt": "tell a fable about an ancient owl teaching a young hawk the song of the wind",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0035",
+    "prompt": "write a dramatic monologue of a queen facing the downfall of her empire with dignity",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0036",
+    "prompt": "compose a folk ballad celebrating the harvest and the changing of seasons",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0037",
+    "prompt": "write a poetic description of a thunderstorm awakening a dormant forest",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0038",
+    "prompt": "craft a dialogue between two travelers meeting at the edge of the world",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0039",
+    "prompt": "write a haunting poem about forgotten footprints on an abandoned beach",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0040",
+    "prompt": "tell an evocative fantasy story about a clockmaker who could pause solitary moments",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0041",
+    "prompt": "write an emotional letter of gratitude to an old mentor across the sea",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0042",
+    "prompt": "compose a lyrical verse about the rhythm of raindrops on a tin roof",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0043",
+    "prompt": "draft a mystery dialogue between a vintage bookstore owner and a curious stranger",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0044",
+    "prompt": "write a poem about the quiet beauty of twilight settling over a snowy valley",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0045",
+    "prompt": "tell an inspiring tale about an apprentice glassblower creating a prism of sunlight",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0046",
+    "prompt": "write a melancholic blues song about midnight trains passing through empty stations",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0047",
+    "prompt": "craft a monologue of an astronomer discovering a new constellation in deep solitude",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0048",
+    "prompt": "write a gentle bedtime story about a sleepy bear and a glowing firefly",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0049",
+    "prompt": "compose a celebratory anthem of resilience and triumph against the odds",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  },
+  {
+    "id": "creat-0050",
+    "prompt": "write a sonnet celebrating the fleeting perfection of a summer sunset",
+    "expected_model": "hermes-3-70b",
+    "domain": "creative",
+    "category": "Creative Prose & Nuance",
+    "difficulty": "medium"
+  }
+]
